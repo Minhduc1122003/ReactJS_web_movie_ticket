@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import './index.css'; // Giữ lại nếu bạn muốn sử dụng CSS
 import App from './App';
-import ForgotPassword from './pages/ForgotPassword';
-import UpdatePassword from './pages/UpdatePassword';
-import OTPVerification from './pages/OTPVerification';
+import ForgotPassword from './pages/FormForgotPassword/ForgotPassword';
+import UpdatePassword from './pages/FormForgotPassword/UpdatePassword';
+import OTPVerification from './pages/FormForgotPassword/OTPVerification';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
