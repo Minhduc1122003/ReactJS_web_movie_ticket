@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
-function HomePage() {
+function HomeScreen() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
@@ -106,4 +106,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default HomeScreen;

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Link } from 'react-router-dom';
 
-function LoginPage() {
+function LoginScreen() {
   const [isRegisterForm, setIsRegisterForm] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -132,4 +132,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default LoginScreen;
