@@ -1,16 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://uat-hrm.reecorp.vn/hrm/api/userv2'; // URL API của bạn
+const API_BASE_URL = 'http://uat-hrm.reecorp.vn/hrm/api/userv2'; 
 
-const api = axios.create({
+const _apiProvider = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Cấu hình interceptor nếu cần thiết
-api.interceptors.request.use(
+_apiProvider.interceptors.request.use(
   config => {
     // Bạn có thể thêm token ở đây nếu cần
     return config;
@@ -28,10 +27,10 @@ export const login = async (username, password, siteId) => {
       password,
       siteId,
     });
-    return response.data; // Trả về dữ liệu từ API
+    return response.data; 
   } catch (error) {
-    throw error; // Ném lỗi nếu có
+    throw error; 
   }
 };
 
-export default api;
+export default _apiProvider;
