@@ -276,10 +276,19 @@ body > header > div > div > div.col-2 > img{
     font-size: 25px;
 }
 
-#loginForm > a {
+
+#root > div > div > div > div > div.col-md-6.p-5 > form > a {
     text-decoration: none;
 }
 
-#loginForm > a:hover {
+#root > div > div > div > div > div.col-md-6.p-5 > form > a:hover {
     text-decoration: underline;
+}
+
+#root > div > div > div.col-md-9 > form > div > div:nth-child(1) > div{
+    margin: 10px 0;
+}
+
+#root > div > div > div.col-md-9 > form > div > div:nth-child(2) > div {
+    margin: 10px 0;
 }

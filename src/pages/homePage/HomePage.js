@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
-function HomeScreen() {
+function HomePage() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
     // Gọi API để lấy danh sách phim từ Spring Boot
     axios.get('http://localhost:9011/api/movies/DTO')
-      .then(response => setMovies(response.data))
-      .catch(error => console.error('Có lỗi xảy ra:', error));
+        .then(response => setMovies(response.data))
+        .catch(error => console.error('Có lỗi xảy ra:', error));
   }, []);
 
   return (
@@ -106,4 +106,4 @@ function HomeScreen() {
   );
 }
 
-export default HomeScreen;
+export default HomePage;

@@ -1,4 +1,6 @@
 import React from 'react';
+
+
 function Footer() {
   return (
     <footer className="footer mt-5 py-5 bg-light" style={{ boxShadow: '0 0 4px 1px gray' }}>
