@@ -5,6 +5,33 @@ function AccountProfile() {
   const location = useLocation();
   const { user } = location.state; // Nhận đối tượng `user` từ `state`
 
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
+    const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+    };
+
+    try {
+        const response = await fetch('http://localhost:9011/api/logout', {
+            method: 'POST',
+            headers: headers
+        });
+
+        if (response.ok) {
+            // Xử lý thành công
+            console.log("Đăng xuất thành công!");
+            localStorage.removeItem("token"); // Xóa token khỏi localStorage
+            // Chuyển hướng hoặc cập nhật trạng thái
+            window.location.href = '/login';
+        } else {
+            console.error("Có lỗi xảy ra khi đăng xuất");
+        }
+    } catch (error) {
+        console.error("Lỗi mạng hoặc server:", error);
+    }
+  };
+
   return (
     <div className="container mt-5" style={{ minHeight: '400px' }}>
       <div className="row">
@@ -14,13 +41,14 @@ function AccountProfile() {
               Thông tin cá nhân
             </button>
             <Link to="#" className="list-group-item list-group-item-action">
-              Account của tôi
+              "Chức năng cần thiết 1"
             </Link>
-            <form action="/logout" method="get" style={{ display: 'inline' }}>
-              <button type="submit" className="list-group-item list-group-item-action list-group-item-danger">
-                Đăng xuất
-              </button>
-            </form>
+            <Link to="#" className="list-group-item list-group-item-action">
+              "Chức năng cần thiết 2"
+            </Link>
+            <button onClick={handleLogout} className="list-group-item list-group-item-action list-group-item-danger">
+              Đăng xuất
+            </button>
           </div>
         </div>
 
@@ -29,12 +57,13 @@ function AccountProfile() {
           <form action="/updateUser" method="post">
             <div className="row">
               <div className="col-md-6">
-                <div className="card">
+              <div className="card">
                   <div className="card-body">
-                    <h5 className="card-title">Full Name</h5>
-                    <p className="card-text">{user.fullName}</p>
+                    <h5 className="card-title">Tài khoản</h5>
+                    <p className="card-text">{user.userName}</p>
                   </div>
                 </div>
+                
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">Email</h5>
@@ -43,15 +72,21 @@ function AccountProfile() {
                 </div>
               </div>
               <div className="col-md-6">
+              <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Họ tên</h5>
+                    <p className="card-text">{user.fullName}</p>
+                  </div>
+                </div>
                 <div className="card">
                   <div className="card-body">
-                    <h5 className="card-title">Phone Number</h5>
+                    <h5 className="card-title">Số điện thoại</h5>
                     <p className="card-text">{user.phoneNumber}</p>
                   </div>
                 </div>
                 <div className="card">
                   <div className="card-body">
-                    <h5 className="card-title">Photo</h5>
+                    <h5 className="card-title">Ảnh đại diện</h5>
                     <img
                       src={user.photo}
                       alt="User Avatar"

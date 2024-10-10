@@ -27,7 +27,7 @@ function LoginPage({setLogged}) {
   const handleLogin = async (evt) => {
     evt.preventDefault();
     try {
-        const response = await fetch('http://localhost:9011/login', {
+        const response = await fetch('http://localhost:9011/api/login', {
             method: 'POST', // Đảm bảo sử dụng đúng phương thức
             headers: {
                 'Content-Type': 'application/json',

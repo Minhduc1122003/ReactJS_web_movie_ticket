@@ -35,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage setLogged={setLogged} />} />
-        <Route path="/accountProfile/:userId" element={<AccountProfile userId={logged.userId} />} /> {/* Đường dẫn tới AccountDetail */}
+        <Route path="/accountProfile" element={<AccountProfile />} /> {/* Đường dẫn tới AccountDetail */}
       </Routes>
       <Footer />
     </Router>
