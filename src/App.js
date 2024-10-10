@@ -1,17 +1,13 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import './assets/css/style.css';
-import HomePage from './pages/homePage/HomePage';
-import AccountProfile from './pages/accountDetail/AccountProfile'; // Thay đổi tên import
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import "bootstrap-icons/font/bootstrap-icons.css";
-import LoginPage from './pages/loginPage/LoginPage';
-import Header from './layouts/headerLayout/Header';
-import Footer from './layouts/footerLayout/Footer';
+import HomeScreen from './pages/homePage/HomePage';
+import LoginScreen from './pages/loginPage/LoginPage';
+import Header from './layouts/headerLayout/header';
+import Footer from './layouts/footerLayout/footer';
 import { jwtDecode } from 'jwt-decode';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import HomeScreen from './pages/homePage/homeScreen';
-import LoginScreen from './pages/loginPage/loginScreen';
 import ForgotPassword from './pages/FormForgotPassword/ForgotPassword';
 import PhimDangChieuPage from './pages/phimPage/phimdanghieuScreen';
 import PhimSapChieuPage from './pages/phimPage/phimsapchieuScreen';
@@ -35,14 +31,8 @@ function App() {
       }
     }
   }, []);
-
   return (
     <Router>
-      <Header logged={logged} />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage setLogged={setLogged} />} />
-        <Route path="/accountProfile" element={<AccountProfile />} /> {/* Đường dẫn tới AccountDetail */}
       <Header />
       <Routes> {/* Sử dụng Routes để xác định các route */}
         <Route path="/" element={<HomeScreen />} /> {/* Trang chủ */}
