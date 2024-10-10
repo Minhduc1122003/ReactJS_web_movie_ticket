@@ -39,6 +39,21 @@ function Header({ loggedInUser }) {
                       data-bs-toggle="dropdown"
                       aria-label="Toggle Dropdown"
                     >
+                      <i className="bi bi-camera-reels"></i> Phim
+                    </button>
+                    <ul className="dropdown-menu menu-danhmuc" aria-labelledby="navbarDropdown">
+                      <li><Link className="dropdown-item" to="/phim-dang-chieu">Phim đang chiếu</Link></li>
+                      <li><Link className="dropdown-item" to="/phim-sap-chieu">Phim sắp chiếu</Link></li>
+                    </ul>
+                  </li>
+                  <li className="nav-item dropdown">
+                    <button
+                      className="nav-link dropdown-toggle"
+                      type="button"
+                      id="navbarDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-label="Toggle Dropdown"
+                    >
                       <i className="bi bi-ui-checks-grid"></i> Danh Mục
                     </button>
                     <ul className="dropdown-menu menu-danhmuc" aria-labelledby="navbarDropdown">
