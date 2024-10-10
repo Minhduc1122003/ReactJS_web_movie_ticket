@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Header({ loggedInUser }) {
+function Header({ logged }) {
+  console.log(localStorage.getItem('fullName'));
   return (
     <header>
       <div className="container">
@@ -78,10 +79,15 @@ function Header({ loggedInUser }) {
                     </Link>
                   </li>
 
-                  {loggedInUser ? (
+                  {logged && logged.fullName ? (
                     <li className="nav-item nav-dangnhap">
-                      <Link className="nav-link" id="NavDangNhap" to={`/user/${loggedInUser.userId}`}>
-                        <i className="bi bi-person"></i> {loggedInUser.username}
+                      <Link
+                        className="nav-link"
+                        id="NavDangNhap"
+                        to="/accountProfile" // Đường dẫn không cần userId
+                        state={{ user: logged }} // Sử dụng `state` để truyền đối tượng `logged`
+                      >
+                        <i className="bi bi-person"></i> {logged.fullName}
                       </Link>
                     </li>
                   ) : (
