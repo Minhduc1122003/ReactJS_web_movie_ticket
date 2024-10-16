@@ -11,10 +11,15 @@ import { jwtDecode } from 'jwt-decode';
 import ForgotPassword from './pages/FormForgotPassword/ForgotPassword';
 import PhimDangChieuPage from './pages/phimPage/phimdanghieuScreen';
 import PhimSapChieuPage from './pages/phimPage/phimsapchieuScreen';
+import ThanhToan from './pages/payment_page/payment_page';
+import ThongTinVe from './pages/ticket_info/ticket_info';
+import LienHe from './pages/contact_page/contact_page';
+
+
 
 
 function App() {
-  const [logged, setLogged] = useState({ fullName: '', userName: '' , password: '', email: '', phoneNumber: 0, photo: ''});
+  const [logged, setLogged] = useState({ fullName: '', userName: '', password: '', email: '', phoneNumber: 0, photo: '' });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -40,7 +45,9 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} /> {/* Trang đăng nhập */}
         <Route path="/phim-dang-chieu" element={<PhimDangChieuPage />} /> {/* Trang phim đang chiếu */}
         <Route path="/phim-sap-chieu" element={<PhimSapChieuPage />} /> {/* Trang phim sắp chiếu */}
-
+        <Route path="/thanh-toan" element={<ThanhToan />} /> {/* Trang thanh toán */}
+        <Route path="/thong-tin-ve" element={<ThongTinVe />} /> {/* Trang thông tin vé */}
+        <Route path="/lien-he" element={<LienHe />} /> {/* Trang liên hệ */}
         {/* Có thể thêm các route khác tại đây */}
       </Routes>
       <Footer />

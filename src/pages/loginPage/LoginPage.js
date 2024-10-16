@@ -135,7 +135,7 @@ function LoginPage({setLogged}) {
                       required
                     />
                   </div>
-                  <Link to="#" className="text-black">Bạn quên mật khẩu?</Link>
+                  <Link to="/forgotpassword" className="text-black">Bạn quên mật khẩu?</Link>
                   <button type="submit" className="btn btn-primary btn-block mt-3 w-100">
                     Đăng Nhập
                   </button>

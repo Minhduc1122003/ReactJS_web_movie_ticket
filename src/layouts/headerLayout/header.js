@@ -69,7 +69,7 @@ function Header({ logged }) {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/contact">
+                    <Link className="nav-link" to="/lien-he">
                       <i className="bi bi-telephone-inbound"></i> Liên Hệ
                     </Link>
                   </li>
