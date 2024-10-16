@@ -14,8 +14,10 @@ import PhimSapChieuPage from './pages/phimPage/phimsapchieuScreen';
 import ThanhToan from './pages/payment_page/payment_page';
 import ThongTinVe from './pages/ticket_info/ticket_info';
 import LienHe from './pages/contact_page/contact_page';
-
-
+import PhimYeuThich from './pages/favoriteMovies/FavoriteMovies';
+import VeDaMua from './pages/purchasedTickets/PurchasedTickets';
+import LichSuGiaoDich from './pages/transactionHistories/TransactionHistories.js';
+import QuanLyTrangThongTin from './pages/accountdetailM/AccountDetailM.js';
 
 
 function App() {
@@ -48,6 +50,11 @@ function App() {
         <Route path="/thanh-toan" element={<ThanhToan />} /> {/* Trang thanh toán */}
         <Route path="/thong-tin-ve" element={<ThongTinVe />} /> {/* Trang thông tin vé */}
         <Route path="/lien-he" element={<LienHe />} /> {/* Trang liên hệ */}
+        <Route path="/phim-yeu-thich" element={<PhimYeuThich />} /> {/* Trang phim yêu thích */}
+        <Route path="/ve-da-mua" element={<VeDaMua />} /> {/* Trang vé đã mua*/}
+        <Route path="/lich-su-giao-dich" element={<LichSuGiaoDich />} /> {/* Trang lịch sử giao dịch*/}
+        <Route path="/quan-ly-trang-thong-tin" element={<QuanLyTrangThongTin />} /> {/* Trang quản lý thông tin khách hàng/}
+      
         {/* Có thể thêm các route khác tại đây */}
       </Routes>
       <Footer />

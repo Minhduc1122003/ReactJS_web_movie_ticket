@@ -74,7 +74,7 @@ function Header({ logged }) {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart">
+                    <Link className="nav-link" to="/phim-yeu-thich">
                       <i className="bi bi-bookmark-heart"></i> Yêu thích
                     </Link>
                   </li>
