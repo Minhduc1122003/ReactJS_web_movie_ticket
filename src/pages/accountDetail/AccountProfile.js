@@ -1,31 +1,31 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { logout } from '../../services/api_provider';
+import { Link } from 'react-router-dom';
 
 function AccountProfile() {
-  const location = useLocation();
-  const { user } = location.state; // Nhận đối tượng `user` từ `state`
+  const [user, setUser] = useState('');
+
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+
+    if(userString){
+      const user = JSON.parse(userString);
+      setUser(user);
+    }
+  }, []);
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage
-    const headers = {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-    };
-
     try {
-        const response = await fetch('http://localhost:9011/api/logout', {
-            method: 'POST',
-            headers: headers
-        });
+        const response = await logout();
 
         if (response.ok) {
             // Xử lý thành công
             console.log("Đăng xuất thành công!");
             localStorage.removeItem("token"); // Xóa token khỏi localStorage
+            localStorage.removeItem("user"); // Xóa user khỏi localStorage
+
             // Chuyển hướng hoặc cập nhật trạng thái
             window.location.href = '/login';
-        } else {
-            console.error("Có lỗi xảy ra khi đăng xuất");
         }
     } catch (error) {
         console.error("Lỗi mạng hoặc server:", error);
@@ -97,6 +97,7 @@ function AccountProfile() {
                 </div>
               </div>
             </div>
+            <Link to={`/quan-ly-thong-tin/${user.userId}`}><button className="btn btn-primary">Cập nhật</button></Link>
           </form>
         </div>
       </div>

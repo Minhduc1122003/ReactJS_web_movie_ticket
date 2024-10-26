@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import { Link } from 'react-router-dom';
+import { login, registerUser } from '../../services/api_provider';
+// import { jwtDecode } from 'jwt-decode';
 
 function LoginPage({setLogged}) {
   const [isRegisterForm, setIsRegisterForm] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // State đăng nhập
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+
+  // State đăng ký
+  const [usernameNew, setUsernameNew] = useState('');
+  const [fullnameNew, setFullnameNew] = useState('');
+  const [emailNew, setEmailNew] = useState('');
+  const [phoneNew, setPhoneNew] = useState('');
+  const [passwordNew, setPasswordNew] = useState('');
+  const [confirmpasswordNew, setConfirmpasswordNew] = useState('');
 
   useEffect(() => {
     const msg = null; // Replace with logic to show messages if necessary
@@ -27,58 +37,53 @@ function LoginPage({setLogged}) {
   const handleLogin = async (evt) => {
     evt.preventDefault();
     try {
-        const response = await fetch('http://localhost:9011/api/login', {
-            method: 'POST', // Đảm bảo sử dụng đúng phương thức
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-                username: username, 
-                password: password 
-            }),
-        }); 
-        if (response.ok) {
-            const data = await response.json();
-            const decodedToken = jwtDecode(data.jwt); // Giải mã token
-            localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
+        const data = await login(username, password);
 
-            // Cập nhật logged state
-            if (decodedToken.fullName && decodedToken.sub) {
-              setLogged({ fullName: decodedToken.fullName,
-                          userName: decodedToken.sub,
-                          password: decodedToken.password,
-                          email: decodedToken.email,
-                          phoneNumber: decodedToken.phoneNumber,
-                          photo: decodedToken.photo });
-            } else {
-                console.error("Token thiếu thông tin cần thiết");
-            }
+        localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
+        localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
+        window.location.href = '/';
 
-            console.log("JWT Token:", data.jwt);
-            console.log("Full Name:", decodedToken.fullName);
-            console.log("Password:", decodedToken.password);
-            console.log("Phone:", decodedToken.phoneNumber);
-            console.log("Photo:", decodedToken.photo);
-            console.log("Decoded Token:", decodedToken);
-            // Lưu tên đầy đủ vào localStorage hoặc state
-            console.log(data.fullName);  
-
-            navigate('/'); // Chuyển hướng về trang chính
-          } else {
-            const errorMessage = await response.text();
-            console.log("Đăng nhập thất bại:", errorMessage); // In ra lý do thất bại
-            setToastMessage("Đăng nhập thất bại: " + errorMessage);
-
-            setTimeout(() => {
-              setToastMessage(null);
-            }, 5000);
-        }
     } catch (error) {
       console.error("Lỗi mạng:", error);
       alert("Đã xảy ra lỗi mạng. Vui lòng thử lại sau.");
     }
   };
 
+  const handleRegister = async (evt) => {
+    evt.preventDefault();
+
+    if(passwordNew === confirmpasswordNew){
+      const newUser = {
+        userName: usernameNew,
+        fullName: fullnameNew,
+        email: emailNew,
+        phoneNumber: phoneNew,
+        password: passwordNew
+      };
+  
+      try {
+        const data = await registerUser(newUser);
+
+        console.log('Đăng ký thành công !', data);
+        setToastMessage('Đăng ký thành công !');
+        setIsRegisterForm(false);
+        setTimeout(() => {
+          setToastMessage(null);
+       }, 5000);
+      } catch (error) {
+        console.log('Đăng ký thất bại !', error);
+        setToastMessage('Đăng ký thất bại !');
+        setTimeout(() => {
+          setToastMessage(null);
+       }, 5000);
+      }
+    } else {
+      setToastMessage('Đăng ký thất bại! Xác nhận mật khẩu không đúng !');
+      setTimeout(() => {
+        setToastMessage(null);
+     }, 5000);
+    }
+  };
 
   return (
     <div>
@@ -136,7 +141,7 @@ function LoginPage({setLogged}) {
                     />
                   </div>
                   <Link to="/forgotpassword" className="text-black">Bạn quên mật khẩu?</Link>
-                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100">
+                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light">
                     Đăng Nhập
                   </button>
                 </form>
@@ -144,28 +149,43 @@ function LoginPage({setLogged}) {
 
               {/* Register Form */}
               {isRegisterForm && (
-                <form action="/register" method="post" id="registerForm">
+                <form onSubmit={handleRegister}>
                   <div className="mb-3">
                     <label htmlFor="regUsername" className="form-label">Tài Khoản</label>
-                    <input type="text" className="form-control" id="regUsername" placeholder="Nhập tên đăng nhập" required />
+                    <input type="text" 
+                      className="form-control" 
+                      id="regUsername" 
+                      placeholder="Nhập tên đăng nhập" 
+                      value={usernameNew}
+                      onChange={(e) => setUsernameNew(e.target.value)}
+                      required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regUsername" className="form-label">Họ tên</label>
-                    <input type="text" className="form-control" id="regFullname" placeholder="Nhập họ tên" required />
+                    <input type="text" className="form-control" id="regFullname" placeholder="Nhập họ tên" required 
+                    value={fullnameNew} onChange={(e) => setFullnameNew(e.target.value)}/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" placeholder="Nhập email" required />
+                    <input type="email" className="form-control" id="email" placeholder="Nhập email" required 
+                    value={emailNew} onChange={(e) => setEmailNew(e.target.value)}/>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">Số điện thoại</label>
+                    <input type="text" className="form-control" id="phoneNumber" placeholder="Nhập số điện thoại" required 
+                    value={phoneNew} onChange={(e) => setPhoneNew(e.target.value)}/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regPassword" className="form-label">Mật khẩu</label>
-                    <input type="password" className="form-control" id="regPassword" placeholder="Nhập mật khẩu" required />
+                    <input type="password" className="form-control" id="regPassword" placeholder="Nhập mật khẩu" required 
+                    value={passwordNew} onChange={(e) => setPasswordNew(e.target.value)}/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">Xác nhận mật khẩu</label>
-                    <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required />
+                    <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required 
+                    value={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)}/>
                   </div>
-                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100">Đăng Ký</button>
+                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light">Đăng Ký</button>
                 </form>
               )}
 

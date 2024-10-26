@@ -292,3 +292,11 @@ body > header > div > div > div.col-2 > img{
 #root > div > div > div.col-md-9 > form > div > div:nth-child(2) > div {
     margin: 10px 0;
 }
+
+#carouselExampleSlidesOnly > div > div.carousel-item.active > img {
+    height: 720px;
+}
+
+#root > div > main > div > div.pagination > button {
+    margin: 10px;
+}

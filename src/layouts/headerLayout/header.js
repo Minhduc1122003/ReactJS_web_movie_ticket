@@ -1,8 +1,39 @@
-import React from 'react';
+import React, {useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function Header({ logged }) {
-  console.log(localStorage.getItem('fullName'));
+function Header() {
+  const navigate = useNavigate();
+
+  const [fullName, setFullName] = useState('');
+
+  const getUserFromLocalStorage = () => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      setFullName(user.fullName);
+    } else {
+      setFullName(''); // Nếu không có user, đặt fullName là chuỗi rỗng
+    }
+  };
+
+  useEffect(() => {
+    // Lấy dữ liệu từ localStorage khi component được render lần đầu
+    getUserFromLocalStorage();
+
+    // Lắng nghe sự kiện thay đổi trong localStorage
+    window.addEventListener('storage', getUserFromLocalStorage);
+
+    // Dọn dẹp sự kiện khi component bị hủy
+    return () => {
+      window.removeEventListener('storage', getUserFromLocalStorage);
+    };
+  }, []);
+  
+  const handleNavigation = (path, status) => {
+    navigate(path, {state: {status}})
+  };
+
   return (
     <header>
       <div className="container">
@@ -43,8 +74,22 @@ function Header({ logged }) {
                       <i className="bi bi-camera-reels"></i> Phim
                     </button>
                     <ul className="dropdown-menu menu-danhmuc" aria-labelledby="navbarDropdown">
-                      <li><Link className="dropdown-item" to="/phim-dang-chieu">Phim đang chiếu</Link></li>
-                      <li><Link className="dropdown-item" to="/phim-sap-chieu">Phim sắp chiếu</Link></li>
+                    <li>
+                      <button 
+                        className="dropdown-item" 
+                        onClick={() => handleNavigation('/phim-theo-trang-thai', 'Đang chiếu')}
+                      >
+                        Phim đang chiếu
+                      </button>
+                    </li>
+                    <li>
+                      <button 
+                        className="dropdown-item" 
+                        onClick={() => handleNavigation('/phim-theo-trang-thai', 'Sắp chiếu')}
+                      >
+                        Phim sắp chiếu
+                      </button>
+                    </li>
                     </ul>
                   </li>
                   <li className="nav-item dropdown">
@@ -79,15 +124,14 @@ function Header({ logged }) {
                     </Link>
                   </li>
 
-                  {logged && logged.fullName ? (
+                  {fullName ? (
                     <li className="nav-item nav-dangnhap">
                       <Link
                         className="nav-link"
                         id="NavDangNhap"
-                        to="/accountProfile" // Đường dẫn không cần userId
-                        state={{ user: logged }} // Sử dụng `state` để truyền đối tượng `logged`
+                        to="/accountProfile"
                       >
-                        <i className="bi bi-person"></i> {logged.fullName}
+                        <i className="bi bi-person"></i> {fullName}
                       </Link>
                     </li>
                   ) : (
