@@ -23,6 +23,20 @@ function UpdateAccountProfile() {
 
     const fetchUserDetail = async () => {
       const userString = localStorage.getItem('user');
+      
+      // const user = JSON.parse(userString);
+      // if (user) {
+      //   setUserId(user.userId);
+      //   setUsernameNew(user.userName);
+      //   setFullnameNew(user.fullName);
+      //   setEmailNew(user.email);
+      //   setPhoneNew(user.phoneNumber);
+      // } else {
+      //   setToastMessage('Lấy thông tin chi tiết thất bại !');
+      //   setTimeout(() => {
+      //     setToastMessage(null);
+      //   }, 5000);
+      // }
 
       if (userString) {
         const userLCST = JSON.parse(userString);
@@ -85,9 +99,6 @@ function UpdateAccountProfile() {
     if (!isConfirmed) {
       return; // Kết thúc hàm nếu người dùng không đồng ý
     }
-
-    console.log(fullnameNew);
-    console.log(phoneNew);
 
     const newUser = {
       userName: usernameNew,

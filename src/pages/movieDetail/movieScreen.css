@@ -59,10 +59,9 @@
 .movie-detail-container img {
   max-width: 100%;
   height: auto;
-  max-height: 450px;
+
   object-fit: cover;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
 }
 
 
@@ -83,15 +82,17 @@
   background-color: #d1d1d1;
 }
 
+.inblock{
+  display: inline-block;
+}
 
+.movieDetail-boder-right{
+  margin-right: 10px;
+  padding-right: 10px;
+  border-right: 1px black solid;
+}
 
-
-
-
-
-
-
-
-
-
-
+#root > div > div > div.col-md-3 > div:nth-child(2) > button {
+  width: 100%;
+  margin-top: 15px;
+}

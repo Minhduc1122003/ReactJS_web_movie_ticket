@@ -14,11 +14,11 @@ import ThanhToan from './pages/payment_page/payment_page';
 import ThongTinVe from './pages/ticket_info/ticket_info';
 import LienHe from './pages/contact_page/contact_page';
 import PhimYeuThich from './pages/favoriteMovies/FavoriteMovies';
-import VeDaMua from './pages/purchasedTickets/PurchasedTickets'
+import VeDaMua from './pages/purchasedTickets/PurchasedTickets';
 import LichSuGiaoDich from './pages/transactionHistories/TransactionHistories';
 import QuanLyTrangThongTin from './pages/accountDetail/updateAccount';
 import ChiTietPhim from './pages/movieDetail/MovieDetail';
-
+import SuatChieu from './pages/showtimeDetail/showtimeDetail';
 
 function App() {
 
@@ -51,8 +51,9 @@ function App() {
         <Route path="/ve-da-mua" element={<VeDaMua />} /> {/* Trang vé đã mua*/}
         <Route path="/lich-su-giao-dich" element={<LichSuGiaoDich />} /> {/* Trang lịch sử giao dịch */}
         <Route path="/quan-ly-thong-tin/:userId" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
-        <Route path="/chi-tiet-phim" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
-        {/* Có thể thêm các route khác tại đây */}
+        <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
+        <Route path="/suat-chieu" element={<SuatChieu/>} /> {/* Trang chi tiết suất chiếu*/}
+
       </Routes>
       <Footer />
     </Router>

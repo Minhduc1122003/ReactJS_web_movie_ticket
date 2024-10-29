@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllMovieView } from '../../services/api_provider';
-
+import { Link } from 'react-router-dom';
 
 function HomePage() {
   const [movies, setMovies] = useState([]);
@@ -111,11 +111,13 @@ function HomePage() {
               currentMovies.map((movie, index) => (
                 <div className="col-md-3" key={index}>
                   <div className="card mb-3" style={{ minHeight: '611px' }}>
-                    <img src={`/img/${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                    <Link to={`/chi-tiet-phim/${movie.movieId}`}>
+                      <img src={`/img/${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                    </Link>
                     <div className="card-body text-center">
                       <h5 className="card-title">{movie.title}</h5>
                       <p className="card-text">
-                        ⭐ {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
+                        <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} class="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
                       </p>
                       <p className="card-text">
                         Genres: {movie.genres.join(', ')}
