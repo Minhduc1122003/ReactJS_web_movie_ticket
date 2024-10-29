@@ -3,7 +3,7 @@ import './TransactionHistories.css'; // Import CSS
 
 function TransactionHistories() {
   // State to manage the list of transactions
-  const [transactions, setTransactions] = useState([
+  const [transactions] = useState([
     {
       id: 'TXN001',
       date: '2024-10-10',

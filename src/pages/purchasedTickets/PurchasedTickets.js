@@ -3,7 +3,7 @@ import './PurchasedTickets.css'; // Import CSS for styling
 
 function PurchasedTickets() {
   // State to manage the list of purchased tickets
-  const [tickets, setTickets] = useState([
+  const [tickets] = useState([
     {
       id: 1,
       event: 'Avengers: Endgame',
