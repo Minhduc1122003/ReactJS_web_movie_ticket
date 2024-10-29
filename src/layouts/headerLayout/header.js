@@ -40,7 +40,7 @@ function Header() {
         <div className="row align-items-center">
           <div className="col-2">
             <Link className="nav-link" to="/" style={{ width: '50%' }}>
-              <img src="/img/Logo.png" alt="Logo" className="img-fluid" />
+              <img src={`http://localhost:9011/img/logo.png`} alt="Logo" className="img-fluid" />
             </Link>
           </div>
           <div className="col-10">

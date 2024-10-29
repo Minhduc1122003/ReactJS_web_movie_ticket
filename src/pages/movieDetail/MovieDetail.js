@@ -22,7 +22,7 @@ function MovieDetail() {
       <div className="row movieDetail">
         <div className="col-md-3"> 
           <div>
-            <img src="/img/joker.jpg" alt={movie.title} className="img-fluid rounded" />
+            <img src={`http://localhost:9011/img/joker.jpg`} alt={movie.title} className="img-fluid rounded" />
           </div>
 
           <div>

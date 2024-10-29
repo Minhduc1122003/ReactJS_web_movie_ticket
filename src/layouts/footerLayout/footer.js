@@ -9,9 +9,9 @@ function Footer() {
           <div className="col-md-4">
             <h5>THAM GIA VỚI CHÚNG TÔI</h5>
             <div className="social-icons">
-              <a href="https://example.com/x"><img src="/img/x.jpg" alt="X" /></a>
-              <a href="https://facebook.com"><img src="/img/fb.png" alt="Facebook" /></a>
-              <a href="https://discord.com"><img src="/img/discord.png" alt="Discord" style={{ height: '60px' }} /></a>
+              <a href="https://example.com/x"><img src={`http://localhost:9011/img/x.jpg`} alt="X" /></a>
+              <a href="https://facebook.com"><img src={`http://localhost:9011/img/fb.png`} alt="Facebook" /></a>
+              <a href="https://discord.com"><img src={`http://localhost:9011/img/discord.png`} alt="Discord" style={{ height: '60px' }} /></a>
             </div>
             <ul className="list-unstyled">
               <li><a href="/about">Về chúng tôi</a></li>

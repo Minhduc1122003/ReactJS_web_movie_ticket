@@ -201,7 +201,7 @@ function LoginPage({setLogged}) {
               </div>
             </div>
             <div className="col-md-6 d-flex align-items-center justify-content-center">
-              <img src="/img/img-dangnhap.jfif" alt="Illustration" className="img-fluid" style={{ borderRadius: '0 30px 30px 0' }} />
+              <img src="http://localhost:9011/img/img-dangnhap.jfif" alt="Illustration" className="img-fluid" style={{ borderRadius: '0 30px 30px 0' }} />
             </div>
           </div>
         </div>

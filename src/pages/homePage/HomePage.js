@@ -51,13 +51,13 @@ function HomePage() {
               <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   <div className="carousel-item active">
-                    <img src="/img/CRS.jpg" className="d-block w-100" alt="..." />
+                    <img src="http://localhost:9011/img/CRS.jpg" className="d-block w-100" alt="..." />
                   </div>
                   <div className="carousel-item">
-                    <img src="/img/CRS2.png" className="d-block w-100" alt="..." />
+                    <img src="http://localhost:9011/img/CRS2.png" className="d-block w-100" alt="..." />
                   </div>
                   <div className="carousel-item">
-                    <img src="/img/CRS3.jpg" className="d-block w-100" alt="..." />
+                    <img src="http://localhost:9011/img/CRS3.jpg" className="d-block w-100" alt="..." />
                   </div>
                 </div>
               </div>
@@ -69,7 +69,7 @@ function HomePage() {
             {/* Category 1 */}
             <div className="col-md-4">
               <div className="card mb-4">
-                <img src="/img/Romantic.jpg" className="card-img-top" alt="Lãng mạn" />
+                <img src="http://localhost:9011/img/Romantic.jpg" className="card-img-top" alt="Lãng mạn" />
                 <div className="card-body text-center">
                   <h5 className="card-title">Lãng mạn</h5>
                   <a href="/products?genre=Romantic" className="btn btn-dark mt-3">More</a>
@@ -79,7 +79,7 @@ function HomePage() {
             {/* Category 2 */}
             <div className="col-md-4">
               <div className="card mb-4">
-                <img src="/img/Action.jpg" className="card-img-top" alt="Hành động" />
+                <img src="http://localhost:9011/img/Action.jpg" className="card-img-top" alt="Hành động" />
                 <div className="card-body text-center">
                   <h5 className="card-title">Hành động</h5>
                   <a href="/products?genre=Action" className="btn btn-dark mt-3">More</a>
@@ -89,7 +89,7 @@ function HomePage() {
             {/* Category 3 */}
             <div className="col-md-4">
               <div className="card mb-4">
-                <img src="/img/Horrified.jpg" className="card-img-top" alt="Kinh dị" />
+                <img src="http://localhost:9011/img/Horrified.jpg" className="card-img-top" alt="Kinh dị" />
                 <div className="card-body text-center">
                   <h5 className="card-title">Kinh dị</h5>
                   <a href="/products?genre=Horror" className="btn btn-dark mt-3">More</a>
@@ -112,7 +112,7 @@ function HomePage() {
                 <div className="col-md-3" key={index}>
                   <div className="card mb-3" style={{ minHeight: '611px' }}>
                     <Link to={`/chi-tiet-phim/${movie.movieId}`}>
-                      <img src={`/img/${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                      <img src={`http://localhost:9011/img/${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
                     </Link>
                     <div className="card-body text-center">
                       <h5 className="card-title">{movie.title}</h5>
