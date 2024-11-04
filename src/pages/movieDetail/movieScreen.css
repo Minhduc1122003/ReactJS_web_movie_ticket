@@ -200,3 +200,119 @@
   text-align: left;
 }
 
+/* From Uiverse.io by Li-Deheng */ 
+.poster-container {
+  text-align: center; /* Để căn giữa cả hình và nút "Mua vé" */
+  width: fit-content; /* Đặt kích thước cho container phù hợp với nội dung */
+  margin: 0 auto; /* Căn giữa container trong trang */
+}
+.btn-container {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  --color-text: #ffffff; /* Màu chữ trắng */
+  --color-background: #6c49f6; /* Màu nền tím từ ảnh */
+  --color-outline: #6c49f680; 
+  --color-shadow: #00000080;
+}
+
+.btn-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 20px; /* Giảm kích thước padding để nút nhỏ hơn */
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px; /* Giảm kích thước chữ */
+  color: var(--color-text);
+  background: var(--color-background);
+  transition: 0.5s;
+  border-radius: 8px; /* Giảm kích thước border-radius để nút trông gọn hơn */
+  box-shadow: 0 0 0.2em 0 var(--color-shadow);
+}
+
+.btn-content:hover,
+.btn-content:focus {
+  transition: 0.5s;
+  -webkit-animation: btn-content 1s;
+  animation: btn-content 1s;
+  outline: 0.1em solid transparent;
+  outline-offset: 0.2em;
+  box-shadow: 0 0 0.4em 0 var(--color-background);
+}
+
+.btn-content .icon-arrow {
+  transition: 0.3s;
+  margin-right: 0px;
+  transform: scale(0.6); /* Giảm kích thước mũi tên */
+}
+
+.btn-content:hover .icon-arrow {
+  transition: 0.3s;
+  margin-right: 15x; /* Giảm khoảng cách khi hover để phù hợp với kích thước nút nhỏ hơn */
+}
+
+.icon-arrow {
+  width: 15px; /* Giảm kích thước mũi tên */
+  margin-left: 10px; /* Giảm khoảng cách giữa chữ và mũi tên */
+  position: relative;
+  top: 6%;
+}
+
+/* SVG */
+#arrow-icon-one {
+  transition: 0.3s;
+  transform: translateX(-50%);
+}
+
+#arrow-icon-two {
+  transition: 0.4s;
+  transform: translateX(-25%);
+}
+
+.btn-content:hover #arrow-icon-three {
+  animation: color_anim 0.8s infinite 0.2s;
+}
+
+.btn-content:hover #arrow-icon-one {
+  transform: translateX(0%);
+  animation: color_anim 0.8s infinite 0.4s;
+}
+
+.btn-content:hover #arrow-icon-two {
+  transform: translateX(0%);
+  animation: color_anim 0.8s infinite 0.3s;
+}
+
+/* SVG animations */
+@keyframes color_anim {
+  0% {
+    fill: white;
+  }
+
+  50% {
+    fill: var(--color-background);
+  }
+
+  100% {
+    fill: white;
+  }
+}
+
+@-webkit-keyframes btn-content {
+  0% {
+    outline: 0.2em solid var(--color-background);
+    outline-offset: 0;
+  }
+}
+
+@keyframes btn-content {
+  0% {
+    outline: 0.2em solid var(--color-background);
+    outline-offset: 0;
+  }
+}
+
