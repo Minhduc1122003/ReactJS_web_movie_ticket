@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { logout } from '../../services/api_provider';
 import { Link } from 'react-router-dom';
 
@@ -7,8 +7,7 @@ function AccountProfile() {
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
-
-    if(userString){
+    if (userString) {
       const user = JSON.parse(userString);
       setUser(user);
     }
@@ -16,19 +15,15 @@ function AccountProfile() {
 
   const handleLogout = async () => {
     try {
-        const response = await logout();
-
-        if (response.ok) {
-            // Xử lý thành công
-            console.log("Đăng xuất thành công!");
-            localStorage.removeItem("token"); // Xóa token khỏi localStorage
-            localStorage.removeItem("user"); // Xóa user khỏi localStorage
-
-            // Chuyển hướng hoặc cập nhật trạng thái
-            window.location.href = '/login';
-        }
+      const response = await logout();
+      if (response.ok) {
+        console.log("Đăng xuất thành công!");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = '/login';
+      }
     } catch (error) {
-        console.error("Lỗi mạng hoặc server:", error);
+      console.error("Lỗi mạng hoặc server:", error);
     }
   };
 
@@ -56,43 +51,46 @@ function AccountProfile() {
           <h2>Thông tin cá nhân</h2>
           <form action="/updateUser" method="post">
             <div className="row">
-              <div className="col-md-6">
-              <div className="card">
+              <div className="col-md-4 text-center mb-3">
+                <div className="card" style={{ border: "none" }}>
                   <div className="card-body">
-                    <h5 className="card-title">Tài khoản</h5>
-                    <p className="card-text">{user.userName}</p>
-                  </div>
-                </div>
-                
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">Email</h5>
-                    <p className="card-text">{user.email}</p>
+                    <img
+                      src="/img/anhtraivuotmoitamtai.jpg"
+                      alt="User Avatar"
+                      className="img-fluid rounded-circle"
+                      style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                    />
+
                   </div>
                 </div>
               </div>
-              <div className="col-md-6">
-              <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">Họ tên</h5>
-                    <p className="card-text">{user.fullName}</p>
+              <div class="row" style={{ marginTop: '-50px' }}>
+                <div className="col-md-6">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">Tài khoản</h5>
+                      <p className="card-text">{user.userName}</p>
+                    </div>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">Email</h5>
+                      <p className="card-text">{user.email}</p>
+                    </div>
                   </div>
                 </div>
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">Số điện thoại</h5>
-                    <p className="card-text">{user.phoneNumber}</p>
+                <div className="col-md-6">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">Họ tên</h5>
+                      <p className="card-text">{user.fullName}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">Ảnh đại diện</h5>
-                    <img
-                      src={user.photo}
-                      alt="User Avatar"
-                      className="img-fluid"
-                      style={{ maxWidth: '150px', borderRadius: '50%' }}
-                    />
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">Số điện thoại</h5>
+                      <p className="card-text">{user.phoneNumber}</p>
+                    </div>
                   </div>
                 </div>
               </div>
