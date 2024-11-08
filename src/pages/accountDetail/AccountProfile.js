@@ -48,23 +48,24 @@ function AccountProfile() {
         </div>
 
         <div className="col-md-9">
-          <h2>Thông tin cá nhân</h2>
+          
           <form action="/updateUser" method="post">
             <div className="row">
-              <div className="col-md-4 text-center mb-3">
-                <div className="card" style={{ border: "none" }}>
+              <div className="text-center">
+              <h2>Thông tin cá nhân</h2>
+                <div className="card" style={{ border: "none", marginBottom: "0" }}>
                   <div className="card-body">
                     <img
                       src="/img/anhtraivuotmoitamtai.jpg"
                       alt="User Avatar"
                       className="img-fluid rounded-circle"
-                      style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                      style={{ width: '10vw', height: '21vh', objectFit: 'cover' }}
                     />
 
                   </div>
                 </div>
               </div>
-              <div class="row" style={{ marginTop: '-50px' }}>
+              <div class="row" style={{ marginTop: '' }}>
                 <div className="col-md-6">
                   <div className="card">
                     <div className="card-body">
