@@ -1,0 +1,16 @@
+.img-avt{
+    position: relative;
+    height: 21vh;
+}
+
+.button-avt{
+    right: 55%;
+}
+
+.img-avt > .avt-account {
+    position: absolute;
+    width: 10vw;
+    height: 21vh;
+    object-fit: cover;
+    left: 10%;
+}
