@@ -63,7 +63,7 @@ function MovieStatus() {
               currentMovies.map((movie, index) => (
                 <div className="col-md-3" key={index}>
                   <div className="card mb-3" style={{ minHeight: '611px' }}>
-                    <img src={`http://localhost:9011/img/${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                    <img src={`${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
                     <div className="card-body text-center">
                       <h5 className="card-title">{movie.title}</h5>
                       <p className="card-text">

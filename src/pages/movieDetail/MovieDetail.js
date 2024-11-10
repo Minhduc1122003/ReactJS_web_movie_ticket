@@ -1,109 +1,227 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './movieScreen.css';
+import { movieDetail, getShowtimeByMovieId } from '../../services/api_provider';
+import YouTube from 'react-youtube';
+import { Button, Carousel, Row, Col } from 'react-bootstrap';
 
 function MovieDetail() {
+  const { movieId } = useParams(); // Lấy movieId từ URL
+  const navigate = useNavigate();
+  const [movie, setMovie] = useState(null); // Trạng thái để lưu dữ liệu phim
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+  const [showTrailer, setShowTrailer] = useState(false); // Quản lý trạng thái hiển thị trailer
+  const [showtimes, setShowtimes] = useState([]); // Trạng thái để lưu suất chiếu
+  const [showtimeLoading, setShowtimeLoading] = useState(false); // Trạng thái cho việc tải dữ liệu suất chiếu
+  const [showShowtimes, setShowShowtimes] = useState(false); // Quản lý hiển thị suất chiếu
+  const [selectedShowtime, setSelectedShowtime] = useState(null);
 
-  const movie = {
-    title: 'Venom: Kèo Cuối',
-    duration: '109 Phút',
-    releaseDate: '23/10/2024',
-    rating: 9.0,
-    votes: 220,
-    age: '18',
-    genres: ['Hành Động', 'Giả Tưởng'],
-    actors: ['Tom Hardy', 'Juno Temple', 'Chiwetel Ejiofor'],
-    description: `Sau chuyến du lịch ngắn sang quê nhà của Spider-Man: No Way Home (2021), Eddie Brock (Tom Hardy) giờ đây cùng Venom “hành hiệp trượng nghĩa” và “nhai đầu” hết đám tội phạm trong thành phố. Tuy nhiên, đi đêm lắm cũng có ngày gặp ma, chính phủ Mỹ đã phát hiện ra sự tồn tại của con quái vật ngoài hành tinh này. Anh chàng buộc phải trở thành kẻ đào tẩu, liên tục trốn chạy khỏi những cuộc truy quét liên tục. Thế nhưng, đây chưa phải là rắc rối lớn nhất… Những con quái vật gớm ghiếc bất ngờ xuất hiện tại nhiều nơi. Hành tinh của chủng tộc Symbiote đã phát hiện ra Trái Đất và chuẩn bị cho cuộc xâm lăng tổng lực. `,
+  useEffect(() => {
+    const fetchMovieDetail = async () => {
+      try {
+        const movieData = await movieDetail(movieId); // Gọi hàm lấy dữ liệu phim
+        setMovie(movieData); // Cập nhật trạng thái với dữ liệu phim
+      } catch (error) {
+        console.error("Error fetching movie details:", error);
+      } finally {
+        setLoading(false); // Đặt loading thành false sau khi gọi xong
+      }
+    };
+
+    fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
+  }, [movieId]); // Gọi lại khi movieId thay đổi
+
+  const toggleShowtimes = async () => {
+    setShowtimeLoading(true); // Bắt đầu trạng thái loading cho suất chiếu
+    try {
+      const data = await getShowtimeByMovieId(movieId); // Gọi hàm lấy dữ liệu suất chiếu
+      setShowtimes(data); // Cập nhật trạng thái với dữ liệu suất chiếu
+      setShowShowtimes(true); // Hiển thị suất chiếu
+    } catch (error) {
+      console.error("Error fetching showtimes:", error);
+    } finally {
+      setShowtimeLoading(false); // Đặt loading cho suất chiếu thành false sau khi gọi xong
+    }
   };
 
-  const ratingDistribution = {
-    "9-10": 70,
-    "7-8": 15,
-    "5-6": 10,
-    "3-4": 3,
-    "1-2": 2,
+  // Nhóm các suất chiếu theo ngày
+  const groupedShowtimes = showtimes.reduce((acc, current) => {
+    const date = current.showtimeDate;
+    if (!acc[date]) {
+      acc[date] = { date: date, times: [] };
+    }
+    acc[date].times.push({ startTime: current.startTime, cinemaRoomId: current.cinemaRoomId , showtimeId: current.showtimeId});
+    return acc;
+  }, {});  
+
+  const sampleShowtimes = Object.values(groupedShowtimes); // Chuyển đổi thành mảng để hiển thị
+
+  if (loading) {
+    return <div>Loading...</div>; // Hiển thị loading nếu dữ liệu chưa được tải
+  }
+
+  if (!movie) {
+    return <div>Movie not found!</div>; // Hiển thị thông báo nếu không tìm thấy phim
+  }
+
+  const getYouTubeId = (url) => {
+    const regExp = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\\s]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+  };
+
+  // Hàm chia các giờ chiếu thành nhóm nhỏ
+  const chunkArray = (array, chunkSize) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
   };
 
   return (
     <div className="container mb-5 mt-5">
       <div className="row movieDetail">
         <div className="col-md-3">
-          <div className="poster-container">
-            <img src={`http://localhost:9011/img/joker.jpg`} alt={movie.title} className="img-fluid rounded" />
-            <div className="btn-container">
-              <a className="btn-content" href="#">
-                <span className="btn-title">Mua vé</span>
-                <span className="icon-arrow">
-                  <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                    <g id="arrow" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                      <path id="arrow-icon-one" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z" fill="#FFFFFF"></path>
-                      <path id="arrow-icon-two" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z" fill="#FFFFFF"></path>
-                    </g>
-                  </svg>
-                </span>
-              </a>
-            </div>
+          <div>
+            <img src={`${movie.posterUrl}`} alt={movie.title} className="img-fluid rounded" />
+          </div>
+
+          <div>
+            <button className='btn btn-outline-dark' onClick={toggleShowtimes}>
+              Chọn suất
+            </button>
           </div>
         </div>
 
         <div className="col-md-9 movie-info text-start">
           <h1>{movie.title} <span className="badge bg-warning text-dark">T18</span></h1>
-          <p>
-            <div className="text-center inblock movieDetail-boder-right"><strong>Ngày khỏi chiếu:</strong><br /> {movie.releaseDate}</div>
-            <div className="text-center inblock movieDetail-boder-right"><strong>Thời lượng:</strong><br /> {movie.duration}</div>
-            <div className="text-center inblock"><strong>Ngôn ngữ:</strong><br /> Phụ đề</div>
-          </p>
+          <div className='my-3'>
+            <div className="text-center inblock movieDetail-boder-right"><strong>Ngày khởi chiếu:</strong><br /> {movie.releaseDate}</div>
+            <div className="text-center inblock movieDetail-boder-right"><strong>Thời lượng:</strong><br /> {movie.duration} phút</div>
+            <div className="text-center inblock"><strong>Ngôn ngữ:</strong><br /> {movie.subTitle ? 'Phụ đề' : 'Lồng tiếng'}</div>
+          </div>
 
-          <p><strong>Thể loại:</strong>
-            {movie.genres.map((genre, index) => (
-              <span key={index} className="badge-item">{genre}</span>
-            ))}
-          </p>
-          <p><strong>Tuổi tác:</strong> {movie.age}</p>
+          <div className='my-3'><strong>Thể loại:</strong> {movie.genres}</div>
+          <div className='my-3'><strong>Tuổi tác:</strong> {movie.age}</div>
 
-          <p><strong>Diễn viên:</strong>
-            {movie.actors.map((actor, index) => (
-              <span key={index} className="badge-item">{actor}</span>
-            ))}
-          </p>
+          <div className='my-3'><strong>Diễn viên:</strong> {movie.actors}</div>
 
           <button className='btn btn-outline-danger me-2'><i className="bi bi-balloon-heart"></i> Thích</button>
-          <button className='btn btn-outline-primary'><i className="bi bi-play-circle"></i> Trailler</button>
+          <button className='btn btn-outline-primary' onClick={() => setShowTrailer(true)}>
+            <i className="bi bi-play-circle"></i> Xem trailer
+          </button>
 
           <div className="review-container">
             <div className="rating-columns">
               <div className="rating-header-column">
                 <div className="rating-header">
                   <span className="star-icon">★</span>
-                  <span className="score">{movie.rating}</span>/10
-                  <span className="text-muted"> ({movie.votes} đánh giá)</span>
+                  <span className="score">{movie.averageRating}</span>/10
+                  <span className="text-muted"> ({movie.reviewCount} đánh giá)</span>
                 </div>
               </div>
 
               <div className="rating-bars-column">
-                {Object.entries(ratingDistribution).map(([range, percentage]) => (
+                {[
+                  { range: "9-10", count: movie.rating9_10 },
+                  { range: "7-8", count: movie.rating7_8 },
+                  { range: "5-6", count: movie.rating5_6 },
+                  { range: "3-4", count: movie.rating3_4 },
+                  { range: "1-2", count: movie.rating1_2 }
+                ].map(({ range, count }) => (
                   <div key={range} className="rating-bar-container">
                     <div className="rating-label">{range}</div>
                     <div className="rating-bar">
-                      <div className="rating-bar-inner" style={{ width: `${percentage}%` }}></div>
+                      <div className="rating-bar-inner" style={{ width: `${(count / movie.reviewCount) * 100}%` }}></div>
                     </div>
-                    <div className="rating-count">{percentage}%</div>
+                    <div className="rating-count">{Math.round((count / movie.reviewCount) * 100)}%</div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-
-
-
-
         </div>
-
       </div>
+
       <hr></hr>
       <div className="movie-description-section">
         <h4 className="movie-description-title">Nội Dung Phim</h4>
-        <p className="movie-description-text">{movie.description}</p>
+        <div className='my-3 movie-description-text'>{movie.description}</div>
       </div>
+
+      {/* Hiển thị suất chiếu nếu có */}
+      {showShowtimes && (
+        <div>
+          <div className="divider">
+            <h2 >CHỌN SUẤT CHIẾU</h2>
+          </div>
+          {/* Kiểm tra xem showtimeLoading có phải là true không */}
+          {showtimeLoading ? (
+            <div>Đang tải suất chiếu...</div> // Thông báo khi đang tải
+          ) : (
+            sampleShowtimes.map((showtime) => (
+              <Row key={showtime.date} className="mb-5">
+                <Col xs={12} className="text-center">
+                  <h5 className="fw-bold text-dark mb-3">
+                    {new Date(showtime.date).toLocaleDateString('vi-VN', {
+                      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                    })}
+                  </h5>
+                  <Carousel
+                    indicators={false}
+                    interval={null}
+                    controls={true}
+                    wrap={true}
+                    className="carousel-dark"
+                  >
+                    {chunkArray(showtime.times, 9).map((timeChunk, index) => (
+                      <Carousel.Item key={index}>
+                        <div className="d-flex justify-content-center">
+                          {timeChunk.map(({ startTime, cinemaRoomId, showtimeId }) => (
+                            <Button
+                              key={startTime}
+                              variant={selectedShowtime === `${showtime.date}-${startTime}` ? "dark" : "outline-secondary"}
+                              onClick={() => {
+                                console.log(`Chọn suất chiếu: ${showtime.date} - ${startTime}`);
+                                console.log(`Cinema Room ID: ${cinemaRoomId}`); // Log cinemaRoomId khi chọn
+                                console.log(`CinemaRoomId: ${showtimeId}`);
+                                setSelectedShowtime(`${showtime.date}-${startTime}`);
+
+                                navigate(`/dat-cho/${movieId}`, {
+                                  state: {cinemaRoomId, showtimeId, movieTitle: movie.title, movieAge: movie.age, startTime, showtimeDate: showtime.date,
+                                    moviePrice: movie.price , subTitle: movie.subTitle ? 'Phụ đề' : 'Lồng tiếng'
+                                  }
+                                })
+                              }}
+                              className="mx-2"
+                              style={{ minWidth: '80px' }}
+                            >
+                              {startTime}
+                            </Button>
+                          ))}
+                        </div>
+                      </Carousel.Item>
+                    ))}
+                  </Carousel>
+                </Col>
+              </Row>
+            ))
+            
+          )}
+        </div>
+      )}
+
+
+      {/* Modal trailer */}
+      {showTrailer && (
+        <div className="trailer-modal">
+          <div className="trailer-overlay" onClick={() => setShowTrailer(false)}></div>
+          <div className="trailer-content">
+            <YouTube videoId={getYouTubeId(movie.trailerUrl)} opts={{ width: '100%', height: '100%' }} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

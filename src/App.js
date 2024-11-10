@@ -18,7 +18,8 @@ import VeDaMua from './pages/purchasedTickets/PurchasedTickets';
 import LichSuGiaoDich from './pages/transactionHistories/TransactionHistories';
 import QuanLyTrangThongTin from './pages/accountDetail/updateAccount';
 import ChiTietPhim from './pages/movieDetail/MovieDetail';
-import SuatChieu from './pages/showtimeDetail/showtimeDetail';
+
+import DatCho from './pages/seatSelection/SeatSelection';
 
 function App() {
 
@@ -52,7 +53,8 @@ function App() {
         <Route path="/lich-su-giao-dich" element={<LichSuGiaoDich />} /> {/* Trang lịch sử giao dịch */}
         <Route path="/quan-ly-thong-tin/:userId" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
         <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
-        <Route path="/suat-chieu" element={<SuatChieu/>} /> {/* Trang chi tiết suất chiếu*/}
+
+        <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
 
       </Routes>
       <Footer />

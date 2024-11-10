@@ -112,12 +112,12 @@ function HomePage() {
                 <div className="col-md-3" key={index}>
                   <div className="card mb-3" style={{ minHeight: '611px' }}>
                     <Link to={`/chi-tiet-phim/${movie.movieId}`}>
-                      <img src={`http://localhost:9011/img/${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                      <img src={`${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
                     </Link>
                     <div className="card-body text-center">
                       <h5 className="card-title">{movie.title}</h5>
                       <p className="card-text">
-                        <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} class="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
+                        <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
                       </p>
                       <p className="card-text">
                         Genres: {movie.genres.join(', ')}
@@ -132,7 +132,7 @@ function HomePage() {
           {/* Nút phân trang */}
           <div className="pagination">
             <button className='btn btn-outline-dark' onClick={goToPreviousPage} disabled={currentPage === 1}>
-              <i class="bi bi-chevron-compact-left"></i>
+              <i className="bi bi-chevron-compact-left"></i>
             </button>
             {Array.from({ length: totalPages }, (_, index) => (
               <button
@@ -144,7 +144,7 @@ function HomePage() {
               </button>
             ))}
             <button className='btn btn-outline-dark' onClick={goToNextPage} disabled={currentPage === totalPages}>
-              <i class="bi bi-chevron-compact-right"></i>
+              <i className="bi bi-chevron-compact-right"></i>
             </button>
           </div>
         </div>
