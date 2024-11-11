@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { logout, getAvt, uploadAvt } from '../../services/api_provider';
 import { Link } from 'react-router-dom';
-import './AccounProfile.css'
+import './AccounProfile.css';
+import Swal from 'sweetalert2';
 
 function AccountProfile() {
   const [user, setUser] = useState('');
@@ -45,14 +46,22 @@ function AccountProfile() {
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      alert('Please select a file to upload.');
-      return;
-    }
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('userId', user.userId);
+
+    const { isConfirmed } = await Swal.fire({
+      title: 'Cập nhật ảnh mới',
+      text: 'Bạn muốn đổi ảnh đại diện mới ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+
+    if (!isConfirmed) {
+      return; // Nếu người dùng không đồng ý, dừng hàm
+    }
 
     try {
       const data = await uploadAvt(formData);
@@ -109,7 +118,7 @@ function AccountProfile() {
                 <div className='img-avt'>
                   <input
                     id="fileInput"
-                    type="file" 
+                    type="file"
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                   />
@@ -118,14 +127,14 @@ function AccountProfile() {
                     alt="User Avatar"
                     className="avt-account img-fluid rounded-circle"
                   />
-                  <button 
-                  onClick={handleUpload} 
-                  className='button-avt position-absolute top-50 translate-middle btn btn-outline-success' 
-                  disabled={file === null}>
+                  <button
+                    onClick={handleUpload}
+                    className='button-avt position-absolute top-50 translate-middle btn btn-outline-success'
+                    disabled={file === null}>
                     Đổi ảnh
                   </button>
                 </div>
-                
+
               </div>
             </div>
           </div>

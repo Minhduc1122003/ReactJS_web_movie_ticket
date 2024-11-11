@@ -50,10 +50,22 @@ const SeatSelection = () => {
     }, [selectedSeats, moviePrice, seatId]);
 
     const handleSubmit = async () => {
+        const userString = localStorage.getItem('user');
+        if (!userString) {
+            await Swal.fire({
+                title: 'Chưa đăng nhập !',
+                text: 'Vui lòng đăng nhập khi đặt vé !',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            navigate('/login'); // Nếu không có thông tin người dùng, chuyển hướng tới trang đăng nhập
+            return;
+        }
+
         const { isConfirmed } = await Swal.fire({
             title: 'Đặt vé',
             text: `Bạn có chắc muốn đặt vé? Ghế: ${selectedSeats.join(", ")}`, // Hiển thị danh sách ghế đã chọn
-            icon: 'warning',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Có',
             cancelButtonText: 'Không'
@@ -63,26 +75,9 @@ const SeatSelection = () => {
             return; // Nếu người dùng không đồng ý, dừng hàm
         }
 
-        const userString = localStorage.getItem('user');
-        if (!userString) {
-            navigate('/login'); // Nếu không có thông tin người dùng, chuyển hướng tới trang đăng nhập
-            return;
-        }
-
         const user = JSON.parse(userString);
         const userId = user ? user.userId : null;
         const quantity = selectedSeats.length;
-
-        // Kiểm tra seatId có tồn tại không
-        if (seatId.length === 0) {
-            await Swal.fire({
-                title: 'Lỗi',
-                text: 'Bạn chưa chọn ghế!',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            return; // Nếu chưa chọn ghế, dừng lại
-        }
 
         try {
             // Không cần JSON.stringify nếu phương thức `insertBuyTicket` yêu cầu đối tượng
@@ -96,7 +91,6 @@ const SeatSelection = () => {
             };
 
             console.log("Buy ticket request:", buyTicketRequest); // Kiểm tra dữ liệu gửi đi
-
             const data = await insertBuyTicket(buyTicketRequest);
 
             await Swal.fire({

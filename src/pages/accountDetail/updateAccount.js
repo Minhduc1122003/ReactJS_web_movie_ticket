@@ -90,7 +90,7 @@ function UpdateAccountProfile() {
     const { isConfirmed } = await Swal.fire({
       title: 'Xác nhận',
       text: "Bạn có chắc chắn muốn cập nhật thông tin không?",
-      icon: 'warning',
+      icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Có',
       cancelButtonText: 'Không'
