@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllMovieView } from '../../services/api_provider';
 import { Link } from 'react-router-dom';
+import './homePage.css';
 
 function HomePage() {
   const [movies, setMovies] = useState([]);
@@ -110,7 +111,7 @@ function HomePage() {
             ) : (
               currentMovies.map((movie, index) => (
                 <div className="col-md-3" key={index}>
-                  <div className="card mb-3" style={{ minHeight: '611px' }}>
+                  <div className="card mb-3 item-film" style={{ minHeight: '611px' }}>
                     <Link to={`/chi-tiet-phim/${movie.movieId}`}>
                       <img src={`${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
                     </Link>

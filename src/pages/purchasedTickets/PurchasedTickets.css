@@ -12,13 +12,6 @@ h2 {
   text-align: center;
 }
 
-/* Grid layout for tickets */
-.tickets-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
 /* Styling for each ticket card */
 .ticket-card {
   background-color: #222;
@@ -27,6 +20,7 @@ h2 {
   overflow: hidden;
   transition: transform 0.3s;
   color: #fff;
+  margin-bottom: 3%;
 }
 
 .ticket-card:hover {
@@ -35,10 +29,12 @@ h2 {
 
 /* Ticket image styling */
 .ticket-image {
-  width: 100%;
-  height: 180px;
+  width: 20%;
+  height: 100%;
   object-fit: cover;
   border-bottom: 2px solid #ff4444;
+  float: left;
+  margin-right: 20px;
 }
 
 /* Ticket details section */
@@ -72,4 +68,9 @@ h2 {
 
 .details-button:hover {
   background-color: #ff6666;
+}
+
+.ticket-details > p {
+  color: white;
+  text-align: start;
 }

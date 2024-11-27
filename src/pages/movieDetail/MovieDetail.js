@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './movieScreen.css';
-import { movieDetail, getShowtimeByMovieId } from '../../services/api_provider';
+import { movieDetail, getShowtimeByMovieId, addFavourite, deleteFavourite } from '../../services/api_provider';
 import YouTube from 'react-youtube';
 import { Button, Carousel, Row, Col } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 function MovieDetail() {
   const { movieId } = useParams(); // Lấy movieId từ URL
@@ -15,8 +16,14 @@ function MovieDetail() {
   const [showtimeLoading, setShowtimeLoading] = useState(false); // Trạng thái cho việc tải dữ liệu suất chiếu
   const [showShowtimes, setShowShowtimes] = useState(false); // Quản lý hiển thị suất chiếu
   const [selectedShowtime, setSelectedShowtime] = useState(null);
+  const [userId, setUserId] = useState(0);
 
   useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if(userString != null){
+      const user = JSON.parse(userString);
+      setUserId(user.userId);
+    }
     const fetchMovieDetail = async () => {
       try {
         const movieData = await movieDetail(movieId); // Gọi hàm lấy dữ liệu phim
@@ -50,9 +57,9 @@ function MovieDetail() {
     if (!acc[date]) {
       acc[date] = { date: date, times: [] };
     }
-    acc[date].times.push({ startTime: current.startTime, cinemaRoomId: current.cinemaRoomId , showtimeId: current.showtimeId});
+    acc[date].times.push({ startTime: current.startTime, cinemaRoomId: current.cinemaRoomId, showtimeId: current.showtimeId });
     return acc;
-  }, {});  
+  }, {});
 
   const sampleShowtimes = Object.values(groupedShowtimes); // Chuyển đổi thành mảng để hiển thị
 
@@ -68,6 +75,40 @@ function MovieDetail() {
     const regExp = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\\s]{11})/;
     const match = url.match(regExp);
     return match ? match[1] : null;
+  };
+
+  const handleFavourite = async () => {
+    try {
+      if(userId === 0){
+        await Swal.fire({
+          title: 'Thông báo',
+          text: 'Vui lòng đăng nhập để thích phim !',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+      }
+      const favouriteRequest = {
+        movieId: parseInt(movieId),
+        userId
+      };
+
+      if (!movie.favourite) {
+        // Nếu chưa yêu thích, gọi hàm addFavourite
+        const data = await addFavourite(favouriteRequest);
+        console.log("Đã thêm vào danh sách yêu thích:", data);
+      } else {
+        const data = await deleteFavourite(favouriteRequest);
+        console.log("Đã xóa khỏi danh sách yêu thích", data);
+      }
+
+      setMovie((prevMovie) => ({
+        ...prevMovie,
+        favourite: !prevMovie.favourite,
+      }));
+
+    } catch (error) {
+
+    }
   };
 
   // Hàm chia các giờ chiếu thành nhóm nhỏ
@@ -107,7 +148,13 @@ function MovieDetail() {
 
           <div className='my-3'><strong>Diễn viên:</strong> {movie.actors}</div>
 
-          <button className='btn btn-outline-danger me-2'><i className="bi bi-balloon-heart"></i> Thích</button>
+          <button
+            className={`btn ${movie.favourite ? 'btn-danger' : 'btn-outline-danger'} me-2`}
+            onClick={handleFavourite}
+          >
+            <i className="bi bi-balloon-heart"></i> {movie.favourite ? 'Đã thích' : 'Thích'}
+          </button>
+
           <button className='btn btn-outline-primary' onClick={() => setShowTrailer(true)}>
             <i className="bi bi-play-circle"></i> Xem trailer
           </button>
@@ -133,9 +180,15 @@ function MovieDetail() {
                   <div key={range} className="rating-bar-container">
                     <div className="rating-label">{range}</div>
                     <div className="rating-bar">
-                      <div className="rating-bar-inner" style={{ width: `${(count / movie.reviewCount) * 100}%` }}></div>
+                      <div className="rating-bar-inner" style={{ width: `${movie.reviewCount === 0 ? 0 : (count / movie.reviewCount) * 100}%` }}></div>
                     </div>
-                    <div className="rating-count">{Math.round((count / movie.reviewCount) * 100)}%</div>
+                    <div className="rating-count">
+
+                      {movie.reviewCount === 0
+                      ? 0
+                      :
+                      Math.round((count / movie.reviewCount) * 100)}%
+                    </div>
                   </div>
                 ))}
               </div>
@@ -181,7 +234,7 @@ function MovieDetail() {
                           {timeChunk.map(({ startTime, cinemaRoomId, showtimeId }) => (
                             <Button
                               key={startTime}
-                              variant={selectedShowtime === `${showtime.date}-${startTime}` ? "dark" : "outline-secondary"}
+                              variant={selectedShowtime === `${showtime.date}-${startTime}` ? "" : "outline-secondary"}
                               onClick={() => {
                                 console.log(`Chọn suất chiếu: ${showtime.date} - ${startTime}`);
                                 console.log(`Cinema Room ID: ${cinemaRoomId}`); // Log cinemaRoomId khi chọn
@@ -189,8 +242,9 @@ function MovieDetail() {
                                 setSelectedShowtime(`${showtime.date}-${startTime}`);
 
                                 navigate(`/dat-cho/${movieId}`, {
-                                  state: {cinemaRoomId, showtimeId, movieTitle: movie.title, movieAge: movie.age, startTime, showtimeDate: showtime.date,
-                                    moviePrice: movie.price , subTitle: movie.subTitle ? 'Phụ đề' : 'Lồng tiếng'
+                                  state: {
+                                    cinemaRoomId, showtimeId, movieTitle: movie.title, movieAge: movie.age, startTime, showtimeDate: showtime.date,
+                                    moviePrice: movie.price, subTitle: movie.subTitle ? 'Phụ đề' : 'Lồng tiếng'
                                   }
                                 })
                               }}
@@ -207,7 +261,7 @@ function MovieDetail() {
                 </Col>
               </Row>
             ))
-            
+
           )}
         </div>
       )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { getAllMovieViewByStatus } from '../../services/api_provider';
 
 function MovieStatus() {
@@ -62,12 +62,14 @@ function MovieStatus() {
             ) : (
               currentMovies.map((movie, index) => (
                 <div className="col-md-3" key={index}>
-                  <div className="card mb-3" style={{ minHeight: '611px' }}>
-                    <img src={`${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                  <div className="card mb-3 item-film" style={{ minHeight: '611px' }}>
+                    <Link to={`/chi-tiet-phim/${movie.movieId}`}>
+                      <img src={`${movie.posterUrl}`} className="card-img-top" alt={movie.title} />
+                    </Link>
                     <div className="card-body text-center">
                       <h5 className="card-title">{movie.title}</h5>
                       <p className="card-text">
-                        ⭐ {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
+                        <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
                       </p>
                       <p className="card-text">
                         Genres: {movie.genres.join(', ')}

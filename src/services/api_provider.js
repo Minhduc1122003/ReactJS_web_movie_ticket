@@ -77,6 +77,71 @@ export const login = async (username, password) => {
   }
 };
 
+// SendMail
+export const sendMail = async (email) => {
+  try {
+    const response = await fetch('http://localhost:9011/api/mail/sendMail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(email)
+    });
+
+    if(!response.ok){
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+// VerifyOTP
+export const verifyOTP = async (email, otp) => {
+  try {
+    const response = await fetch('http://localhost:9011/api/mail/verifyOTP', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email, otp})
+    });
+
+    if(!response.ok){
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    return await response.text();
+  } catch (error) {
+    
+  }
+};
+
+// Update password
+export const uploadPasswordUser = async (id, password) => {
+  try {
+    const response = await fetch(`http://localhost:9011/api/users/update/password/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(password),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update password');
+    }
+
+    const data = await response.text();
+    return data;
+  } catch (error) {
+    console.error('Error updating password:', error);
+    throw error;
+  }
+};
+
+
 // Avt
 export const getAvt = async (id) => {
   try {
@@ -95,7 +160,7 @@ export const getAvt = async (id) => {
     console.error('Lỗi:', error);
     throw error;
   }
-}
+};
 
 // Upload avt
 export const uploadAvt = async (formData) => {
@@ -315,6 +380,125 @@ export const insertBuyTicket = async (buyTicketRequest) => {
     return data;
   } catch (error) {
     console.error("Error fetching seats:", error);
+    throw error;
+  }
+};
+
+export const getTicketBuyUserId = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:9011/api/users/getTicketById/${id}`);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    throw error;
+  }
+};
+
+export const addFavourite = async (favouriteRequest) => {
+  console.log('API_provider:', favouriteRequest);
+  try {
+    const response = await fetch('http://localhost:9011/favourites/addFavourite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(favouriteRequest)
+    });
+
+    
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    return await response.text();
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    throw error;
+  }
+};
+
+export const deleteFavourite = async (favouriteRequest) => {
+  console.log('API_provider:', favouriteRequest);
+  try {
+    const response = await fetch('http://localhost:9011/favourites/deletefavourite', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(favouriteRequest)
+    });
+
+    
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    return await response.text();
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    throw error;
+  }
+};
+
+// Lấy toàn bộ phim
+export const getAllFavouriteMovieViewByUserId = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:9011/api/movies/getAllFavouriteMovieByUserId/${id}`);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Có lỗi: " + error);
+    throw error;
+  }
+};
+
+export const paymentVNP = async(amount, id) => {
+  try {
+    const response = await fetch(`http://localhost:9011/api/payments/vnpay?amount=${amount}&id=${id}`);
+
+    if(!response) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    return data;
+    
+  } catch (error) {
+    console.error("Có lỗi: " + error);
+    throw error;
+  }
+};
+
+export const paymentVNPcallBack = async(params) => {
+  try {
+    const response = await fetch('http://localhost:9011/api/payments/vnpay/callback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    });
+
+    if(!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
+    }
+
+    const data = await response.text();
+    return data;
+    
+  } catch (error) {
+    console.error("Có lỗi: " + error);
     throw error;
   }
 };

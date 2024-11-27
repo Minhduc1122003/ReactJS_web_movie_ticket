@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { login, registerUser } from '../../services/api_provider';
+import Swal from 'sweetalert2';
 // import { jwtDecode } from 'jwt-decode';
 
 function LoginPage({setLogged}) {
@@ -38,14 +39,24 @@ function LoginPage({setLogged}) {
     evt.preventDefault();
     try {
         const data = await login(username, password);
-
+        await Swal.fire({
+          title:'Thành công',
+          text: 'Đăng nhập thành công !',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
         localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
         localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
         window.location.href = '/';
 
     } catch (error) {
       console.error("Lỗi mạng:", error);
-      alert("Đã xảy ra lỗi mạng. Vui lòng thử lại sau.");
+      await Swal.fire({
+        title:'Thất bại',
+        text: 'Đăng nhập không thành công !',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
   };
 

@@ -18,7 +18,6 @@ import VeDaMua from './pages/purchasedTickets/PurchasedTickets';
 import LichSuGiaoDich from './pages/transactionHistories/TransactionHistories';
 import QuanLyTrangThongTin from './pages/accountDetail/updateAccount';
 import ChiTietPhim from './pages/movieDetail/MovieDetail';
-
 import DatCho from './pages/seatSelection/SeatSelection';
 
 function App() {

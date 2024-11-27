@@ -1,13 +1,39 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import './ForgotPassword.css'; // Chứa phần CSS cho form
+import { sendMail } from '../../services/api_provider';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Xử lý yêu cầu đặt lại mật khẩu ở đây
-    alert(`OTP sẽ được gửi đến: ${email}`);
+
+    try {
+      const response = await sendMail(email);
+      console.log(response);
+
+      console.log(response.data);
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Đã cấp mã OTP. Vui lòng kiểm tra Gmail !',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      navigate('/OTPVerify', {
+        state: { email, userId: response.userId }
+      });
+    } catch (error) {
+      console.log(error);
+      await Swal.fire({
+        title: 'Thất bại',
+        text: 'Không tìm thấy Gmail !',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
   };
 
   return (
@@ -17,7 +43,7 @@ const ForgotPassword = () => {
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <label htmlFor="email">Email</label>
-          <input
+          <input style={{ borderRadius: '10px' }}
             type="email"
             id="email"
             value={email}

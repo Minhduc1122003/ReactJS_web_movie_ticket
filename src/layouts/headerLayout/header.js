@@ -21,9 +21,6 @@ function Header() {
     // Lấy dữ liệu từ localStorage khi component được render lần đầu
     getUserFromLocalStorage();
 
-    // Lắng nghe sự kiện thay đổi trong localStorage
-    window.addEventListener('storage', getUserFromLocalStorage);
-
     // Dọn dẹp sự kiện khi component bị hủy
     return () => {
       window.removeEventListener('storage', getUserFromLocalStorage);
