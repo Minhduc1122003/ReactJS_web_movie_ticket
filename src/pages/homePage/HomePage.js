@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllMovieView } from '../../services/api_provider';
 import { Link } from 'react-router-dom';
-import './homePage.css';
+import './homeScreen.css';
 
 function HomePage() {
   const [movies, setMovies] = useState([]);
