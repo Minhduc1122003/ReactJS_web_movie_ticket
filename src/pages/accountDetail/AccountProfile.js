@@ -110,15 +110,13 @@ function AccountProfile() {
             <button className="list-group-item list-group-item-action active">
               Thông tin cá nhân
             </button>
-<<<<<<< HEAD
-=======
+
             <Link to="/ve-da-mua" className="list-group-item list-group-item-action">
               Vé đã đặt
             </Link>
             <Link to="#" className="list-group-item list-group-item-action">
               "Chức năng cần thiết 2"
             </Link>
->>>>>>> b1f31672772416099f5c179efce1535ab205ce99
             <button onClick={handleLogout} className="list-group-item list-group-item-action list-group-item-danger">
               Đăng xuất
             </button>
