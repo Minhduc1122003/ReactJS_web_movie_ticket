@@ -9,6 +9,8 @@ import LoginPage from './pages/loginPage/LoginPage';
 import Header from './layouts/headerLayout/header';
 import Footer from './layouts/footerLayout/footer';
 import ForgotPassword from './pages/FormForgotPassword/ForgotPassword';
+import OTPVerification from './pages/FormForgotPassword/OTPVerification';
+import UpdatePassword from './pages/FormForgotPassword/UpdatePassword';
 import MovieStaus from './pages/phimPage/movieStatus';
 import ThanhToan from './pages/payment_page/payment_page';
 import ThongTinVe from './pages/ticket_info/ticket_info';
@@ -43,6 +45,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/accountProfile" element={<AccountProfile />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} /> {/* Trang đăng nhập */}
+        <Route path="/OTPVerify" element={<OTPVerification />} />
+        <Route path="/UpdatePassword" element={<UpdatePassword />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/phim-theo-trang-thai" element={<MovieStaus />} /> {/* Trang phim đang chiếu */}
         <Route path="/thanh-toan" element={<ThanhToan />} /> {/* Trang thanh toán */}
         <Route path="/thong-tin-ve" element={<ThongTinVe />} /> {/* Trang thông tin vé */}
@@ -52,7 +57,7 @@ function App() {
         <Route path="/lich-su-giao-dich" element={<LichSuGiaoDich />} /> {/* Trang lịch sử giao dịch */}
         <Route path="/quan-ly-thong-tin" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
         <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
-
+        <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
         <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
 
       </Routes>

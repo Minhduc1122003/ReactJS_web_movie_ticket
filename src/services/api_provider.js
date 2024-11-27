@@ -194,10 +194,11 @@ export const registerUser = async (newUser) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Lỗi: ${response.statusText}`);
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
     }
 
-    const data = await response.json();
+    const data = await response.text();
     return data;
   } catch (error) {
     console.error("Lỗi xảy ra: ", error);

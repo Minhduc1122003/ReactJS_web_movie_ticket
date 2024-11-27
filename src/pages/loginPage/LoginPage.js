@@ -82,8 +82,12 @@ function LoginPage({setLogged}) {
           setToastMessage(null);
        }, 5000);
       } catch (error) {
-        console.log('Đăng ký thất bại !', error);
-        setToastMessage('Đăng ký thất bại !');
+        console.log('Đăng ký thất bại !', error.message);
+        if (error.message === 'Email đã tồn tại!') {
+          setToastMessage('Email đã tồn tại!');
+        } else {
+          setToastMessage('Đăng ký thất bại!');
+        }
         setTimeout(() => {
           setToastMessage(null);
        }, 5000);
