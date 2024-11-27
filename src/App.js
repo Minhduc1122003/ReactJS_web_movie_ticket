@@ -50,7 +50,7 @@ function App() {
         <Route path="/phim-yeu-thich" element={<PhimYeuThich />} /> {/* Trang phim yêu thích */}
         <Route path="/ve-da-mua" element={<VeDaMua />} /> {/* Trang vé đã mua*/}
         <Route path="/lich-su-giao-dich" element={<LichSuGiaoDich />} /> {/* Trang lịch sử giao dịch */}
-        <Route path="/quan-ly-thong-tin/:userId" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
+        <Route path="/quan-ly-thong-tin" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
         <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
 
         <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
