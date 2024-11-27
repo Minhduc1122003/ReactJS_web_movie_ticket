@@ -10,11 +10,12 @@ const SeatSelection = () => {
     const location = useLocation();
     const { cinemaRoomId, showtimeId, movieTitle, movieAge, startTime, showtimeDate, moviePrice, subTitle } = location.state || {};
     const [seats, setSeats] = useState([]); // Đổi 'seat' thành 'seats'
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalPriceAll, setTotalPriceAll] = useState(0);
     const rows = [...new Set(seats.map(seat => seat.chairCode[0]))]; // Lấy hàng từ chairCode (ví dụ: A, B, C...)
     const cols = Array.from({ length: 14 }, (_, i) => i + 1); // Có 14 cột
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [seatId, setSeatId] = useState([]);
+    const [comboId] = useState([]);
 
     // console.log("Cinema Room ID:", cinemaRoomId);
     // console.log("Showtime ID:", showtimeId);
@@ -45,9 +46,23 @@ const SeatSelection = () => {
     useEffect(() => {
         console.log(selectedSeats);
         console.log(seatId);
-        // Khi tính toán, đảm bảo totalPrice là một giá trị thập phân
-        setTotalPrice(parseFloat(selectedSeats.length * moviePrice));
+        // Khi tính toán, đảm bảo totalPriceAll là một giá trị thập phân
+        setTotalPriceAll(parseFloat(selectedSeats.length * moviePrice));
     }, [selectedSeats, moviePrice, seatId]);
+
+    const generateBuyTicketId = (userId, movieId, showtimeId) => {
+        const now = new Date();
+        const month = now.getMonth() + 1;  // Tháng bắt đầu từ 0, cần cộng thêm 1
+        const day = now.getDate();
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const second = now.getSeconds();
+
+        // Định dạng "MMddHHmmss"
+        const formattedDate = `${month < 10 ? '0' : ''}${month}${day < 10 ? '0' : ''}${day}${hour < 10 ? '0' : ''}${hour}${minute < 10 ? '0' : ''}${minute}${second < 10 ? '0' : ''}${second}`;
+
+        return `${userId}${movieId}${showtimeId}${formattedDate}`;
+    };
 
     const handleSubmit = async () => {
         const userString = localStorage.getItem('user');
@@ -58,7 +73,7 @@ const SeatSelection = () => {
                 icon: 'warning',
                 confirmButtonText: 'OK'
             });
-            navigate('/login'); // Nếu không có thông tin người dùng, chuyển hướng tới trang đăng nhập
+            navigate(`/login`);
             return;
         }
 
@@ -77,20 +92,22 @@ const SeatSelection = () => {
 
         const user = JSON.parse(userString);
         const userId = user ? user.userId : null;
-        const quantity = selectedSeats.length;
+
+        const buyTicketId = generateBuyTicketId(userId, movieId, showtimeId);
+        console.log(buyTicketId);
 
         try {
             // Không cần JSON.stringify nếu phương thức `insertBuyTicket` yêu cầu đối tượng
             const buyTicketRequest = {
+                buyTicketId,
                 userId,
                 movieId: parseInt(movieId, 10),
-                quantity,
-                totalPrice,
+                totalPriceAll,
                 showtimeId,
-                seatIDs: seatId // Gửi seatId như một mảng trực tiếp
+                seatIDs: seatId, // Gửi seatId như một mảng trực tiếp
+                comboIDs: comboId
             };
 
-            console.log("Buy ticket request:", buyTicketRequest); // Kiểm tra dữ liệu gửi đi
             const data = await insertBuyTicket(buyTicketRequest);
 
             await Swal.fire({
@@ -99,8 +116,8 @@ const SeatSelection = () => {
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
-
             console.log("Buy ticket response:", data);
+            navigate('/ve-da-mua');
         } catch (error) {
             await Swal.fire({
                 title: 'Thất bại',
@@ -203,7 +220,7 @@ const SeatSelection = () => {
 
                     <div className="price-info">
                         <span className="temp-price-label">Tạm tính</span>
-                        <span className="price">{totalPrice} VND</span>
+                        <span className="price">{totalPriceAll} VND</span>
                     </div>
 
                     <button

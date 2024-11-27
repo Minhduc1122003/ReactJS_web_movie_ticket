@@ -3,7 +3,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer className="footer mt-5 pt-5 bg-light" style={{ boxShadow: '0 0 4px 1px gray' }}>
+    <footer className="footer mt-5 pt-5" style={{ boxShadow: '0 0 4px 1px gray' }}>
       <div className="container">
         <div className="row">
           <div className="col-md-4">
@@ -39,7 +39,7 @@ function Footer() {
         </div>
         <div className="row">
           <div className="col-md-12 text-center mt-4">
-            <p>&copy; 2024 MovieCinema. All rights reserved.</p>
+            <p className='text-light'>&copy; 2024 MovieCinema. All rights reserved.</p>
           </div>
         </div>
       </div>

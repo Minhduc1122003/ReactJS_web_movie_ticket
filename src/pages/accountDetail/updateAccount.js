@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './updateAccount.css'; // Create this CSS file for styling
-import { updateUser, userDetail, logout } from '../../services/api_provider';
-import { Link } from 'react-router-dom';
+import { updateUser, logout } from '../../services/api_provider';
+import { Link, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 function UpdateAccountProfile() {
@@ -12,8 +12,8 @@ function UpdateAccountProfile() {
   const [fullnameNew, setFullnameNew] = useState('');
   const [emailNew, setEmailNew] = useState('');
   const [phoneNew, setPhoneNew] = useState('');
-  const [passwordNew, setPasswordNew] = useState('');
-  // const [confirmpasswordNew, setConfirmpasswordNew] = useState('');
+  const location = useLocation();
+  const { userName, fullName, email, phoneNumber } = location.state || {};
 
   useEffect(() => {
     const msg = null; // Replace with logic to show messages if necessary
@@ -21,48 +21,23 @@ function UpdateAccountProfile() {
       setToastMessage(msg);
     }
 
-    const fetchUserDetail = async () => {
+    const fetchUserDetail = () => {
       const userString = localStorage.getItem('user');
-      
-      // const user = JSON.parse(userString);
-      // if (user) {
-      //   setUserId(user.userId);
-      //   setUsernameNew(user.userName);
-      //   setFullnameNew(user.fullName);
-      //   setEmailNew(user.email);
-      //   setPhoneNew(user.phoneNumber);
-      // } else {
-      //   setToastMessage('Lấy thông tin chi tiết thất bại !');
-      //   setTimeout(() => {
-      //     setToastMessage(null);
-      //   }, 5000);
-      // }
 
       if (userString) {
         const userLCST = JSON.parse(userString);
         setUserId(userLCST.userId);
 
-        try {
-          const user = await userDetail(userLCST.userId);
-
-          setUsernameNew(user.userName);
-          setFullnameNew(user.fullName);
-          setEmailNew(user.email);
-          setPhoneNew(user.phoneNumber);
-          setPasswordNew(user.password);
-        } catch (error) {
-          console.error('Lấy thông tin chi tiết thất bại:', error);
-          setToastMessage('Lấy thông tin chi tiết thất bại !');
-          setTimeout(() => {
-            setToastMessage(null);
-          }, 5000);
-        }
+        setUsernameNew(userName);
+        setFullnameNew(fullName);
+        setEmailNew(email);
+        setPhoneNew(phoneNumber);
       }
     };
 
     fetchUserDetail();
 
-  }, []);
+  }, [email, fullName, phoneNumber, userName]);
 
   const handleLogout = async () => {
     try {
@@ -104,8 +79,8 @@ function UpdateAccountProfile() {
       userName: usernameNew,
       fullName: fullnameNew,
       email: emailNew,
-      phoneNumber: phoneNew,
-      password: passwordNew
+      phoneNumber: phoneNew
+      // password: passwordNew
     };
 
     try {
@@ -163,16 +138,6 @@ function UpdateAccountProfile() {
                 <input type="text" className="form-control" id="phoneNumber" placeholder="Nhập số điện thoại" required
                   value={phoneNew} onChange={(e) => setPhoneNew(e.target.value)} />
               </div>
-              <div className="mb-3">
-                <label htmlFor="regPassword" className="form-label">Mật khẩu</label>
-                <input type="password" className="form-control" id="updPassword" placeholder="Nhập mật khẩu" required
-                  value={passwordNew} onChange={(e) => setPasswordNew(e.target.value)} />
-              </div>
-              {/* <div className="mb-3">
-                <label htmlFor="confirmPassword" className="form-label">Xác nhận mật khẩu</label>
-                <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required
-                  value={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)} />
-              </div> */}
               <button type="submit" className="btn btn-primary btn-block mt-3 float-end">Cập nhật</button>
             </form>
             <Link to="/accountProfile"><button className="btn btn-danger btn-block mt-3 float-end" style={{ marginRight: '15px' }}>Quay lại</button></Link>

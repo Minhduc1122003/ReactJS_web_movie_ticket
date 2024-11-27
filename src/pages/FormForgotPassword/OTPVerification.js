@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { verifyOTP } from '../../services/api_provider';
 import './ForgotPassword.css'; // Chứa CSS cho form
 
 const OTPVerification = () => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
+  const location = useLocation();
+  const { email, userId } = location.state;
+  const navigate = useNavigate();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return;
@@ -15,9 +21,31 @@ const OTPVerification = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Mã OTP của bạn là: ${otp.join('')}`);
+    const stringOTP = otp.join('');
+
+    try {
+      const data = await verifyOTP(email, stringOTP);
+      console.log(data);
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Xác nhận thành công !',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      navigate('/UpdatePassword', {
+        state: { userId }
+      })
+    } catch (error) {
+      console.log(error);
+      await Swal.fire({
+        title: 'Thất bại',
+        text: 'Xác nhận thất bại. Vui lòng nhập đúng mã OTP trong Gmail !',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
   };
 
   return (
@@ -37,7 +65,7 @@ const OTPVerification = () => {
             />
           ))}
         </div>
-        <button type="submit" className="submit-button">Lấy mã OTP</button>
+        <button type="submit" className="submit-button">Xác nhận</button>
       </form>
     </div>
   );

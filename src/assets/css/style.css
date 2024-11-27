@@ -6,13 +6,13 @@ body {
 }
 
 header {
-    background-color: #ffffff;
+    background-color: #4F75FF;
     box-shadow: 0 4px 2px -2px gray;
     padding: 20px 0;
 }
 
 header .navbar-nav .nav-link {
-    color: #0000007e;
+    color: white;
     font-weight: bold;
 }
 
@@ -20,6 +20,10 @@ header .navbar-nav .nav-link:hover {
     color: black;
 }
 
+footer {
+    background-color: #4F75FF;
+    color: white;
+}
 
 body > header > div > div > div.col-2 > img{
 	position: absolute;
@@ -30,6 +34,14 @@ body > header > div > div > div.col-2 > img{
 #navbarNav > ul > li.nav-item.nav-dangnhap{
 	margin-left: 144px;
     margin-right: -51px;
+}
+
+.item-film{
+    transition: transform 0.3s;
+}
+
+.item-film:hover{
+    transform: scale(1.05);
 }
 
 .card {
@@ -61,11 +73,6 @@ body > header > div > div > div.col-2 > img{
     background-color: #444;
 }
 
-.footer {
-    background-color: #f8f9fa;
-}
-
-
 
 .footer h5 {
     font-weight: bold;
@@ -85,7 +92,7 @@ body > header > div > div > div.col-2 > img{
 }
 
 .footer .list-unstyled li a {
-    color: #000;
+    color: white;
     text-decoration: none;
 }
 
@@ -297,6 +304,10 @@ body > header > div > div > div.col-2 > img{
     height: 720px;
 }
 
-#root > div > main > div > div.pagination > button {
+.pagination > button {
     margin: 10px;
+}
+
+#root > div {
+    min-height: 52vh;
 }

@@ -14,3 +14,12 @@
     object-fit: cover;
     left: 10%;
 }
+
+.card-body.item-acc-detail {
+    background-color: #5c3cc2;
+    color: white;
+}
+
+.card-body.item-acc-detail > p {
+    color: white;
+}

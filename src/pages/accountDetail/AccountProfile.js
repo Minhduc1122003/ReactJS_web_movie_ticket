@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { logout, getAvt, uploadAvt } from '../../services/api_provider';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './AccounProfile.css';
 import Swal from 'sweetalert2';
 
 function AccountProfile() {
   const [user, setUser] = useState('');
   const [avt, setAvt] = useState('');
+  const navigate = useNavigate();
 
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
@@ -65,13 +66,25 @@ function AccountProfile() {
 
     try {
       const data = await uploadAvt(formData);
+
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Cập nhật ảnh thành công !',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
       setAvt(data);
       setImageUrl(data);
       setFile(null);
-      alert('Upload successful!');
     } catch (error) {
+      await Swal.fire({
+        title: 'Thất bại',
+        text: 'Cập nhật ảnh thất bại. Vui lòng thử lại!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
       console.error('Upload failed:', error);
-      alert('Upload failed!');
     }
   };
 
@@ -97,6 +110,15 @@ function AccountProfile() {
             <button className="list-group-item list-group-item-action active">
               Thông tin cá nhân
             </button>
+<<<<<<< HEAD
+=======
+            <Link to="/ve-da-mua" className="list-group-item list-group-item-action">
+              Vé đã đặt
+            </Link>
+            <Link to="#" className="list-group-item list-group-item-action">
+              "Chức năng cần thiết 2"
+            </Link>
+>>>>>>> b1f31672772416099f5c179efce1535ab205ce99
             <button onClick={handleLogout} className="list-group-item list-group-item-action list-group-item-danger">
               Đăng xuất
             </button>
@@ -139,13 +161,13 @@ function AccountProfile() {
               <div className="row" style={{ marginTop: '' }}>
                 <div className="col-md-6">
                   <div className="card">
-                    <div className="card-body">
+                    <div className="card-body item-acc-detail">
                       <h5 className="card-title">Tài khoản</h5>
                       <p className="card-text">{user.userName}</p>
                     </div>
                   </div>
                   <div className="card">
-                    <div className="card-body">
+                    <div className="card-body item-acc-detail">
                       <h5 className="card-title">Email</h5>
                       <p className="card-text">{user.email}</p>
                     </div>
@@ -153,13 +175,13 @@ function AccountProfile() {
                 </div>
                 <div className="col-md-6">
                   <div className="card">
-                    <div className="card-body">
+                    <div className="card-body item-acc-detail">
                       <h5 className="card-title">Họ tên</h5>
                       <p className="card-text">{user.fullName}</p>
                     </div>
                   </div>
                   <div className="card">
-                    <div className="card-body">
+                    <div className="card-body item-acc-detail">
                       <h5 className="card-title">Số điện thoại</h5>
                       <p className="card-text">{user.phoneNumber}</p>
                     </div>
@@ -167,7 +189,13 @@ function AccountProfile() {
                 </div>
               </div>
             </div>
-            <Link to={`/quan-ly-thong-tin/${user.userId}`}><button className="btn btn-primary">Cập nhật</button></Link>
+            <button className="btn btn-danger"
+              style={{ marginTop: '2%' }}
+              onClick={() => {navigate('/quan-ly-thong-tin', {
+                state: { userName: user.userName, fullName: user.fullName, email: user.email, phoneNumber: user.phoneNumber }
+              })}}>
+              Cập nhật
+            </button>
           </form>
         </div>
       </div>
