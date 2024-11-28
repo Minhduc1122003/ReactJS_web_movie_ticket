@@ -8,14 +8,32 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
+  const [isDisabled, setIsDisabled] = useState(false); // Quản lý trạng thái nút
+  const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setIsDisabled(true); // Vô hiệu hóa nút
+    setTimeLeft(60); // Đặt thời gian đếm ngược là 60 giây
+
+    // Đếm ngược thời gian
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown); // Dừng đếm khi hết thời gian
+          setIsDisabled(false); // Kích hoạt lại nút
+          return 0; // Reset thời gian
+        }
+        return prevTime - 1; // Giảm thời gian
+      });
+    }, 1000);
 
     try {
       const response = await sendMail(email);
       console.log(response);
-
       console.log(response.data);
+
       await Swal.fire({
         title: 'Thành công',
         text: 'Đã cấp mã OTP. Vui lòng kiểm tra Gmail !',
@@ -43,7 +61,8 @@ const ForgotPassword = () => {
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <label htmlFor="email">Email</label>
-          <input style={{ borderRadius: '10px' }}
+          <input
+            style={{ borderRadius: '10px' }}
             type="email"
             id="email"
             value={email}
@@ -52,10 +71,15 @@ const ForgotPassword = () => {
             required
           />
         </div>
-        <button type="submit" className="submit-button">
-          Cấp lại mật khẩu
+        <button
+          type="submit"
+          className="submit-button"
+          disabled={isDisabled} // Vô hiệu hóa nút nếu isDisabled = true
+        >
+          {isDisabled ? `Đợi ${timeLeft}s` : "Cấp mã OTP"}
         </button>
       </form>
+
     </div>
   );
 };

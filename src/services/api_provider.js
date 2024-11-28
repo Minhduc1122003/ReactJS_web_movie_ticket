@@ -117,7 +117,8 @@ export const verifyOTP = async (email, otp) => {
 
     return await response.text();
   } catch (error) {
-    
+    console.error("Error during OTP verification:", error.message);
+    throw error;
   }
 };
 
