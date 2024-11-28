@@ -114,9 +114,7 @@ function AccountProfile() {
             <Link to="/ve-da-mua" className="list-group-item list-group-item-action">
               Vé đã đặt
             </Link>
-            <Link to="#" className="list-group-item list-group-item-action">
-              "Chức năng cần thiết 2"
-            </Link>
+
             <button onClick={handleLogout} className="list-group-item list-group-item-action list-group-item-danger">
               Đăng xuất
             </button>
