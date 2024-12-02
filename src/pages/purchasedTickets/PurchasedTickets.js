@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PurchasedTickets.css'; // Import CSS for styling
-import { getTicketBuyUserId, paymentVNP, paymentVNPcallBack } from '../../services/api_provider';
+import { getTicketBuyUserId, paymentVNP, paymentVNPcallBack, delBuyTicket } from '../../services/api_provider';
 import Swal from 'sweetalert2';
 
 function PurchasedTickets() {
@@ -8,6 +8,7 @@ function PurchasedTickets() {
   const [user, setUser] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [payment, setPayment] = useState(0);
+  const [cancel, setCancel] = useState(0);
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
@@ -23,10 +24,24 @@ function PurchasedTickets() {
         .then(data => setTickets(data))
         .catch(error => console.error('Lỗi xảy ra:', error));
       setPayment(0);
+      setCancel(0);
     }
-  }, [user, payment]);
+  }, [user, payment, cancel]);
 
   const handlePayment = async (amount, numId) => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Thông báo',
+      text: 'Sau khi thanh toán sẽ không thể hủy chỗ và hoàn tiền dưới mọi hình thức !',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy'
+    });
+
+    if(!isConfirmed){
+      return;
+    }
+
     console.log(amount);
     const id = String(numId);
     console.log(id);
@@ -37,6 +52,44 @@ function PurchasedTickets() {
 
     } catch (error) {
       console.error('Lỗi khi thanh toán:', error);
+    }
+  };
+
+  const handleCancel = async (buyTicketId) => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Thông báo',
+      text: 'Bạn có chắc muốn hủy vé ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy'
+    });
+
+    if(!isConfirmed){
+      return;
+    }
+
+    console.log(buyTicketId);
+
+    try {
+      const data = await delBuyTicket(buyTicketId);
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Hủy vé thành công!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+    });
+    console.log("Buy ticket response:", data);
+    setCancel(1);
+
+    } catch (error) {
+      await Swal.fire({
+        title: 'Thất bại',
+        text: 'Hủy vé thất bại. Vui lòng thử lại!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+    });
+    console.error("Error buying ticket:", error);
     }
   };
 
@@ -92,13 +145,23 @@ function PurchasedTickets() {
               <p><strong>Ghế:</strong> {ticket.chairCodes}</p>
               <p><strong>Địa điểm:</strong> {ticket.cinemaName}</p>
               <p><strong>Tổng tiền:</strong> {ticket.totalPrice} VND</p>
+              <p hidden><strong>BuyTicketId:</strong> {ticket.buyTicketId}</p>
               <button
                 type="button"
-                className="btn btn-primary float-end"
+                className="btn btn-primary btn-payment"
                 disabled={ticket.status.trim() === 'Đã thanh toán'}
                 onClick={() => handlePayment(ticket.totalPrice, ticket.buyTicketInfoId)}
               >
                 {ticket.status}
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-danger btn-cancel"
+                disabled={ticket.status.trim() === 'Đã thanh toán'}
+                onClick={() => handleCancel(ticket.buyTicketId)}
+              >
+                Hủy
               </button>
             </div>
           </div>

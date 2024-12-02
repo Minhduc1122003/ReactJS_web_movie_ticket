@@ -14,6 +14,7 @@ h2 {
 
 /* Styling for each ticket card */
 .ticket-card {
+  position: relative;
   background-color: #222;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -54,23 +55,19 @@ h2 {
   font-size: 16px;
 }
 
-/* Details button */
-.details-button {
-  margin-top: 10px;
-  background-color: #ff4444;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.details-button:hover {
-  background-color: #ff6666;
-}
-
 .ticket-details > p {
   color: white;
   text-align: start;
+}
+
+.btn-payment{
+  position: absolute;
+  right: 8%;
+  bottom: 4%;
+}
+
+.btn-cancel{
+  position: absolute;
+  right: 1%;
+  bottom: 4%;
 }

@@ -117,8 +117,7 @@ export const verifyOTP = async (email, otp) => {
 
     return await response.text();
   } catch (error) {
-    console.error("Error during OTP verification:", error.message);
-    throw error;
+    
   }
 };
 
@@ -378,7 +377,32 @@ export const insertBuyTicket = async (buyTicketRequest) => {
       throw new Error(`Server error: ${response.status}`);
     }
 
-    const data = response;
+    const data = await response.text();
+    return data;
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    throw error;
+  }
+};
+
+export const delBuyTicket = async (buyTicketId) => {
+  try {
+    console.log(buyTicketId);
+    const response = await fetch('http://localhost:9011/api/buyticket/delBuyTicket', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(buyTicketId)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server error:", errorText);
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const data = await response.text();
     return data;
   } catch (error) {
     console.error("Error fetching seats:", error);
