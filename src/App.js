@@ -58,7 +58,6 @@ function App() {
         <Route path="/quan-ly-thong-tin" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
         <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
         <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
-        <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
 
       </Routes>
       <Footer />

@@ -529,4 +529,21 @@ export const paymentVNPcallBack = async(params) => {
   }
 };
 
+export const getAllRateByMovieId = async(id) => {
+  try {
+    const response = await fetch(`http://localhost:9011/api/rates/getByMovieId/${id}`);
+
+    if(!response){
+      const errorText = await response.text();
+      throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
+    }
+
+    const date = await response.json();
+    return date;
+  } catch (error) {
+    console.error("Có lỗi: " + error);
+    throw error;
+  }
+};
+
 export default _apiProvider;

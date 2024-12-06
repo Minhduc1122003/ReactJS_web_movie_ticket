@@ -4,7 +4,7 @@ import { login, registerUser } from '../../services/api_provider';
 import Swal from 'sweetalert2';
 // import { jwtDecode } from 'jwt-decode';
 
-function LoginPage({setLogged}) {
+function LoginPage({ setLogged }) {
   const [isRegisterForm, setIsRegisterForm] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -38,24 +38,28 @@ function LoginPage({setLogged}) {
   const handleLogin = async (evt) => {
     evt.preventDefault();
     try {
-        const data = await login(username, password);
-        await Swal.fire({
-          title:'Thành công',
-          text: 'Đăng nhập thành công !',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        });
-        localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
-        localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
-        window.location.href = '/';
+      const data = await login(username, password);
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Đăng nhập thành công !',
+        icon: 'success',
+        timer: 1000, // Thời gian hiển thị (2 giây)
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+      localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
+      localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
+      window.location.href = '/';
 
     } catch (error) {
       console.error("Lỗi mạng:", error);
       await Swal.fire({
-        title:'Thất bại',
+        title: 'Thất bại',
         text: 'Đăng nhập không thành công !',
         icon: 'error',
-        confirmButtonText: 'OK'
+        timer: 1000,
+        timerProgressBar: true,
+        showConfirmButton: false
       });
     }
   };
@@ -63,7 +67,7 @@ function LoginPage({setLogged}) {
   const handleRegister = async (evt) => {
     evt.preventDefault();
 
-    if(passwordNew === confirmpasswordNew){
+    if (passwordNew === confirmpasswordNew) {
       const newUser = {
         userName: usernameNew,
         fullName: fullnameNew,
@@ -71,7 +75,7 @@ function LoginPage({setLogged}) {
         phoneNumber: phoneNew,
         password: passwordNew
       };
-  
+
       try {
         const data = await registerUser(newUser);
 
@@ -80,7 +84,7 @@ function LoginPage({setLogged}) {
         setIsRegisterForm(false);
         setTimeout(() => {
           setToastMessage(null);
-       }, 5000);
+        }, 5000);
       } catch (error) {
         console.log('Đăng ký thất bại !', error.message);
         if (error.message === 'Email đã tồn tại!') {
@@ -90,13 +94,13 @@ function LoginPage({setLogged}) {
         }
         setTimeout(() => {
           setToastMessage(null);
-       }, 5000);
+        }, 5000);
       }
     } else {
       setToastMessage('Đăng ký thất bại! Xác nhận mật khẩu không đúng !');
       setTimeout(() => {
         setToastMessage(null);
-     }, 5000);
+      }, 5000);
     }
   };
 
@@ -167,38 +171,38 @@ function LoginPage({setLogged}) {
                 <form onSubmit={handleRegister}>
                   <div className="mb-3">
                     <label htmlFor="regUsername" className="form-label">Tài Khoản</label>
-                    <input type="text" 
-                      className="form-control" 
-                      id="regUsername" 
-                      placeholder="Nhập tên đăng nhập" 
+                    <input type="text"
+                      className="form-control"
+                      id="regUsername"
+                      placeholder="Nhập tên đăng nhập"
                       value={usernameNew}
                       onChange={(e) => setUsernameNew(e.target.value)}
                       required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regUsername" className="form-label">Họ tên</label>
-                    <input type="text" className="form-control" id="regFullname" placeholder="Nhập họ tên" required 
-                    value={fullnameNew} onChange={(e) => setFullnameNew(e.target.value)}/>
+                    <input type="text" className="form-control" id="regFullname" placeholder="Nhập họ tên" required
+                      value={fullnameNew} onChange={(e) => setFullnameNew(e.target.value)} />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" placeholder="Nhập email" required 
-                    value={emailNew} onChange={(e) => setEmailNew(e.target.value)}/>
+                    <input type="email" className="form-control" id="email" placeholder="Nhập email" required
+                      value={emailNew} onChange={(e) => setEmailNew(e.target.value)} />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Số điện thoại</label>
-                    <input type="text" className="form-control" id="phoneNumber" placeholder="Nhập số điện thoại" required 
-                    value={phoneNew} onChange={(e) => setPhoneNew(e.target.value)}/>
+                    <input type="text" className="form-control" id="phoneNumber" placeholder="Nhập số điện thoại" required
+                      value={phoneNew} onChange={(e) => setPhoneNew(e.target.value)} />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regPassword" className="form-label">Mật khẩu</label>
-                    <input type="password" className="form-control" id="regPassword" placeholder="Nhập mật khẩu" required 
-                    value={passwordNew} onChange={(e) => setPasswordNew(e.target.value)}/>
+                    <input type="password" className="form-control" id="regPassword" placeholder="Nhập mật khẩu" required
+                      value={passwordNew} onChange={(e) => setPasswordNew(e.target.value)} />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">Xác nhận mật khẩu</label>
-                    <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required 
-                    value={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)}/>
+                    <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required
+                      value={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)} />
                   </div>
                   <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light">Đăng Ký</button>
                 </form>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './movieScreen.css';
-import { movieDetail, getShowtimeByMovieId, addFavourite, deleteFavourite } from '../../services/api_provider';
+import { movieDetail, getShowtimeByMovieId, addFavourite, deleteFavourite, getAllRateByMovieId } from '../../services/api_provider';
 import YouTube from 'react-youtube';
 import { Button, Carousel, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
@@ -17,10 +17,11 @@ function MovieDetail() {
   const [showShowtimes, setShowShowtimes] = useState(false); // Quản lý hiển thị suất chiếu
   const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [userId, setUserId] = useState(0);
+  const [rates, setRates] = useState([]);
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
-    if(userString != null){
+    if (userString != null) {
       const user = JSON.parse(userString);
       setUserId(user.userId);
     }
@@ -37,6 +38,22 @@ function MovieDetail() {
 
     fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
   }, [movieId]); // Gọi lại khi movieId thay đổi
+
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        setLoading(true); // Bắt đầu tải
+        const data = await getAllRateByMovieId(movieId); // Gọi API
+        setRates(data); // Lưu dữ liệu vào state
+      } catch (err) {
+        console.error("Error fetching movie rates:", err);
+      } finally {
+        setLoading(false); // Hoàn thành tải
+      }
+    };
+
+    fetchRates();
+  }, [movieId]);
 
   const toggleShowtimes = async () => {
     setShowtimeLoading(true); // Bắt đầu trạng thái loading cho suất chiếu
@@ -79,7 +96,7 @@ function MovieDetail() {
 
   const handleFavourite = async () => {
     try {
-      if(userId === 0){
+      if (userId === 0) {
         await Swal.fire({
           title: 'Thông báo',
           text: 'Vui lòng đăng nhập để thích phim !',
@@ -185,9 +202,9 @@ function MovieDetail() {
                     <div className="rating-count">
 
                       {movie.reviewCount === 0
-                      ? 0
-                      :
-                      Math.round((count / movie.reviewCount) * 100)}%
+                        ? 0
+                        :
+                        Math.round((count / movie.reviewCount) * 100)}%
                     </div>
                   </div>
                 ))}
@@ -265,6 +282,25 @@ function MovieDetail() {
           )}
         </div>
       )}
+
+      <div>
+        <div className="divider">
+          <h2>Đánh giá</h2>
+          </div>
+          {Array.isArray(rates) && rates.length > 0 ? (
+            rates.map((rate, index) => (
+              <div key={index} className="rate-item">
+                <h4>{rate.fullName}</h4>
+                <p className='rate-content'>{rate.content}</p>
+                <p className='rating'>{rate.rating}/10 <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} className="bi bi-star-fill"></i></p>
+                <p className='rate-date'>{new Date(rate.ratingDate).toLocaleString()}</p>
+              </div>
+            ))
+          ) : (
+            <p>Chưa có đánh giá nào cho bộ phim này.</p>
+          )}
+        
+      </div>
 
 
       {/* Modal trailer */}
