@@ -94,7 +94,7 @@ function MovieDetail() {
         acc[date] = { date: date, times: [] };
       }
       if (date === dayNow) {
-        if (current.startTime >= timeNow) {
+        if (current.startTime >= timeNow ) {
           acc[date].times.push({
             startTime: current.startTime,
             cinemaRoomId: current.cinemaRoomId,
@@ -108,10 +108,7 @@ function MovieDetail() {
           showtimeId: current.showtimeId,
         });
       }
-
     }
-
-
     return acc;
   }, {});
 
@@ -361,7 +358,9 @@ function MovieDetail() {
           {showtimeLoading ? (
             <div>Đang tải suất chiếu...</div> // Thông báo khi đang tải
           ) : (
-            sampleShowtimes.map((showtime) => (
+            sampleShowtimes
+            .filter((showtime) => showtime.times && showtime.times.length > 0)
+            .map((showtime) => (
               <Row key={showtime.date} className="mb-5">
                 <Col xs={12} className="text-center">
                   <h5 className="fw-bold text-dark mb-3">

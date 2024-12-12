@@ -131,11 +131,24 @@ const SeatSelection = () => {
 
 
     const toggleSeatSelection = (seatSelect) => {
-        setSelectedSeats((prevSelectedSeats) =>
-            prevSelectedSeats.includes(seatSelect)
-                ? prevSelectedSeats.filter((s) => s !== seatSelect)
-                : [...prevSelectedSeats, seatSelect]
-        );
+        setSelectedSeats((prevSelectedSeats) => {
+            if (prevSelectedSeats.includes(seatSelect)) {
+                // Bỏ chọn nếu ghế đã được chọn trước đó
+                return prevSelectedSeats.filter((s) => s !== seatSelect);
+            } else if (prevSelectedSeats.length < 5) {
+                // Chỉ thêm ghế mới nếu số lượng ghế đã chọn chưa đạt 5
+                return [...prevSelectedSeats, seatSelect];
+            } else {
+                // Hiển thị thông báo khi cố chọn quá 5 ghế
+                Swal.fire({
+                    title: 'Thông báo',
+                    text: 'Bạn chỉ được chọn tối đa 5 ghế!',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return prevSelectedSeats;
+            }
+        });
     };
 
     const handleSeatClick = (event) => {
