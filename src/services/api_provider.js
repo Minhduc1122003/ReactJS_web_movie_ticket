@@ -546,4 +546,27 @@ export const getAllRateByMovieId = async(id) => {
   }
 };
 
+export const submitReview = async(rate) =>{
+  try {
+    const response = await fetch('http://localhost:9011/api/rates/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(rate)
+    });
+
+    if(!response){
+      const errorText = await response.text();
+      throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
+    }
+
+    const data = await response.text();
+    return data;
+
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default _apiProvider;

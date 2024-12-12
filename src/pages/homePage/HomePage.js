@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllMovieView } from '../../services/api_provider';
 import { Link } from 'react-router-dom';
-import './homeScreen.css';
+import './homePage.css';
 
 function HomePage() {
   const [movies, setMovies] = useState([]);
@@ -121,7 +121,7 @@ function HomePage() {
                         <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
                       </p>
                       <p className="card-text">
-                        Genres: {movie.genres.join(', ')}
+                        Genres: {movie.genres.join(", ")}
                       </p>
                     </div>
                   </div>

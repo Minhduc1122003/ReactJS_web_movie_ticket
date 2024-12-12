@@ -57,6 +57,7 @@
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
+
 /* Inline Block for Info Labels */
 .inblock {
   display: inline-block;
@@ -69,7 +70,7 @@
 }
 
 /* Full-width Button Styling */
-#root > div > div > div.col-md-3 > div:nth-child(2) > button {
+#root>div>div>div.col-md-3>div:nth-child(2)>button {
   width: 100%;
   margin-top: 20px;
 }
@@ -164,13 +165,14 @@
   width: 30px;
   text-align: right;
 }
+
 .movie-description-title {
   font-size: 1.5rem;
   color: #333;
   font-weight: bold;
   margin-top: 20px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #ff9f00; 
+  border-bottom: 2px solid #ff9f00;
   display: inline-block;
 }
 
@@ -189,8 +191,10 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7); /* Làm mờ nền */
-  z-index: 999; /* Đảm bảo overlay nằm trên các thành phần khác */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Làm mờ nền */
+  z-index: 999;
+  /* Đảm bảo overlay nằm trên các thành phần khác */
 }
 
 /* Căn chỉnh nội dung modal */
@@ -198,10 +202,12 @@
   position: fixed;
   top: 47%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Căn giữa modal */
+  transform: translate(-50%, -50%);
+  /* Căn giữa modal */
   background-color: #fff;
 
-  z-index: 1000; /* Nằm trên overlay */
+  z-index: 1000;
+  /* Nằm trên overlay */
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -223,4 +229,136 @@
   width: 72vw;
   height: 80vh;
   margin-bottom: -6px;
+}
+
+.rate-item {
+  display: flex;
+  align-items: flex-start;
+  /* Căn các phần tử theo chiều dọc */
+  gap: 1%;
+  /* Tạo khoảng cách giữa avatar và body */
+  margin-bottom: 20px;
+  /* Khoảng cách giữa các rate-item */
+}
+
+.rate-body {
+  position: relative;
+  border-radius: 20px;
+  min-height: 5vh;
+  margin-bottom: 3%;
+}
+
+.rate-body>p {
+  text-align: inherit;
+}
+
+.rate-date {
+  position: absolute;
+  top: 30px;
+  font-size: 14px;
+}
+
+.rating {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.rate-content {
+  margin-top: 60px;
+  margin-left: 2%;
+  margin-right: 2%;
+  color: black;
+}
+
+.rate-avt {
+  flex-shrink: 0;
+  /* Đảm bảo avatar không bị thu nhỏ */
+  width: 60px;
+  /* Đặt kích thước cố định cho avatar */
+  height: 60px;
+}
+
+.rate-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Giữ tỉ lệ ảnh */
+  border-radius: 50%;
+}
+
+.rate-body {
+  position: relative;
+  flex: 1;
+  /* Phần body sẽ chiếm phần còn lại */
+}
+
+.rate-info {
+  position: absolute;
+  width: 300px;
+  left: 2%;
+}
+
+.star-rating {
+  font-size: 2rem;
+  cursor: pointer;
+  display: flex;
+}
+
+.star {
+  margin-right: 5px;
+  color: transparent;
+  /* Ban đầu chỉ có viền */
+  -webkit-text-stroke: 1px #ffc107;
+  /* Viền ngôi sao */
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: #ffc107;
+  /* Màu vàng khi ngôi sao được chọn */
+}
+
+.star:hover,
+.star:hover~.star {
+  color: #ffc107;
+  /* Đổ màu vàng cho các ngôi sao từ 1 đến sao hover */
+}
+
+/* Đảm bảo màu vàng không được áp dụng cho các sao phía sau sao hover */
+.star:hover~.star {
+  color: transparent;
+  /* Các sao phía sau giữ màu viền ban đầu */
+}
+
+.gop-y {
+  margin-top: 60px;
+  position: relative;
+}
+
+.gop-y>.span-gop-y {
+  position: absolute;
+  color: #555555;
+  top: -38px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: left;
+  line-height: 24px;
+  
+}
+
+.span-gop-y>span{
+  border-bottom: 2px solid #00B38F;
+  padding-bottom: 13px;
+}
+
+.rate-footer>a{
+  text-decoration: none;
+  margin-left: 2%;
+}
+
+.rate-footer>a:hover{
+  opacity: 0.5;
 }

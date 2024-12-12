@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import './movieScreen.css';
-import { movieDetail, getShowtimeByMovieId, addFavourite, deleteFavourite, getAllRateByMovieId } from '../../services/api_provider';
-import YouTube from 'react-youtube';
-import { Button, Carousel, Row, Col } from 'react-bootstrap';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import "./movieScreen.css";
+import {
+  movieDetail,
+  getShowtimeByMovieId,
+  addFavourite,
+  deleteFavourite,
+  getAllRateByMovieId,
+  submitReview
+} from "../../services/api_provider";
+import YouTube from "react-youtube";
+import { Button, Carousel, Row, Col } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 function MovieDetail() {
   const { movieId } = useParams(); // Lấy movieId từ URL
@@ -18,9 +25,12 @@ function MovieDetail() {
   const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [userId, setUserId] = useState(0);
   const [rates, setRates] = useState([]);
+  const [rating, setRating] = useState(0); // Mặc định là 0 sao
+  const [comment, setComment] = useState("");
+  const [review, setReview] = useState(0);
 
   useEffect(() => {
-    const userString = localStorage.getItem('user');
+    const userString = localStorage.getItem("user");
     if (userString != null) {
       const user = JSON.parse(userString);
       setUserId(user.userId);
@@ -36,10 +46,6 @@ function MovieDetail() {
       }
     };
 
-    fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
-  }, [movieId]); // Gọi lại khi movieId thay đổi
-
-  useEffect(() => {
     const fetchRates = async () => {
       try {
         setLoading(true); // Bắt đầu tải
@@ -52,8 +58,12 @@ function MovieDetail() {
       }
     };
 
-    fetchRates();
-  }, [movieId]);
+    fetchRates(); // Lấy dữ liệu đánh giá
+    fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
+    setReview(0);
+  }, [movieId, review]); // Gọi lại khi movieId thay đổi
+
+
 
   const toggleShowtimes = async () => {
     setShowtimeLoading(true); // Bắt đầu trạng thái loading cho suất chiếu
@@ -70,11 +80,38 @@ function MovieDetail() {
 
   // Nhóm các suất chiếu theo ngày
   const groupedShowtimes = showtimes.reduce((acc, current) => {
+
+    const today = new Date();
+    const optionDate = { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const optionTime = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+
+    const dayNow = today.toLocaleDateString('en-CA', optionDate); // Ex: "YYYY-MM-DD"
+    const timeNow = today.toLocaleTimeString('en-GB', optionTime); // Ex: "HH:MM:SS"
+
     const date = current.showtimeDate;
-    if (!acc[date]) {
-      acc[date] = { date: date, times: [] };
+    if (date >= dayNow) {
+      if (!acc[date]) {
+        acc[date] = { date: date, times: [] };
+      }
+      if (date === dayNow) {
+        if (current.startTime >= timeNow) {
+          acc[date].times.push({
+            startTime: current.startTime,
+            cinemaRoomId: current.cinemaRoomId,
+            showtimeId: current.showtimeId,
+          });
+        }
+      } else {
+        acc[date].times.push({
+          startTime: current.startTime,
+          cinemaRoomId: current.cinemaRoomId,
+          showtimeId: current.showtimeId,
+        });
+      }
+
     }
-    acc[date].times.push({ startTime: current.startTime, cinemaRoomId: current.cinemaRoomId, showtimeId: current.showtimeId });
+
+
     return acc;
   }, {});
 
@@ -89,7 +126,8 @@ function MovieDetail() {
   }
 
   const getYouTubeId = (url) => {
-    const regExp = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\\s]{11})/;
+    const regExp =
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\\s]{11})/;
     const match = url.match(regExp);
     return match ? match[1] : null;
   };
@@ -98,15 +136,17 @@ function MovieDetail() {
     try {
       if (userId === 0) {
         await Swal.fire({
-          title: 'Thông báo',
-          text: 'Vui lòng đăng nhập để thích phim !',
-          icon: 'warning',
-          confirmButtonText: 'OK'
+          title: "Thông báo",
+          text: "Vui lòng đăng nhập để thích phim !",
+          icon: "warning",
+          confirmButtonText: "OK",
         });
+        return;
       }
+
       const favouriteRequest = {
         movieId: parseInt(movieId),
-        userId
+        userId,
       };
 
       if (!movie.favourite) {
@@ -122,10 +162,7 @@ function MovieDetail() {
         ...prevMovie,
         favourite: !prevMovie.favourite,
       }));
-
-    } catch (error) {
-
-    }
+    } catch (error) { }
   };
 
   // Hàm chia các giờ chiếu thành nhóm nhỏ
@@ -137,42 +174,126 @@ function MovieDetail() {
     return result;
   };
 
+  //Gửi đánh giá
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (userId === 0) {
+        await Swal.fire({
+          title: "Thông báo",
+          text: "Vui lòng đăng nhập để đánh giá phim !",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        setRating(0);
+        setComment('');
+        return;
+      }
+
+      const movieInt = Number(movieId);
+
+      const rate = {
+        movieId: movieInt,
+        userId: userId,
+        content: comment,
+        rating: rating
+      };
+
+      console.log(rate);
+      const data = await submitReview(rate);
+      console.log(data);
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Đánh giá thành công !',
+        icon: 'success',
+        timer: 1000, // Thời gian hiển thị (2 giây)
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+      setRating(0);
+      setComment('');
+      setReview(1);
+    } catch (error) {
+      await Swal.fire({
+        title: 'Thành công',
+        text: 'Đánh giá thất bại !',
+        icon: 'success',
+        timer: 1000, // Thời gian hiển thị (2 giây)
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+      console.error(error);
+    }
+  };
+
+  const handleStarClick = (index) => {
+    setRating(index + 1);
+  };
+
   return (
     <div className="container mb-5 mt-5">
       <div className="row movieDetail">
         <div className="col-md-3">
           <div>
-            <img src={`${movie.posterUrl}`} alt={movie.title} className="img-fluid rounded" />
+            <img
+              src={`${movie.posterUrl}`}
+              alt={movie.title}
+              className="img-fluid rounded"
+            />
           </div>
 
           <div>
-            <button className='btn btn-outline-dark' onClick={toggleShowtimes}>
+            <button className="btn btn-outline-dark" onClick={toggleShowtimes}>
               Chọn suất
             </button>
           </div>
         </div>
 
         <div className="col-md-9 movie-info text-start">
-          <h1>{movie.title} <span className="badge bg-warning text-dark">T18</span></h1>
-          <div className='my-3'>
-            <div className="text-center inblock movieDetail-boder-right"><strong>Ngày khởi chiếu:</strong><br /> {movie.releaseDate}</div>
-            <div className="text-center inblock movieDetail-boder-right"><strong>Thời lượng:</strong><br /> {movie.duration} phút</div>
-            <div className="text-center inblock"><strong>Ngôn ngữ:</strong><br /> {movie.subTitle ? 'Phụ đề' : 'Lồng tiếng'}</div>
+          <h1>
+            {movie.title}{" "}
+            <span className="badge bg-warning text-dark">T18</span>
+          </h1>
+          <div className="my-3">
+            <div className="text-center inblock movieDetail-boder-right">
+              <strong>Ngày khởi chiếu:</strong>
+              <br /> {movie.releaseDate}
+            </div>
+            <div className="text-center inblock movieDetail-boder-right">
+              <strong>Thời lượng:</strong>
+              <br /> {movie.duration} phút
+            </div>
+            <div className="text-center inblock">
+              <strong>Ngôn ngữ:</strong>
+              <br /> {movie.subTitle ? "Phụ đề" : "Lồng tiếng"}
+            </div>
           </div>
 
-          <div className='my-3'><strong>Thể loại:</strong> {movie.genres}</div>
-          <div className='my-3'><strong>Tuổi tác:</strong> {movie.age}</div>
+          <div className="my-3">
+            <strong>Thể loại:</strong> {movie.genres}
+          </div>
+          <div className="my-3">
+            <strong>Tuổi tác:</strong> {movie.age}
+          </div>
 
-          <div className='my-3'><strong>Diễn viên:</strong> {movie.actors}</div>
+          <div className="my-3">
+            <strong>Diễn viên:</strong> {movie.actors}
+          </div>
 
           <button
-            className={`btn ${movie.favourite ? 'btn-danger' : 'btn-outline-danger'} me-2`}
+            className={`btn ${movie.favourite ? "btn-danger" : "btn-outline-danger"
+              } me-2`}
             onClick={handleFavourite}
           >
-            <i className="bi bi-balloon-heart"></i> {movie.favourite ? 'Đã thích' : 'Thích'}
+            <i className="bi bi-balloon-heart"></i>{" "}
+            {movie.favourite ? "Đã thích" : "Thích"}
           </button>
 
-          <button className='btn btn-outline-primary' onClick={() => setShowTrailer(true)}>
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => setShowTrailer(true)}
+          >
             <i className="bi bi-play-circle"></i> Xem trailer
           </button>
 
@@ -182,7 +303,10 @@ function MovieDetail() {
                 <div className="rating-header">
                   <span className="star-icon">★</span>
                   <span className="score">{movie.averageRating}</span>/10
-                  <span className="text-muted"> ({movie.reviewCount} đánh giá)</span>
+                  <span className="text-muted">
+                    {" "}
+                    ({movie.reviewCount} đánh giá)
+                  </span>
                 </div>
               </div>
 
@@ -192,19 +316,26 @@ function MovieDetail() {
                   { range: "7-8", count: movie.rating7_8 },
                   { range: "5-6", count: movie.rating5_6 },
                   { range: "3-4", count: movie.rating3_4 },
-                  { range: "1-2", count: movie.rating1_2 }
+                  { range: "1-2", count: movie.rating1_2 },
                 ].map(({ range, count }) => (
                   <div key={range} className="rating-bar-container">
                     <div className="rating-label">{range}</div>
                     <div className="rating-bar">
-                      <div className="rating-bar-inner" style={{ width: `${movie.reviewCount === 0 ? 0 : (count / movie.reviewCount) * 100}%` }}></div>
+                      <div
+                        className="rating-bar-inner"
+                        style={{
+                          width: `${movie.reviewCount === 0
+                            ? 0
+                            : (count / movie.reviewCount) * 100
+                            }%`,
+                        }}
+                      ></div>
                     </div>
                     <div className="rating-count">
-
                       {movie.reviewCount === 0
                         ? 0
-                        :
-                        Math.round((count / movie.reviewCount) * 100)}%
+                        : Math.round((count / movie.reviewCount) * 100)}
+                      %
                     </div>
                   </div>
                 ))}
@@ -217,14 +348,14 @@ function MovieDetail() {
       <hr></hr>
       <div className="movie-description-section">
         <h4 className="movie-description-title">Nội Dung Phim</h4>
-        <div className='my-3 movie-description-text'>{movie.description}</div>
+        <div className="my-3 movie-description-text">{movie.description}</div>
       </div>
 
       {/* Hiển thị suất chiếu nếu có */}
       {showShowtimes && (
         <div>
           <div className="divider">
-            <h2 >CHỌN SUẤT CHIẾU</h2>
+            <h2>CHỌN SUẤT CHIẾU</h2>
           </div>
           {/* Kiểm tra xem showtimeLoading có phải là true không */}
           {showtimeLoading ? (
@@ -234,8 +365,11 @@ function MovieDetail() {
               <Row key={showtime.date} className="mb-5">
                 <Col xs={12} className="text-center">
                   <h5 className="fw-bold text-dark mb-3">
-                    {new Date(showtime.date).toLocaleDateString('vi-VN', {
-                      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                    {new Date(showtime.date).toLocaleDateString("vi-VN", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
                     })}
                   </h5>
                   <Carousel
@@ -248,29 +382,50 @@ function MovieDetail() {
                     {chunkArray(showtime.times, 9).map((timeChunk, index) => (
                       <Carousel.Item key={index}>
                         <div className="d-flex justify-content-center">
-                          {timeChunk.map(({ startTime, cinemaRoomId, showtimeId }) => (
-                            <Button
-                              key={startTime}
-                              variant={selectedShowtime === `${showtime.date}-${startTime}` ? "" : "outline-secondary"}
-                              onClick={() => {
-                                console.log(`Chọn suất chiếu: ${showtime.date} - ${startTime}`);
-                                console.log(`Cinema Room ID: ${cinemaRoomId}`); // Log cinemaRoomId khi chọn
-                                console.log(`CinemaRoomId: ${showtimeId}`);
-                                setSelectedShowtime(`${showtime.date}-${startTime}`);
+                          {timeChunk.map(
+                            ({ startTime, cinemaRoomId, showtimeId }) => (
+                              <Button
+                                key={startTime}
+                                variant={
+                                  selectedShowtime ===
+                                    `${showtime.date}-${startTime}`
+                                    ? ""
+                                    : "outline-secondary"
+                                }
+                                onClick={() => {
+                                  console.log(
+                                    `Chọn suất chiếu: ${showtime.date} - ${startTime}`
+                                  );
+                                  console.log(
+                                    `Cinema Room ID: ${cinemaRoomId}`
+                                  ); // Log cinemaRoomId khi chọn
+                                  console.log(`CinemaRoomId: ${showtimeId}`);
+                                  setSelectedShowtime(
+                                    `${showtime.date}-${startTime}`
+                                  );
 
-                                navigate(`/dat-cho/${movieId}`, {
-                                  state: {
-                                    cinemaRoomId, showtimeId, movieTitle: movie.title, movieAge: movie.age, startTime, showtimeDate: showtime.date,
-                                    moviePrice: movie.price, subTitle: movie.subTitle ? 'Phụ đề' : 'Lồng tiếng'
-                                  }
-                                })
-                              }}
-                              className="mx-2"
-                              style={{ minWidth: '80px' }}
-                            >
-                              {startTime}
-                            </Button>
-                          ))}
+                                  navigate(`/dat-cho/${movieId}`, {
+                                    state: {
+                                      cinemaRoomId,
+                                      showtimeId,
+                                      movieTitle: movie.title,
+                                      movieAge: movie.age,
+                                      startTime,
+                                      showtimeDate: showtime.date,
+                                      moviePrice: movie.price,
+                                      subTitle: movie.subTitle
+                                        ? "Phụ đề"
+                                        : "Lồng tiếng",
+                                    },
+                                  });
+                                }}
+                                className="mx-2"
+                                style={{ minWidth: "80px" }}
+                              >
+                                {startTime}
+                              </Button>
+                            )
+                          )}
                         </div>
                       </Carousel.Item>
                     ))}
@@ -278,37 +433,106 @@ function MovieDetail() {
                 </Col>
               </Row>
             ))
-
           )}
         </div>
       )}
 
-      <div>
-        <div className="divider">
-          <h2>Đánh giá</h2>
-          </div>
-          {Array.isArray(rates) && rates.length > 0 ? (
-            rates.map((rate, index) => (
-              <div key={index} className="rate-item">
-                <h4>{rate.fullName}</h4>
-                <p className='rate-content'>{rate.content}</p>
-                <p className='rating'>{rate.rating}/10 <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} className="bi bi-star-fill"></i></p>
-                <p className='rate-date'>{new Date(rate.ratingDate).toLocaleString()}</p>
-              </div>
-            ))
-          ) : (
-            <p>Chưa có đánh giá nào cho bộ phim này.</p>
-          )}
-        
+      <div className="divider">
+        <h2>Đánh giá</h2>
       </div>
+      <form onSubmit={handleSubmit} className="p-4 bg-light rounded shadow-sm">
+        <h4 className="mb-3">Đánh giá & Bình luận</h4>
 
+        <div className="mb-3">
+
+          <div className="star-rating">
+            {[...Array(10)].map((_, index) => (
+              <span
+                key={index}
+                className={`star ${index < rating ? 'filled' : ''}`}
+                onClick={() => handleStarClick(index)}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="comment" className="form-label">Bình luận</label>
+          <textarea
+            id="comment"
+            className="form-control"
+            rows="4"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Nhập bình luận của bạn..."
+          ></textarea>
+        </div>
+        <button type="submit" className="btn btn-primary" disabled={comment.trim() === '' && rating === 0}>Gửi đánh giá</button>
+      </form>
+
+      <div className="gop-y">
+        <div className="span-gop-y">
+          <span>{rates.length} Góp ý</span>
+        </div>
+        <hr></hr>
+        {Array.isArray(rates) && rates.length > 0 ? (
+          rates.map((rate, index) => (
+            <div key={index} className="rate-item">
+              <div className="rate-avt">
+                <img
+                  src={`${rate.photo}`}
+                  alt={`${rate.fullName}`}
+                  className="rate-img"
+                />
+              </div>
+              <div className="rate-body">
+                <div className="rate-info">
+                  <h3>{rate.fullName}</h3>
+                  <h5 className="rating">
+                    {rate.rating}/10{" "}
+                    <i
+                      style={{
+                        color: "yellow",
+                        textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)",
+                      }}
+                      className="bi bi-star-fill"
+                    ></i>
+                  </h5>
+                  <p className="rate-date text-secondary">
+                    {new Date(rate.ratingDate).toLocaleString()}
+                  </p>
+                </div>
+                <p className="rate-content">{rate.content}</p>
+                <hr></hr>
+                <div className="rate-footer">
+                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                  <a href="#" className="link-dark">Thích</a>
+                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                  <a href="#" className="link-dark">Bình luận</a>
+                </div>
+                
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Chưa có đánh giá nào cho bộ phim này.</p>
+        )}
+      </div>
 
       {/* Modal trailer */}
       {showTrailer && (
         <div className="trailer-modal">
-          <div className="trailer-overlay" onClick={() => setShowTrailer(false)}></div>
+          <div
+            className="trailer-overlay"
+            onClick={() => setShowTrailer(false)}
+          ></div>
           <div className="trailer-content">
-            <YouTube videoId={getYouTubeId(movie.trailerUrl)} opts={{ width: '100%', height: '100%' }} />
+            <YouTube
+              videoId={getYouTubeId(movie.trailerUrl)}
+              opts={{ width: "100%", height: "100%" }}
+            />
           </div>
         </div>
       )}
