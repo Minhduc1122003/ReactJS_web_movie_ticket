@@ -21,6 +21,7 @@ import LichSuGiaoDich from './pages/transactionHistories/TransactionHistories';
 import QuanLyTrangThongTin from './pages/accountDetail/updateAccount';
 import ChiTietPhim from './pages/movieDetail/MovieDetail';
 import DatCho from './pages/seatSelection/SeatSelection';
+import UpdatePasswordByUser from './pages/accountDetail/UpdatePasswordByUser'
 
 function App() {
 
@@ -58,7 +59,7 @@ function App() {
         <Route path="/quan-ly-thong-tin" element={<QuanLyTrangThongTin />} /> {/* Trang lịch sử giao dịch*/}
         <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
         <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
-
+        <Route path="/doi-mat-khau" element={<UpdatePasswordByUser/>} /> {/* Đổi mật khẩu*/}
       </Routes>
       <Footer />
     </Router>
