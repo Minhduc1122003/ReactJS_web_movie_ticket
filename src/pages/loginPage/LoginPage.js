@@ -4,7 +4,7 @@ import { login, registerUser } from '../../services/api_provider';
 import Swal from 'sweetalert2';
 // import { jwtDecode } from 'jwt-decode';
 
-function LoginPage({ setLogged }) {
+function LoginPage() {
   const [isRegisterForm, setIsRegisterForm] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -49,8 +49,13 @@ function LoginPage({ setLogged }) {
       });
       localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
-      window.location.href = '/';
 
+      const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
+      if(redirectUrl === '/login'){
+        redirectUrl = '/';
+      }
+      localStorage.removeItem('redirectAfterLogin');
+      window.location.href = redirectUrl;
     } catch (error) {
       console.error("Lỗi mạng:", error);
       await Swal.fire({
@@ -62,6 +67,15 @@ function LoginPage({ setLogged }) {
         showConfirmButton: false
       });
     }
+  };
+
+  const clearFormRegister = () => {
+    setUsernameNew('');
+    setFullnameNew('');
+    setEmailNew('');
+    setPhoneNew('');
+    setPasswordNew('');
+    setConfirmpasswordNew('');
   };
 
   const handleRegister = async (evt) => {
@@ -81,16 +95,20 @@ function LoginPage({ setLogged }) {
 
         console.log('Đăng ký thành công !', data);
         setToastMessage('Đăng ký thành công !');
+        clearFormRegister();
         setIsRegisterForm(false);
         setTimeout(() => {
           setToastMessage(null);
         }, 5000);
+        
       } catch (error) {
         console.log('Đăng ký thất bại !', error.message);
         if (error.message === 'Email đã tồn tại!') {
           setToastMessage('Email đã tồn tại!');
+        } else if (error.message === 'Tài khoản đã tồn tại!') {
+          setToastMessage('Tài khoản đã tồn tại!');
         } else {
-          setToastMessage('Đăng ký thất bại!');
+          setToastMessage('Đăng nhập thất bại!');
         }
         setTimeout(() => {
           setToastMessage(null);

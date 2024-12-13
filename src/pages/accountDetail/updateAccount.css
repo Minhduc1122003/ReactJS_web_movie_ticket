@@ -19,3 +19,12 @@
   margin-top: 10px;
 }
 
+.card-infor>.card-body{
+  background-color: #4F75FF;
+}
+
+.form-label-info{
+  color: white;
+  font-weight: 500;
+  font-size: 17px;
+}

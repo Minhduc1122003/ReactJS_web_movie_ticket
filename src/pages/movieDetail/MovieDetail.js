@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "./movieScreen.css";
 import {
   movieDetail,
@@ -28,6 +28,7 @@ function MovieDetail() {
   const [rating, setRating] = useState(0); // Mặc định là 0 sao
   const [comment, setComment] = useState("");
   const [review, setReview] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
@@ -58,12 +59,12 @@ function MovieDetail() {
       }
     };
 
+    
+
     fetchRates(); // Lấy dữ liệu đánh giá
     fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
     setReview(0);
   }, [movieId, review]); // Gọi lại khi movieId thay đổi
-
-
 
   const toggleShowtimes = async () => {
     setShowtimeLoading(true); // Bắt đầu trạng thái loading cho suất chiếu
@@ -130,14 +131,22 @@ function MovieDetail() {
   };
 
   const handleFavourite = async () => {
+    localStorage.setItem('redirectAfterLogin', location.pathname); // Truyền link trước khi qua đăng nhập để nó quay về
+
     try {
       if (userId === 0) {
-        await Swal.fire({
+        const result = await Swal.fire({
           title: "Thông báo",
           text: "Vui lòng đăng nhập để thích phim !",
           icon: "warning",
-          confirmButtonText: "OK",
+          showCancelButton: true,
+          confirmButtonText: "Đăng nhập",
+          cancelButtonText: "Hủy"
         });
+        if (result.isConfirmed) {
+          // Điều hướng đến trang đăng nhập khi nhấn "Đăng nhập"
+          navigate("/login");
+        }
         return;
       }
 
@@ -177,14 +186,18 @@ function MovieDetail() {
 
     try {
       if (userId === 0) {
-        await Swal.fire({
+        const result = await Swal.fire({
           title: "Thông báo",
-          text: "Vui lòng đăng nhập để đánh giá phim !",
+          text: "Vui lòng đăng nhập để thích phim !",
           icon: "warning",
-          confirmButtonText: "OK",
+          showCancelButton: true,
+          confirmButtonText: "Đăng nhập",
+          cancelButtonText: "Hủy"
         });
-        setRating(0);
-        setComment('');
+        if (result.isConfirmed) {
+          // Điều hướng đến trang đăng nhập khi nhấn "Đăng nhập"
+          navigate("/login");
+        }
         return;
       }
 
@@ -227,6 +240,8 @@ function MovieDetail() {
   const handleStarClick = (index) => {
     setRating(index + 1);
   };
+
+
 
   return (
     <div className="container mb-5 mt-5">

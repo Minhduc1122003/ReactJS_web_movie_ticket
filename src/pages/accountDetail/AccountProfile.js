@@ -12,6 +12,9 @@ function AccountProfile() {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
 
+  const [isDisabled, setIsDisabled] = useState(false); // Quản lý trạng thái nút
+  const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
+
   useEffect(() => {
     const userString = localStorage.getItem('user');
     if (userString) {
@@ -47,6 +50,10 @@ function AccountProfile() {
   };
 
   const handleUpload = async () => {
+    
+
+    console.log(timeLeft);
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('userId', user.userId);
@@ -64,6 +71,21 @@ function AccountProfile() {
       return; // Nếu người dùng không đồng ý, dừng hàm
     }
 
+    setIsDisabled(true); // Vô hiệu hóa nút
+    setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+    // Đếm ngược thời gian
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown); // Dừng đếm khi hết thời gian
+          
+          return 0; // Reset thời gian
+        }
+        return prevTime - 1; // Giảm thời gian
+      });
+    }, 1000);
+
     try {
       const data = await uploadAvt(formData);
 
@@ -74,6 +96,7 @@ function AccountProfile() {
         confirmButtonText: 'OK'
       });
 
+      setIsDisabled(false); // Kích hoạt lại nút
       setAvt(data);
       setImageUrl(data);
       setFile(null);
@@ -115,6 +138,10 @@ function AccountProfile() {
               Vé đã đặt
             </Link>
 
+            <Link to="/doi-mat-khau" className="list-group-item list-group-item-action">
+              Đổi mật khẩu
+            </Link>
+
             <button onClick={handleLogout} className="list-group-item list-group-item-action list-group-item-danger">
               Đăng xuất
             </button>
@@ -141,9 +168,10 @@ function AccountProfile() {
                   />
                   <button
                     onClick={handleUpload}
-                    className='button-avt position-absolute top-50 translate-middle btn btn-outline-success'
-                    disabled={file === null}>
-                    Đổi ảnh
+                    className='button-avt position-absolute top-50 btn btn-outline-success'
+                    disabled={file === null || isDisabled}
+                    >
+                    {isDisabled ? `Đang đổi` : "Đổi ảnh"}
                   </button>
                 </div>
 

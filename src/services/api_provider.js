@@ -232,6 +232,33 @@ export const updateUser = async (id, newUser) => {
   }
 };
 
+// Update updatePasswordByUser
+export const updatePasswordByUser = async (UpdatePasswordDTO) => {
+  const token = localStorage.getItem("token"); // Lấy token từ localStorage
+  try {
+    const response = await fetch(`http://localhost:9011/api/users/update/passwordByUser`, {
+      method: 'PUT',
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(UpdatePasswordDTO), // Truyền mật khẩu cũ và mật khẩu mớimới
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
+    }
+
+    const data = await response.text();
+    return data;
+
+  } catch (error) {
+    console.error("Lỗi mạng hoặc server!", error);
+    throw error;
+  }
+};
+
 // Logout
 export const logout = async () => {
   const token = localStorage.getItem("token"); // Lấy token từ localStorage

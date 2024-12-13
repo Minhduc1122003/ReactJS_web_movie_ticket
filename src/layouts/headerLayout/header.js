@@ -1,11 +1,16 @@
 import React, {useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [fullName, setFullName] = useState('');
+
+  const handleLogionClick = () => {
+    localStorage.setItem('redirectAfterLogin', location.pathname);
+  };
 
   const getUserFromLocalStorage = () => {
     const userString = localStorage.getItem('user');
@@ -133,7 +138,7 @@ function Header() {
                     </li>
                   ) : (
                     <li className="nav-item nav-dangnhap">
-                      <Link className="nav-link" id="NavDangNhap" to="/login">
+                      <Link className="nav-link" id="NavDangNhap" to="/login" onClick={handleLogionClick}>
                         <i className="bi bi-person"></i> Đăng Nhập
                       </Link>
                     </li>
