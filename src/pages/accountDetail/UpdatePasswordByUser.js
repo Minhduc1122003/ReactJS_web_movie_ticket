@@ -72,13 +72,24 @@ const UpdatePassword = () => {
         });
         handleLogout();
       } catch (error) {
-        console.error(error);
-        await Swal.fire({
-          title: 'Thất bại',
-          text: 'Đổi mật khẩu không thành công !',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
+        console.log(error.message);
+        if (error.message === 'API Error: Mật khẩu cũ không đúng! (HTTP 409)') {
+          await Swal.fire({
+            title: 'Thất bại',
+            text: 'Mật khẩu cũ không đúng!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          await Swal.fire({
+            title: 'Thất bại',
+            text: 'Đổi mật khẩu không thành công !',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+
+        
       }
     }
   };

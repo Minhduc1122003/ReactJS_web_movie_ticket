@@ -50,7 +50,7 @@ function LoginPage() {
       localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
 
-      const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
+      let redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
       if(redirectUrl === '/login'){
         redirectUrl = '/';
       }
