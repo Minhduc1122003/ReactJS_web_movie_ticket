@@ -1,13 +1,12 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://uat-hrm.reecorp.vn/hrm/api/userv2';
+const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
 
 const _apiProvider = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-});
+}); 
 
 _apiProvider.interceptors.request.use(
   config => {
@@ -22,7 +21,7 @@ _apiProvider.interceptors.request.use(
 // Lấy toàn bộ phim
 export const getAllMovieView = async () => {
   try {
-    const response = await fetch('http://localhost:9011/api/movies/getAllMovieView');
+    const response = await fetch(`${API_BASE_URL}/api/movies/getAllMovieView`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -39,7 +38,7 @@ export const getAllMovieView = async () => {
 // Lấy phim theo trạng thái
 export const getAllMovieViewByStatus = async (statusMovie) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/movies/getAllMovieView/${statusMovie}`);
+    const response = await fetch(`${API_BASE_URL}/api/movies/getAllMovieView/${statusMovie}`);
 
     if (!response.ok) {
       throw new Error("Mạng có vấn đề");
@@ -56,7 +55,7 @@ export const getAllMovieViewByStatus = async (statusMovie) => {
 // Login
 export const login = async (username, password) => {
   try {
-    const response = await fetch('http://localhost:9011/api/login', {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +71,7 @@ export const login = async (username, password) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Lỗi đăng nhập:', error);
+    console.error(`Lỗi đăng nhập:`, error);
     throw error; // Ném lại lỗi để xử lý ở nơi gọi
   }
 };
@@ -80,7 +79,7 @@ export const login = async (username, password) => {
 // SendMail
 export const sendMail = async (email) => {
   try {
-    const response = await fetch('http://localhost:9011/api/mail/sendMail', {
+    const response = await fetch(`${API_BASE_URL}/api/mail/sendMail`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +101,7 @@ export const sendMail = async (email) => {
 // VerifyOTP
 export const verifyOTP = async (email, otp) => {
   try {
-    const response = await fetch('http://localhost:9011/api/mail/verifyOTP', {
+    const response = await fetch(`${API_BASE_URL}/api/mail/verifyOTP`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -124,19 +123,19 @@ export const verifyOTP = async (email, otp) => {
 // Update password
 export const uploadPasswordUser = async (id, password) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/users/update/password/${id}`, {
-      method: 'PUT',
+    const response = await fetch(`${API_BASE_URL}/api/users/update/password/${id}`, {
+      method: `PUT`,
       body: JSON.stringify(password),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update password');
+      throw new Error(`Failed to update password`);
     }
 
     const data = await response.text();
     return data;
   } catch (error) {
-    console.error('Error updating password:', error);
+    console.error(`Error updating password:`, error);
     throw error;
   }
 };
@@ -145,7 +144,7 @@ export const uploadPasswordUser = async (id, password) => {
 // Avt
 export const getAvt = async (id) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/users/getPhotoById/${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/users/getPhotoById/${id}`);
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -157,7 +156,7 @@ export const getAvt = async (id) => {
     return data;
 
   } catch (error) {
-    console.error('Lỗi:', error);
+    console.error(`Lỗi:`, error);
     throw error;
   }
 };
@@ -165,19 +164,19 @@ export const getAvt = async (id) => {
 // Upload avt
 export const uploadAvt = async (formData) => {
   try {
-    const response = await fetch('http://localhost:9011/api/users/update-avatar', {
-      method: 'PUT',
+    const response = await fetch(`${API_BASE_URL}/api/users/update-avatar`, {
+      method: `PUT`,
       body: formData,
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update avatar');
+      throw new Error(`Failed to update avatar`);
     }
 
     const data = await response.text(); // Giả sử API trả về chuỗi phản hồi, ví dụ "Avatar updated successfully"
     return data;
   } catch (error) {
-    console.error('Error updating avatar:', error);
+    console.error(`Error updating avatar:`, error);
     throw error;
   }
 };
@@ -185,7 +184,7 @@ export const uploadAvt = async (formData) => {
 // Register
 export const registerUser = async (newUser) => {
   try {
-    const response = await fetch('http://localhost:9011/api/users/create', {
+    const response = await fetch(`${API_BASE_URL}/api/users/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -210,8 +209,8 @@ export const registerUser = async (newUser) => {
 export const updateUser = async (id, newUser) => {
   const token = localStorage.getItem("token"); // Lấy token từ localStorage
   try {
-    const response = await fetch(`http://localhost:9011/api/users/update/${id}`, { // Truyền id qua URL
-      method: 'PUT',
+    const response = await fetch(`${API_BASE_URL}/api/users/update/${id}`, { // Truyền id qua URL
+      method: `PUT`,
       headers: {
         "Authorization": `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -236,8 +235,8 @@ export const updateUser = async (id, newUser) => {
 export const updatePasswordByUser = async (UpdatePasswordDTO) => {
   const token = localStorage.getItem("token"); // Lấy token từ localStorage
   try {
-    const response = await fetch(`http://localhost:9011/api/users/update/passwordByUser`, {
-      method: 'PUT',
+    const response = await fetch(`${API_BASE_URL}/api/users/update/passwordByUser`, {
+      method: `PUT`,
       headers: {
         "Authorization": `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -268,7 +267,7 @@ export const logout = async () => {
   };
 
   try {
-    const response = await fetch('http://localhost:9011/api/logout', {
+    const response = await fetch(`${API_BASE_URL}/api/logout`, {
       method: 'POST',
       headers: headers
     });
@@ -286,15 +285,15 @@ export const logout = async () => {
 
 // Get userDetail
 export const userDetail = async (id) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem(`token`);
   const header = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   };
 
   try {
-    const response = await fetch(`http://localhost:9011/api/users/getById/${id}`, {
-      method: 'GET',
+    const response = await fetch(`${API_BASE_URL}/api/users/getById/${id}`, {
+      method: `GET`,
       headers: header
     });
 
@@ -306,24 +305,24 @@ export const userDetail = async (id) => {
     return data;
 
   } catch (error) {
-    console.error('Lỗi: ', error);
+    console.error(`Lỗi: `, error);
     throw Error;
   }
 };
 
 // Get movieDetail
 export const movieDetail = async (movieId) => {
-  const userString = localStorage.getItem('user');
+  const userString = localStorage.getItem(`user`);
   const user = JSON.parse(userString);
   console.log(user);
   const userId = user ? user.userId : null;
   console.log(userId);
 
   try {
-    const url = `http://localhost:9011/api/movies/getMovieDetail/${movieId}${userId ? `?userId=${userId}` : ''}`;
+    const url = `${API_BASE_URL}/api/movies/getMovieDetail/${movieId}${userId ? `?userId=${userId}` : ``}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: `GET`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -344,8 +343,8 @@ export const movieDetail = async (movieId) => {
 
 export const getShowtimeByMovieId = async (id) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/showtime/getByMovieId/${id}`, {
-      method: 'GET',
+    const response = await fetch(`${API_BASE_URL}/api/showtime/getByMovieId/${id}`, {
+      method: `GET`,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -366,8 +365,8 @@ export const getShowtimeByMovieId = async (id) => {
 
 export const getSeatsByShowtimeAndCinemaRoom = async (showtimeId, cinemaRoomId) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/seats/showtime/${showtimeId}/cinemaRoom/${cinemaRoomId}`, {
-      method: 'GET', // Đổi thành GET
+    const response = await fetch(`${API_BASE_URL}/api/seats/showtime/${showtimeId}/cinemaRoom/${cinemaRoomId}`, {
+      method: `GET`, // Đổi thành GET
       headers: {
         'Content-Type': 'application/json'
       }
@@ -390,7 +389,7 @@ export const getSeatsByShowtimeAndCinemaRoom = async (showtimeId, cinemaRoomId) 
 export const insertBuyTicket = async (buyTicketRequest) => {
   try {
     console.log(buyTicketRequest);
-    const response = await fetch('http://localhost:9011/api/buyticket/createBuyTicket', {
+    const response = await fetch(`${API_BASE_URL}/api/buyticket/createBuyTicket`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -415,7 +414,7 @@ export const insertBuyTicket = async (buyTicketRequest) => {
 export const delBuyTicket = async (buyTicketId) => {
   try {
     console.log(buyTicketId);
-    const response = await fetch('http://localhost:9011/api/buyticket/delBuyTicket', {
+    const response = await fetch(`${API_BASE_URL}/api/buyticket/delBuyTicket`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -439,7 +438,7 @@ export const delBuyTicket = async (buyTicketId) => {
 
 export const getTicketBuyUserId = async (id) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/users/getTicketById/${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/users/getTicketById/${id}`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -453,9 +452,9 @@ export const getTicketBuyUserId = async (id) => {
 };
 
 export const addFavourite = async (favouriteRequest) => {
-  console.log('API_provider:', favouriteRequest);
+  console.log(`API_provider:`, favouriteRequest);
   try {
-    const response = await fetch('http://localhost:9011/favourites/addFavourite', {
+    const response = await fetch(`${API_BASE_URL}/favourites/addFavourite`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -476,10 +475,10 @@ export const addFavourite = async (favouriteRequest) => {
 };
 
 export const deleteFavourite = async (favouriteRequest) => {
-  console.log('API_provider:', favouriteRequest);
+  console.log(`API_provider:`, favouriteRequest);
   try {
-    const response = await fetch('http://localhost:9011/favourites/deletefavourite', {
-      method: 'DELETE',
+    const response = await fetch(`${API_BASE_URL}/favourites/deletefavourite`, {
+      method: `DELETE`,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -501,7 +500,7 @@ export const deleteFavourite = async (favouriteRequest) => {
 // Lấy toàn bộ phim
 export const getAllFavouriteMovieViewByUserId = async (id) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/movies/getAllFavouriteMovieByUserId/${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/movies/getAllFavouriteMovieByUserId/${id}`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -517,7 +516,7 @@ export const getAllFavouriteMovieViewByUserId = async (id) => {
 
 export const paymentVNP = async(amount, id) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/payments/vnpay?amount=${amount}&id=${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/payments/vnpay?amount=${amount}&id=${id}`);
 
     if(!response) {
       throw new Error("Network response was not ok");
@@ -534,7 +533,7 @@ export const paymentVNP = async(amount, id) => {
 
 export const paymentVNPcallBack = async(params) => {
   try {
-    const response = await fetch('http://localhost:9011/api/payments/vnpay/callback', {
+    const response = await fetch(`${API_BASE_URL}/api/payments/vnpay/callback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -558,7 +557,7 @@ export const paymentVNPcallBack = async(params) => {
 
 export const getAllRateByMovieId = async(id) => {
   try {
-    const response = await fetch(`http://localhost:9011/api/rates/getByMovieId/${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/rates/getByMovieId/${id}`);
 
     if(!response){
       const errorText = await response.text();
@@ -575,7 +574,7 @@ export const getAllRateByMovieId = async(id) => {
 
 export const submitReview = async(rate) =>{
   try {
-    const response = await fetch('http://localhost:9011/api/rates/create', {
+    const response = await fetch(`${API_BASE_URL}/api/rates/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
