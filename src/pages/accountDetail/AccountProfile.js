@@ -13,7 +13,7 @@ function AccountProfile() {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
 
-  const [isDisabled, setIsDisabled] = useState(false); // Quản lý trạng thái nút
+  const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
   const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
 
   useEffect(() => {
