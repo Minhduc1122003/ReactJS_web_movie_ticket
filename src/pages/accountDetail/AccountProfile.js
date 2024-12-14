@@ -50,8 +50,6 @@ function AccountProfile() {
   };
 
   const handleUpload = async () => {
-    
-
     console.log(timeLeft);
 
     const formData = new FormData();
