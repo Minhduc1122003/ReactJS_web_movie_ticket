@@ -9,9 +9,9 @@ function Footer() {
           <div className="col-md-4">
             <h5>THAM GIA VỚI CHÚNG TÔI</h5>
             <div className="social-icons">
-              <a href="https://example.com/x"><img src={`http://localhost:9011/img/x.jpg`} alt="X" /></a>
-              <a href="https://facebook.com"><img src={`http://localhost:9011/img/fb.png`} alt="Facebook" /></a>
-              <a href="https://discord.com"><img src={`http://localhost:9011/img/discord.png`} alt="Discord" style={{ height: '60px' }} /></a>
+              <a href="https://example.com/x"><img src={`https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/x.jpg?alt=media&token=29883212-42b3-4d4a-b054-7e523a2cf108`} alt="X" /></a>
+              <a href="https://facebook.com"><img src={`https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/fb.png?alt=media&token=ca74b8b3-62d1-48ae-864d-c7889586c168`} alt="Facebook" /></a>
+              <a href="https://discord.com"><img src={`https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/discord.png?alt=media&token=183e82fb-0257-41fc-b0a7-24517178397c`} alt="Discord" style={{ height: '60px' }} /></a>
             </div>
             <ul className="list-unstyled">
               <li><a href="/about">Về chúng tôi</a></li>

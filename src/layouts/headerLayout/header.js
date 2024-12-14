@@ -42,7 +42,7 @@ function Header() {
         <div className="row align-items-center">
           <div className="col-2">
             <Link className="nav-link" to="/" style={{ width: '50%' }}>
-              <img src={`http://localhost:9011/img/logo.png`} alt="Logo" className="img-fluid" />
+              <img src={`https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/Logo.png?alt=media&token=126ba3ef-5736-45da-8b81-ad9c055973f2`} alt="Logo" className="img-fluid" />
             </Link>
           </div>
           <div className="col-10">

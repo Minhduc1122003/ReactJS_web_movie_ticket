@@ -50,7 +50,7 @@ function LoginPage() {
       localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
 
-      let redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
+      const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
       if(redirectUrl === '/login'){
         redirectUrl = '/';
       }
@@ -238,7 +238,7 @@ function LoginPage() {
               </div>
             </div>
             <div className="col-md-6 d-flex align-items-center justify-content-center">
-              <img src="http://localhost:9011/img/img-dangnhap.jfif" alt="Illustration" className="img-fluid" style={{ borderRadius: '0 30px 30px 0' }} />
+              <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/img-dangnhap.jfif?alt=media&token=0b181313-0d7a-4c31-bfe4-3d32e8a5f14a" alt="Illustration" className="img-fluid" style={{ borderRadius: '0 30px 30px 0' }} />
             </div>
           </div>
         </div>

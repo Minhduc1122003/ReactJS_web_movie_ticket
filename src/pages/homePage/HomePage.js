@@ -52,13 +52,13 @@ function HomePage() {
               <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   <div className="carousel-item active">
-                    <img src="http://localhost:9011/img/CRS.jpg" className="d-block w-100" alt="..." />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS.jpg?alt=media&token=424c44cc-7b7c-4f43-af6c-6e79e0cb5eb4" className="d-block w-100" alt="..." />
                   </div>
                   <div className="carousel-item">
-                    <img src="http://localhost:9011/img/CRS2.png" className="d-block w-100" alt="..." />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS2.png?alt=media&token=054273d2-691a-4234-bb1a-6ee4c1145321" className="d-block w-100" alt="..." />
                   </div>
                   <div className="carousel-item">
-                    <img src="http://localhost:9011/img/CRS3.jpg" className="d-block w-100" alt="..." />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS3.jpg?alt=media&token=15f18a81-f008-4805-b5a6-0709421ce9cf" className="d-block w-100" alt="..." />
                   </div>
                 </div>
               </div>
@@ -70,7 +70,7 @@ function HomePage() {
             {/* Category 1 */}
             <div className="col-md-4">
               <div className="card mb-4">
-                <img src="http://localhost:9011/img/Romantic.jpg" className="card-img-top" alt="Lãng mạn" />
+                <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/Romantic.jpg?alt=media&token=b555d85b-088f-4447-94dd-f2ffa6b74427" className="card-img-top" alt="Lãng mạn" />
                 <div className="card-body text-center">
                   <h5 className="card-title">Lãng mạn</h5>
                   <a href="/products?genre=Romantic" className="btn btn-dark mt-3">More</a>
@@ -80,7 +80,7 @@ function HomePage() {
             {/* Category 2 */}
             <div className="col-md-4">
               <div className="card mb-4">
-                <img src="http://localhost:9011/img/Action.jpg" className="card-img-top" alt="Hành động" />
+                <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/Action.jpg?alt=media&token=f56d57ea-46ee-4f10-b883-08e8b4d3760d" className="card-img-top" alt="Hành động" />
                 <div className="card-body text-center">
                   <h5 className="card-title">Hành động</h5>
                   <a href="/products?genre=Action" className="btn btn-dark mt-3">More</a>
@@ -90,7 +90,7 @@ function HomePage() {
             {/* Category 3 */}
             <div className="col-md-4">
               <div className="card mb-4">
-                <img src="http://localhost:9011/img/Horrified.jpg" className="card-img-top" alt="Kinh dị" />
+                <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/Horrified.jpg?alt=media&token=145ca538-28cc-42c9-9b9d-f90d99f97627" className="card-img-top" alt="Kinh dị" />
                 <div className="card-body text-center">
                   <h5 className="card-title">Kinh dị</h5>
                   <a href="/products?genre=Horror" className="btn btn-dark mt-3">More</a>
