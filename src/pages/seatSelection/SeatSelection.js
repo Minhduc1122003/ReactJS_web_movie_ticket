@@ -9,31 +9,20 @@ const SeatSelection = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { cinemaRoomId, showtimeId, movieTitle, movieAge, startTime, showtimeDate, moviePrice, subTitle } = location.state || {};
-    const [seats, setSeats] = useState([]); // Đổi 'seat' thành 'seats'
+    console.log(cinemaRoomId);
+    console.log("Showtime",showtimeId);
+    const [seats, setSeats] = useState([]);
     const [totalPriceAll, setTotalPriceAll] = useState(0);
-    const rows = [...new Set(seats.map(seat => seat.chairCode[0]))]; // Lấy hàng từ chairCode (ví dụ: A, B, C...)
-    const cols = Array.from({ length: 14 }, (_, i) => i + 1); // Có 14 cột
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [seatId, setSeatId] = useState([]);
     const [comboId] = useState([]);
 
-    // console.log("Cinema Room ID:", cinemaRoomId);
-    // console.log("Showtime ID:", showtimeId);
-    // console.log("MovieId:", movieId);
-
-    // console.log("movieTitle:", movieTitle);
-    // console.log("movieAge:", movieAge);
-    // console.log("startTime:", startTime);
-    // console.log("showtimeDate:", showtimeDate);
-    // console.log("subTitle:", subTitle);
-    // console.log("moviePrice:", moviePrice);
-
     useEffect(() => {
         const fetchSeats = async () => {
-            if (cinemaRoomId && showtimeId) { // Điều kiện được đặt bên trong useEffect
+            if (cinemaRoomId && showtimeId) {
                 try {
                     const data = await getSeatsByShowtimeAndCinemaRoom(showtimeId, cinemaRoomId);
-                    setSeats(data); // Đặt dữ liệu ghế
+                    setSeats(data);
                 } catch (error) {
                     console.error("Error fetching seat details:", error);
                 }
@@ -44,23 +33,18 @@ const SeatSelection = () => {
     }, [cinemaRoomId, showtimeId]);
 
     useEffect(() => {
-        console.log(selectedSeats);
-        console.log(seatId);
-        // Khi tính toán, đảm bảo totalPriceAll là một giá trị thập phân
         setTotalPriceAll(parseFloat(selectedSeats.length * moviePrice));
-    }, [selectedSeats, moviePrice, seatId]);
+    }, [selectedSeats, moviePrice]);
 
     const generateBuyTicketId = (userId, movieId, showtimeId) => {
         const now = new Date();
-        const month = now.getMonth() + 1;  // Tháng bắt đầu từ 0, cần cộng thêm 1
+        const month = now.getMonth() + 1;
         const day = now.getDate();
         const hour = now.getHours();
         const minute = now.getMinutes();
         const second = now.getSeconds();
 
-        // Định dạng "MMddHHmmss"
         const formattedDate = `${month < 10 ? '0' : ''}${month}${day < 10 ? '0' : ''}${day}${hour < 10 ? '0' : ''}${hour}${minute < 10 ? '0' : ''}${minute}${second < 10 ? '0' : ''}${second}`;
-
         return `${userId}${movieId}${showtimeId}${formattedDate}`;
     };
 
@@ -79,7 +63,7 @@ const SeatSelection = () => {
 
         const { isConfirmed } = await Swal.fire({
             title: 'Đặt vé',
-            text: `Bạn có chắc muốn đặt vé? Ghế: ${selectedSeats.join(", ")}`, // Hiển thị danh sách ghế đã chọn
+            text: `Bạn có chắc muốn đặt vé? Ghế: ${selectedSeats.join(", ")}`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Có',
@@ -87,28 +71,26 @@ const SeatSelection = () => {
         });
 
         if (!isConfirmed) {
-            return; // Nếu người dùng không đồng ý, dừng hàm
+            return;
         }
 
         const user = JSON.parse(userString);
         const userId = user ? user.userId : null;
 
         const buyTicketId = generateBuyTicketId(userId, movieId, showtimeId);
-        console.log(buyTicketId);
-
         try {
-            // Không cần JSON.stringify nếu phương thức `insertBuyTicket` yêu cầu đối tượng
             const buyTicketRequest = {
                 buyTicketId,
                 userId,
                 movieId: parseInt(movieId, 10),
                 totalPriceAll,
                 showtimeId,
-                seatIDs: seatId, // Gửi seatId như một mảng trực tiếp
+                seatIDs: seatId,
                 comboIDs: comboId
             };
 
             const data = await insertBuyTicket(buyTicketRequest);
+            console.log(data);
 
             await Swal.fire({
                 title: 'Thành công',
@@ -116,7 +98,6 @@ const SeatSelection = () => {
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
-            console.log("Buy ticket response:", data);
             navigate('/ve-da-mua');
         } catch (error) {
             await Swal.fire({
@@ -129,17 +110,13 @@ const SeatSelection = () => {
         }
     };
 
-
     const toggleSeatSelection = (seatSelect) => {
         setSelectedSeats((prevSelectedSeats) => {
             if (prevSelectedSeats.includes(seatSelect)) {
-                // Bỏ chọn nếu ghế đã được chọn trước đó
                 return prevSelectedSeats.filter((s) => s !== seatSelect);
             } else if (prevSelectedSeats.length < 5) {
-                // Chỉ thêm ghế mới nếu số lượng ghế đã chọn chưa đạt 5
                 return [...prevSelectedSeats, seatSelect];
             } else {
-                // Hiển thị thông báo khi cố chọn quá 5 ghế
                 Swal.fire({
                     title: 'Thông báo',
                     text: 'Bạn chỉ được chọn tối đa 5 ghế!',
@@ -158,6 +135,7 @@ const SeatSelection = () => {
                 ? preSeatId.filter((s) => s !== seatSelectID)
                 : [...preSeatId, seatSelectID]
         );
+        console.log(seatSelectID);
     };
 
     const isSelected = (seatSelect) => selectedSeats.includes(seatSelect);
@@ -166,29 +144,33 @@ const SeatSelection = () => {
         return <div>Seats not found!</div>;
     }
 
+    // Chia ghế thành các hàng (10 hàng, mỗi hàng 14 ghế)
+    const rows = [];
+    for (let i = 0; i < 10; i++) {
+        rows.push(seats.slice(i * 14, (i + 1) * 14)); // Mỗi hàng có 14 ghế
+    }
+
     return (
         <div className="container container-seat seat-selection pt-3">
             <div className="form-dat-ghe">
                 <h2>MÀN HÌNH</h2>
                 <div className="seat-grid">
-                    {rows.map((row) => (
-                        <div key={row} className="seat-row">
-                            {cols.map((col) => {
-                                const seatLabel = `${row}${col}`;
-                                const seat = seats.find(s => s.chairCode === seatLabel); // Tìm ghế dựa trên chairCode
-
+                    {rows.map((row, rowIndex) => (
+                        <div key={rowIndex} className="seat-row">
+                            {row.map((seat) => {
+                                const seatLabel = seat.chairCode;
                                 return (
                                     <button
                                         key={seatLabel}
-                                        className={`btn-seat-magrin seat ${seat && seat.reservationStatus ? "reserved" : isSelected(seatLabel) ? "selected" : "available"}`}
+                                        className={`btn-seat-magrin seat ${seat.reservationStatus ? "reserved" : isSelected(seatLabel) ? "selected" : "available"}`}
                                         onClick={(event) => {
-                                            if (seat && !seat.reservationStatus) {
+                                            if (!seat.reservationStatus) {
                                                 toggleSeatSelection(seatLabel);
                                                 handleSeatClick(event);
                                             }
                                         }}
-                                        disabled={seat ? seat.reservationStatus : true} // Nếu ghế có `reservationStatus`, thì nút bị vô hiệu hóa
-                                        value={seat ? seat.seatID : ''} // Nếu tìm thấy ghế, gán `seatID` làm giá trị của button
+                                        disabled={seat.reservationStatus}
+                                        value={seat.seatID}
                                     >
                                         {seatLabel}
                                     </button>
@@ -217,7 +199,6 @@ const SeatSelection = () => {
                     </div>
 
                     <div className="info">
-
                         <div className="session-time">
                             <span>Giờ chiếu: {startTime}</span>
                         </div>
@@ -245,24 +226,12 @@ const SeatSelection = () => {
                         <div className="btn-content">
                             <span className="btn-title">Đặt vé ngay</span>
                             <span className="icon-arrow">
-                                <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="arrow" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                        <path
-                                            id="arrow-icon-one"
-                                            d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z"
-                                            fill="#FFFFFF"
-                                        ></path>
-                                        <path
-                                            id="arrow-icon-two"
-                                            d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z"
-                                            fill="#FFFFFF"
-                                        ></path>
-                                    </g>
+                                <svg width="66px" height="43px" viewBox="0 0 66 43" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" d="M1 21h60M47 7l14 14-14 14" />
                                 </svg>
                             </span>
                         </div>
                     </button>
-
                 </div>
             </div>
         </div>

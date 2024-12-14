@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getAllMovieViewByStatus } from '../../services/api_provider';
+import { getAllMovieViewByGenre } from '../../services/api_provider';
 
-function MovieStatus() {
+function MovieGenre() {
   const [movies, setMovies] = useState([]);
 
-  const { statusMovie } = useParams();
+  const { genreMovie } = useParams();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -37,10 +37,11 @@ function MovieStatus() {
 
   useEffect(() => {
     // Gọi API từ api_provider
-    getAllMovieViewByStatus(statusMovie)
+    console.log(genreMovie);
+    getAllMovieViewByGenre(genreMovie)
       .then(data => setMovies(data))
       .catch(error => console.error('Lỗi xảy ra:', error));
-  }, [statusMovie]);
+  }, [genreMovie]);
 
   return (
     <div>
@@ -50,7 +51,7 @@ function MovieStatus() {
         <div className="container">
           {/* Divider */}
           <div className="divider">
-            <h2>PHIM {statusMovie?.toUpperCase()}</h2>
+            <h2>{genreMovie?.toUpperCase()}</h2>
           </div>
 
           {/* Movies List */}
@@ -104,4 +105,4 @@ function MovieStatus() {
   );
 }
 
-export default MovieStatus;
+export default MovieGenre;

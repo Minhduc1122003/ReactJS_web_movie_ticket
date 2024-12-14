@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API_BASE_URL = 'http://localhost:9011';
-const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
+const API_BASE_URL = 'http://localhost:9011';
+
 const _apiProvider = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -38,7 +38,24 @@ export const getAllMovieView = async () => {
 // Lấy phim theo trạng thái
 export const getAllMovieViewByStatus = async (statusMovie) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/movies/getAllMovieView/${statusMovie}`);
+    const response = await fetch(`${API_BASE_URL}/api/movies/getAllMovieViewStatus/${statusMovie}`);
+
+    if (!response.ok) {
+      throw new Error("Mạng có vấn đề");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Có lỗi: ", error);
+    throw error;
+  }
+};
+
+// Lấy phim theo thể loại
+export const getAllMovieViewByGenre = async (genre) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/movies/getAllMovieViewGenre/${genre}`);
 
     if (!response.ok) {
       throw new Error("Mạng có vấn đề");
@@ -258,6 +275,31 @@ export const updatePasswordByUser = async (UpdatePasswordDTO) => {
   }
 };
 
+// Logout
+export const logout = async () => {
+  const token = localStorage.getItem("token"); // Lấy token từ localStorage
+  const headers = {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json"
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/logout`, {
+      method: 'POST',
+      headers: headers
+    });
+
+    if (!response.ok) {
+      throw new Error("Có lỗi xảy ra khi đăng xuất !");
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Lỗi mạng hoặc server !");
+    throw error;
+  }
+};
+
 // Get userDetail
 export const userDetail = async (id) => {
   const token = localStorage.getItem(`token`);
@@ -341,7 +383,7 @@ export const getShowtimeByMovieId = async (id) => {
 export const getSeatsByShowtimeAndCinemaRoom = async (showtimeId, cinemaRoomId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/seats/showtime/${showtimeId}/cinemaRoom/${cinemaRoomId}`, {
-      method: `GET`, // Đổi thành GET
+      method: `GET`,
       headers: {
         'Content-Type': 'application/json'
       }
