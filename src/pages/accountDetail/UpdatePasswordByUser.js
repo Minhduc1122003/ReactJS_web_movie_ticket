@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import '../FormForgotPassword/ForgotPassword.css'; // Chứa CSS cho form
-import { updatePasswordByUser, logout } from '../../services/api_provider';
+import { updatePasswordByUser } from '../../services/api_provider';
 
 const UpdatePassword = () => {
   const [passwordOld, setPasswordOld] = useState('');
@@ -24,22 +24,16 @@ const UpdatePassword = () => {
   };
 
   const handleLogout = async () => {
-      try {
-        const response = await logout();
-  
-        if (response.ok) {
-          // Xử lý thành công
-          console.log("Đăng xuất thành công!");
-          localStorage.removeItem("token"); // Xóa token khỏi localStorage
-          localStorage.removeItem("user"); // Xóa user khỏi localStorage
-  
-          // Chuyển hướng hoặc cập nhật trạng thái
-          window.location.href = "/login";
-        }
-      } catch (error) {
-        console.error("Lỗi mạng hoặc server:", error);
-      }
-    };
+
+    // Xử lý thành công
+    console.log("Đăng xuất thành công!");
+    localStorage.removeItem("token"); // Xóa token khỏi localStorage
+    localStorage.removeItem("user"); // Xóa user khỏi localStorage
+
+    // Chuyển hướng hoặc cập nhật trạng thái
+    window.location.href = "/login";
+
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

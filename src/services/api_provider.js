@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
+const API_BASE_URL = 'http://localhost:9011';
 
 const _apiProvider = axios.create({
   baseURL: API_BASE_URL,
@@ -254,31 +254,6 @@ export const updatePasswordByUser = async (UpdatePasswordDTO) => {
 
   } catch (error) {
     console.error("Lỗi mạng hoặc server!", error);
-    throw error;
-  }
-};
-
-// Logout
-export const logout = async () => {
-  const token = localStorage.getItem("token"); // Lấy token từ localStorage
-  const headers = {
-    "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json"
-  };
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/logout`, {
-      method: 'POST',
-      headers: headers
-    });
-
-    if (!response.ok) {
-      throw new Error("Có lỗi xảy ra khi đăng xuất !");
-    }
-
-    return response;
-  } catch (error) {
-    console.error("Lỗi mạng hoặc server !");
     throw error;
   }
 };

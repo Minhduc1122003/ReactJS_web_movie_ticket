@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { logout, getAvt, uploadAvt } from '../../services/api_provider';
+import { getAvt, uploadAvt } from '../../services/api_provider';
 import { Link, useNavigate } from 'react-router-dom';
 import './AccounProfile.css';
 import Swal from 'sweetalert2';
@@ -112,17 +112,15 @@ function AccountProfile() {
   };
 
   const handleLogout = async () => {
-    try {
-      const response = await logout();
-      if (response.ok) {
-        console.log("Đăng xuất thành công!");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = '/login';
-      }
-    } catch (error) {
-      console.error("Lỗi mạng hoặc server:", error);
-    }
+
+    // Xử lý thành công
+    console.log("Đăng xuất thành công!");
+    localStorage.removeItem("token"); // Xóa token khỏi localStorage
+    localStorage.removeItem("user"); // Xóa user khỏi localStorage
+
+    // Chuyển hướng hoặc cập nhật trạng thái
+    window.location.href = "/login";
+
   };
 
   return (

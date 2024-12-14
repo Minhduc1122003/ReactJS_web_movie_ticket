@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./updateAccount.css"; // Create this CSS file for styling
-import { updateUser, logout } from "../../services/api_provider";
+import { updateUser } from "../../services/api_provider";
 import { Link, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,19 +10,18 @@ import { useForm } from "react-hook-form";
 // Định nghĩa schema với Yup
 const schema = yup.object().shape({
   emailNew: yup
-  .string()
-  .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email phải có dịnh dạng hợp lệ (ví dụ: example@gmail.com)')
-  .required('Email là bắt buộc'),
+    .string()
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email phải có dịnh dạng hợp lệ (ví dụ: example@gmail.com)')
+    .required('Email là bắt buộc'),
   phoneNew: yup
-  .string()
-  .matches(/^[0-9]{10}$/, 'Số điện thoại phải có 10 chữ số')
-  .required('Số điện thoại là bắt buộc'),
+    .string()
+    .matches(/^[0-9]{10}$/, 'Số điện thoại phải có 10 chữ số')
+    .required('Số điện thoại là bắt buộc'),
 });
 
 function UpdateAccountProfile() {
   const [toastMessage, setToastMessage] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [usernameNew, setUsernameNew] = useState("");
   const [fullnameNew, setFullnameNew] = useState("");
   const [emailNew, setEmailNew] = useState("");
   const [phoneNew, setPhoneNew] = useState("");
@@ -47,8 +46,6 @@ function UpdateAccountProfile() {
       if (userString) {
         const userLCST = JSON.parse(userString);
         setUserId(userLCST.userId);
-
-        setUsernameNew(userName);
         setFullnameNew(fullName);
         setEmailNew(email);
         setPhoneNew(phoneNumber);
@@ -59,25 +56,19 @@ function UpdateAccountProfile() {
   }, [email, fullName, phoneNumber, userName]);
 
   const handleLogout = async () => {
-    try {
-      const response = await logout();
 
-      if (response.ok) {
-        // Xử lý thành công
-        console.log("Đăng xuất thành công!");
-        localStorage.removeItem("token"); // Xóa token khỏi localStorage
-        localStorage.removeItem("user"); // Xóa user khỏi localStorage
+    // Xử lý thành công
+    console.log("Đăng xuất thành công!");
+    localStorage.removeItem("token"); // Xóa token khỏi localStorage
+    localStorage.removeItem("user"); // Xóa user khỏi localStorage
 
-        // Chuyển hướng hoặc cập nhật trạng thái
-        window.location.href = "/login";
-      }
-    } catch (error) {
-      console.error("Lỗi mạng hoặc server:", error);
-    }
+    // Chuyển hướng hoặc cập nhật trạng thái
+    window.location.href = "/login";
+
   };
 
   // Function to handle form submission (mock for now)
-  const handleUpdateAccount = async () => {
+  const handleUpdateAccount = async (data) => {
 
     // Hiện thông báo xác nhận
     const { isConfirmed } = await Swal.fire({
@@ -93,12 +84,13 @@ function UpdateAccountProfile() {
       return; // Kết thúc hàm nếu người dùng không đồng ý
     }
 
+    // Lấy dữ liệu từ react-hook-form
+    const { emailNew, phoneNew } = data;
+
     const newUser = {
-      userName: usernameNew,
       fullName: fullnameNew,
       email: emailNew,
       phoneNumber: phoneNew,
-      // password: passwordNew
     };
 
     try {
