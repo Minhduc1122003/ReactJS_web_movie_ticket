@@ -11,7 +11,6 @@ import {
 } from "../../services/api_provider";
 import YouTube from "react-youtube";
 import { Button, Carousel, Row, Col } from "react-bootstrap";
-import { Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
 
 function MovieDetail() {
@@ -60,7 +59,7 @@ function MovieDetail() {
       }
     };
 
-    
+
 
     fetchRates(); // Lấy dữ liệu đánh giá
     fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
@@ -96,7 +95,7 @@ function MovieDetail() {
         acc[date] = { date: date, times: [] };
       }
       if (date === dayNow) {
-        if (current.startTime >= timeNow ) {
+        if (current.startTime >= timeNow) {
           acc[date].times.push({
             startTime: current.startTime,
             cinemaRoomId: current.cinemaRoomId,
@@ -116,14 +115,18 @@ function MovieDetail() {
 
   const sampleShowtimes = Object.values(groupedShowtimes); // Chuyển đổi thành mảng để hiển thị
 
-  
+
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
+      <div class="d-flex justify-content-center align-items-center">
+        <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+          <circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+        </svg>
       </div>
+
     );
   }
 
@@ -382,79 +385,79 @@ function MovieDetail() {
             <div>Đang tải suất chiếu...</div> // Thông báo khi đang tải
           ) : (
             sampleShowtimes
-            .filter((showtime) => showtime.times && showtime.times.length > 0)
-            .map((showtime) => (
-              <Row key={showtime.date} className="mb-5">
-                <Col xs={12} className="text-center">
-                  <h5 className="fw-bold text-dark mb-3">
-                    {new Date(showtime.date).toLocaleDateString("vi-VN", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </h5>
-                  <Carousel
-                    indicators={false}
-                    interval={null}
-                    controls={true}
-                    wrap={true}
-                    className="carousel-dark"
-                  >
-                    {chunkArray(showtime.times, 9).map((timeChunk, index) => (
-                      <Carousel.Item key={index}>
-                        <div className="d-flex justify-content-center">
-                          {timeChunk.map(
-                            ({ startTime, cinemaRoomId, showtimeId }) => (
-                              <Button
-                                key={startTime}
-                                variant={
-                                  selectedShowtime ===
-                                    `${showtime.date}-${startTime}`
-                                    ? ""
-                                    : "outline-secondary"
-                                }
-                                onClick={() => {
-                                  console.log(
-                                    `Chọn suất chiếu: ${showtime.date} - ${startTime}`
-                                  );
-                                  console.log(
-                                    `Cinema Room ID: ${cinemaRoomId}`
-                                  ); // Log cinemaRoomId khi chọn
-                                  console.log(`CinemaRoomId: ${showtimeId}`);
-                                  setSelectedShowtime(
-                                    `${showtime.date}-${startTime}`
-                                  );
+              .filter((showtime) => showtime.times && showtime.times.length > 0)
+              .map((showtime) => (
+                <Row key={showtime.date} className="mb-5">
+                  <Col xs={12} className="text-center">
+                    <h5 className="fw-bold text-dark mb-3">
+                      {new Date(showtime.date).toLocaleDateString("vi-VN", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </h5>
+                    <Carousel
+                      indicators={false}
+                      interval={null}
+                      controls={true}
+                      wrap={true}
+                      className="carousel-dark"
+                    >
+                      {chunkArray(showtime.times, 9).map((timeChunk, index) => (
+                        <Carousel.Item key={index}>
+                          <div className="d-flex justify-content-center">
+                            {timeChunk.map(
+                              ({ startTime, cinemaRoomId, showtimeId }) => (
+                                <Button
+                                  key={startTime}
+                                  variant={
+                                    selectedShowtime ===
+                                      `${showtime.date}-${startTime}`
+                                      ? ""
+                                      : "outline-secondary"
+                                  }
+                                  onClick={() => {
+                                    console.log(
+                                      `Chọn suất chiếu: ${showtime.date} - ${startTime}`
+                                    );
+                                    console.log(
+                                      `Cinema Room ID: ${cinemaRoomId}`
+                                    ); // Log cinemaRoomId khi chọn
+                                    console.log(`CinemaRoomId: ${showtimeId}`);
+                                    setSelectedShowtime(
+                                      `${showtime.date}-${startTime}`
+                                    );
 
-                                  navigate(`/dat-cho/${movieId}`, {
-                                    state: {
-                                      cinemaRoomId,
-                                      showtimeId,
-                                      movieTitle: movie.title,
-                                      movieAge: movie.age,
-                                      startTime,
-                                      showtimeDate: showtime.date,
-                                      moviePrice: movie.price,
-                                      subTitle: movie.subTitle
-                                        ? "Phụ đề"
-                                        : "Lồng tiếng",
-                                    },
-                                  });
-                                }}
-                                className="mx-2"
-                                style={{ minWidth: "80px" }}
-                              >
-                                {startTime}
-                              </Button>
-                            )
-                          )}
-                        </div>
-                      </Carousel.Item>
-                    ))}
-                  </Carousel>
-                </Col>
-              </Row>
-            ))
+                                    navigate(`/dat-cho/${movieId}`, {
+                                      state: {
+                                        cinemaRoomId,
+                                        showtimeId,
+                                        movieTitle: movie.title,
+                                        movieAge: movie.age,
+                                        startTime,
+                                        showtimeDate: showtime.date,
+                                        moviePrice: movie.price,
+                                        subTitle: movie.subTitle
+                                          ? "Phụ đề"
+                                          : "Lồng tiếng",
+                                      },
+                                    });
+                                  }}
+                                  className="mx-2"
+                                  style={{ minWidth: "80px" }}
+                                >
+                                  {startTime}
+                                </Button>
+                              )
+                            )}
+                          </div>
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  </Col>
+                </Row>
+              ))
           )}
         </div>
       )}
@@ -534,7 +537,7 @@ function MovieDetail() {
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                   <a href="#" className="link-dark">Bình luận</a>
                 </div>
-                
+
               </div>
             </div>
           ))
