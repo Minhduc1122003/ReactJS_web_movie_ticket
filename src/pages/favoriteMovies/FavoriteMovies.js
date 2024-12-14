@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './FavoriteMovies.css';
 import { getAllFavouriteMovieViewByUserId } from '../../services/api_provider';
+import { Spinner } from "react-bootstrap";
+
 
 function FavoriteMovies() {
   const [movies, setMovies] = useState([]);
@@ -10,6 +12,8 @@ function FavoriteMovies() {
   const [userId, setUserId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+
 
   // Tính toán số trang dựa trên số lượng phim và itemsPerPage
   const totalPages = Math.ceil(movies.length / itemsPerPage);
@@ -38,23 +42,47 @@ function FavoriteMovies() {
 
   // Kiểm tra và lấy userId từ localStorage chỉ một lần
   useEffect(() => {
-    if (userString === null) {
-      navigate('/login');
-    } else {
-      const user = JSON.parse(userString);
-      setUserId(user.userId);
+    setLoading(true);
+    try {
+      if (userString === null) {
+        navigate('/login');
+      } else {
+        const user = JSON.parse(userString);
+        setUserId(user.userId);
+      }
+    } catch (error) {
+      console.error("Error", error);
+
+    }finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, [navigate, userString]);
 
   // Gọi API để lấy danh sách phim yêu thích khi có userId
   useEffect(() => {
-    if (userId) {
-      getAllFavouriteMovieViewByUserId(userId)
-        .then(data => setMovies(data))
-        .catch(error => console.error('Lỗi xảy ra:', error));
+    setLoading(true);
+    try {
+      if (userId) {
+        getAllFavouriteMovieViewByUserId(userId)
+          .then(data => setMovies(data))
+          .catch(error => console.error('Lỗi xảy ra:', error));
+      }
+    } catch (error) {
+      console.error("Error movie", error);
+    } finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, [userId]);
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
 
   return (
 

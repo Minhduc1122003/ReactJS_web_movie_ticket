@@ -11,6 +11,7 @@ import {
 } from "../../services/api_provider";
 import YouTube from "react-youtube";
 import { Button, Carousel, Row, Col } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
 
 function MovieDetail() {
@@ -115,8 +116,15 @@ function MovieDetail() {
 
   const sampleShowtimes = Object.values(groupedShowtimes); // Chuyển đổi thành mảng để hiển thị
 
+  
   if (loading) {
-    return <div>Loading...</div>; // Hiển thị loading nếu dữ liệu chưa được tải
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   if (!movie) {

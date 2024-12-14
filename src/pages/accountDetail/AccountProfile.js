@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { getAvt, uploadAvt } from '../../services/api_provider';
 import { Link, useNavigate } from 'react-router-dom';
 import './AccounProfile.css';
+import { Spinner } from "react-bootstrap";
 import Swal from 'sweetalert2';
 
 function AccountProfile() {
   const [user, setUser] = useState('');
   const [avt, setAvt] = useState('');
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
 
@@ -17,19 +18,31 @@ function AccountProfile() {
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
-    if (userString) {
-      const user = JSON.parse(userString);
-      console.log(user);
-      setUser(user);
+    setLoading(true);
+    try {
+      if (userString) {
+        const user = JSON.parse(userString);
+        console.log(user);
+        setUser(user);
+      }
+    } catch (error) {
+      console.error("Error fetching avatar:", error);
+    }finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
+    
   }, []);
 
   useEffect(() => {
     const fetchAvt = async () => {
-      if (user && user.userId) {  // Kiểm tra nếu user và userId tồn tại
-        const data = await getAvt(user.userId);
-        console.log(data);
-        setAvt(data);
+      try {
+        if (user && user.userId) {  // Kiểm tra nếu user và userId tồn tại
+          const data = await getAvt(user.userId);
+          console.log(data);
+          setAvt(data);
+        }
+      } catch (error) {
+        console.error("Error fetching avatar", error);
       }
     };
 
@@ -50,7 +63,7 @@ function AccountProfile() {
   };
 
   const handleUpload = async () => {
-    
+
 
     console.log(timeLeft);
 
@@ -79,7 +92,7 @@ function AccountProfile() {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(countdown); // Dừng đếm khi hết thời gian
-          
+
           return 0; // Reset thời gian
         }
         return prevTime - 1; // Giảm thời gian
@@ -122,7 +135,15 @@ function AccountProfile() {
     window.location.href = "/login";
 
   };
-
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
   return (
     <div className="container mt-5" style={{ minHeight: '400px' }}>
       <div className="row">
@@ -159,19 +180,25 @@ function AccountProfile() {
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                   />
-                  <img onClick={() => document.getElementById('fileInput').click()}
-                    src={avt}
-                    alt="User Avatar"
-                    className="avt-account img-fluid rounded-circle"
-                  />
+                  {loading ? (
+                    <div className="skeleton-loader"></div> // Skeleton loader hiển thị khi đang tải
+                  ) : (
+                    <img
+                      onClick={() => document.getElementById('fileInput').click()}
+                      src={avt}
+                      alt="User Avatar"
+                      className="avt-account img-fluid rounded-circle"
+                    />
+                  )}
                   <button
                     onClick={handleUpload}
                     className='button-avt position-absolute top-50 btn btn-outline-success'
                     disabled={file === null || isDisabled}
-                    >
+                  >
                     {isDisabled ? `Đang đổi` : "Đổi ảnh"}
                   </button>
                 </div>
+
 
               </div>
             </div>
@@ -213,9 +240,11 @@ function AccountProfile() {
             </div>
             <button className="btn btn-danger"
               style={{ marginTop: '2%' }}
-              onClick={() => {navigate('/quan-ly-thong-tin', {
-                state: { userName: user.userName, fullName: user.fullName, email: user.email, phoneNumber: user.phoneNumber }
-              })}}>
+              onClick={() => {
+                navigate('/quan-ly-thong-tin', {
+                  state: { userName: user.userName, fullName: user.fullName, email: user.email, phoneNumber: user.phoneNumber }
+                })
+              }}>
               Cập nhật
             </button>
           </form>

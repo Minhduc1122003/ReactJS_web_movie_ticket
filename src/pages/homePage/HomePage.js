@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { getAllMovieView } from '../../services/api_provider';
 import { Link } from 'react-router-dom';
 import './homeScreen.css';
+import { Spinner } from "react-bootstrap";
 
 function HomePage() {
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+
 
   // Tính toán số trang dựa trên số lượng phim và itemsPerPage
   const totalPages = Math.ceil(movies.length / itemsPerPage);
@@ -35,10 +38,26 @@ function HomePage() {
 
   useEffect(() => {
     // Gọi API từ api_provider
-    getAllMovieView()
+    setLoading(true);
+    try {
+      getAllMovieView()
       .then(data => setMovies(data))
       .catch(error => console.error('Lỗi xảy ra:', error));
+    } catch (error) {
+      console.error("Error", error);
+    }finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
+    }
   }, []);
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
 
   return (
     <div>
