@@ -105,9 +105,6 @@ function FavoriteMovies() {
                 <div className="card-body text-center">
                   <h5 className="card-title">{movie.title}</h5>
                   <p className="card-text">
-                    <i style={{ color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)" }} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
-                  </p>
-                  <p className="card-text">
                     Genres: {movie.genres.join(', ')}
                   </p>
                 </div>
