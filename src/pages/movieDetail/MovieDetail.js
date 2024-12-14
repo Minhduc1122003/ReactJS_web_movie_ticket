@@ -126,7 +126,6 @@ function MovieDetail() {
           <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
         </svg>
       </div>
-
     );
   }
 
