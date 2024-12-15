@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const API_BASE_URL = 'http://localhost:9011';
-const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
+const API_BASE_URL = 'http://localhost:9011';
+// const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
 
 const _apiProvider = axios.create({
   baseURL: API_BASE_URL,
