@@ -42,6 +42,19 @@ function MovieStatus() {
       .catch(error => console.error('Lỗi xảy ra:', error));
   }, [statusMovie]);
 
+  if (currentMovies.length === 0) {
+    return (
+      <div class="d-flex justify-content-center align-items-center">
+        <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+          <circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+        </svg>
+      </div>
+    );
+  }
+
   return (
     <div>
 
@@ -55,9 +68,7 @@ function MovieStatus() {
 
           {/* Movies List */}
           <div className="row">
-            {currentMovies.length === 0 ? (
-              <p>No movies available.</p>
-            ) : (
+            {(
               currentMovies.map((movie, index) => (
                 <div className="col-md-3" key={index}>
                   <div className="card mb-3 item-film" style={{ minHeight: '611px' }}>

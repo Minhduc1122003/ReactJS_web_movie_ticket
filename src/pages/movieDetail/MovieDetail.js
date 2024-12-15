@@ -43,12 +43,13 @@ function MovieDetail() {
     }
     const fetchMovieDetail = async () => {
       try {
+        setLoading(true);
         const movieData = await movieDetail(movieId); // Gọi hàm lấy dữ liệu phim
         setMovie(movieData); // Cập nhật trạng thái với dữ liệu phim
       } catch (error) {
         console.error("Error fetching movie details:", error);
       } finally {
-        setLoading(false); // Đặt loading thành false sau khi gọi xong
+        // setLoading(false); // Đặt loading thành false sau khi gọi xong
       }
     };
 
@@ -84,11 +85,27 @@ function MovieDetail() {
   }, [userId, movieId]);
 
   const toggleShowtimes = async () => {
+    setIsDisabled(true); // Vô hiệu hóa nút
+    setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+    // Đếm ngược thời gian
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown); // Dừng đếm khi hết thời gian
+
+          return 0; // Reset thời gian
+        }
+        return prevTime - 1; // Giảm thời gian
+      });
+    }, 1000);
+
     setShowtimeLoading(true); // Bắt đầu trạng thái loading cho suất chiếu
     try {
       const data = await getShowtimeByMovieId(movieId); // Gọi hàm lấy dữ liệu suất chiếu
       setShowtimes(data); // Cập nhật trạng thái với dữ liệu suất chiếu
       setShowShowtimes(true); // Hiển thị suất chiếu
+      setIsDisabled(false); // Kích hoạt lại nút
     } catch (error) {
       console.error("Error fetching showtimes:", error);
     } finally {
@@ -176,6 +193,21 @@ function MovieDetail() {
         return;
       }
 
+      setIsDisabled(true); // Vô hiệu hóa nút
+      setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+      // Đếm ngược thời gian
+      const countdown = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(countdown); // Dừng đếm khi hết thời gian
+
+            return 0; // Reset thời gian
+          }
+          return prevTime - 1; // Giảm thời gian
+        });
+      }, 1000);
+
       const favouriteRequest = {
         movieId: parseInt(movieId),
         userId,
@@ -185,9 +217,11 @@ function MovieDetail() {
         // Nếu chưa yêu thích, gọi hàm addFavourite
         const data = await addFavourite(favouriteRequest);
         console.log("Đã thêm vào danh sách yêu thích:", data);
+        setIsDisabled(false); // Kích hoạt lại nút
       } else {
         const data = await deleteFavourite(favouriteRequest);
         console.log("Đã xóa khỏi danh sách yêu thích", data);
+        setIsDisabled(false); // Kích hoạt lại nút
       }
 
       setMovie((prevMovie) => ({
@@ -301,7 +335,7 @@ function MovieDetail() {
 
           {movie.statusMovie === 'Đang chiếu' ? (
             <div>
-              <button className="btn btn-outline-dark" onClick={toggleShowtimes}>
+              <button className="btn btn-outline-dark" onClick={toggleShowtimes} disabled={isDisabled}>
                 Chọn suất
               </button>
             </div>
@@ -346,6 +380,7 @@ function MovieDetail() {
             className={`btn ${movie.favourite ? "btn-danger" : "btn-outline-danger"
               } me-2`}
             onClick={handleFavourite}
+            disabled={isDisabled}
           >
             <i className="bi bi-balloon-heart"></i>{" "}
             {movie.favourite ? "Đã thích" : "Thích"}

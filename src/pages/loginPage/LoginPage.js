@@ -12,6 +12,9 @@ function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
+  const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
+
   // State đăng ký
   const [usernameNew, setUsernameNew] = useState('');
   const [fullnameNew, setFullnameNew] = useState('');
@@ -37,6 +40,23 @@ function LoginPage() {
 
   const handleLogin = async (evt) => {
     evt.preventDefault();
+    console.log(timeLeft);
+
+    setIsDisabled(true); // Vô hiệu hóa nút
+    setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+    // Đếm ngược thời gian
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown); // Dừng đếm khi hết thời gian
+
+          return 0; // Reset thời gian
+        }
+        return prevTime - 1; // Giảm thời gian
+      });
+    }, 1000);
+
     try {
       const data = await login(username, password);
       await Swal.fire({
@@ -49,7 +69,7 @@ function LoginPage() {
       });
       localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
-
+      setIsDisabled(false); // Kích hoạt lại nút
       let redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
       if(redirectUrl === '/login'){
         redirectUrl = '/';
@@ -81,6 +101,21 @@ function LoginPage() {
   const handleRegister = async (evt) => {
     evt.preventDefault();
 
+    setIsDisabled(true); // Vô hiệu hóa nút
+    setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+    // Đếm ngược thời gian
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown); // Dừng đếm khi hết thời gian
+
+          return 0; // Reset thời gian
+        }
+        return prevTime - 1; // Giảm thời gian
+      });
+    }, 1000);
+
     if (passwordNew === confirmpasswordNew) {
       const newUser = {
         userName: usernameNew,
@@ -95,6 +130,7 @@ function LoginPage() {
 
         console.log('Đăng ký thành công !', data);
         setToastMessage('Đăng ký thành công !');
+        setIsDisabled(false); // Kích hoạt lại nút
         clearFormRegister();
         setIsRegisterForm(false);
         setTimeout(() => {
@@ -178,7 +214,7 @@ function LoginPage() {
                     />
                   </div>
                   <Link to="/forgotpassword" className="text-black">Bạn quên mật khẩu?</Link>
-                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light">
+                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light" disabled={isDisabled}>
                     Đăng Nhập
                   </button>
                 </form>
@@ -222,7 +258,7 @@ function LoginPage() {
                     <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required
                       value={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)} />
                   </div>
-                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light">Đăng Ký</button>
+                  <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light" disabled={isDisabled}>Đăng Ký</button>
                 </form>
               )}
 

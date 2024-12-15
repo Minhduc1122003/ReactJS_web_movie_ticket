@@ -11,7 +11,6 @@ function FavoriteMovies() {
   const [userId, setUserId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
-  const [loading, setLoading] = useState(true); // Trạng thái loading
 
 
   // Tính toán số trang dựa trên số lượng phim và itemsPerPage
@@ -41,7 +40,6 @@ function FavoriteMovies() {
 
   // Kiểm tra và lấy userId từ localStorage chỉ một lần
   useEffect(() => {
-    setLoading(true);
     try {
       if (userString === null) {
         navigate('/login');
@@ -52,14 +50,11 @@ function FavoriteMovies() {
     } catch (error) {
       console.error("Error", error);
 
-    }finally {
-      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, [navigate, userString]);
 
   // Gọi API để lấy danh sách phim yêu thích khi có userId
   useEffect(() => {
-    setLoading(true);
     try {
       if (userId) {
         getAllFavouriteMovieViewByUserId(userId)
@@ -68,12 +63,10 @@ function FavoriteMovies() {
       }
     } catch (error) {
       console.error("Error movie", error);
-    } finally {
-      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, [userId]);
 
-  if (loading) {
+  if (currentMovies.length === 0) {
     return (
       <div class="d-flex justify-content-center align-items-center">
         <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
@@ -87,7 +80,6 @@ function FavoriteMovies() {
   }
 
   return (
-
       <div className="container">
       <div className="divider">
         <h2>Phim yêu thích</h2>
@@ -95,9 +87,7 @@ function FavoriteMovies() {
 
       {/* Movies List */}
       <div className="row">
-        {currentMovies.length === 0 ? (
-          <p>No movies available.</p>
-        ) : (
+        {(
           currentMovies.map((movie, index) => (
             <div className="col-md-3" key={index}>
               <div className="card mb-3 item-film" style={{ minHeight: '611px' }}>

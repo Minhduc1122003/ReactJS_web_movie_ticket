@@ -17,7 +17,6 @@ function AccountProfile() {
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
-    setLoading(true);
     try {
       if (userString) {
         const user = JSON.parse(userString);
@@ -26,15 +25,13 @@ function AccountProfile() {
       }
     } catch (error) {
       console.error("Error fetching avatar:", error);
-    }finally {
-      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
-    
   }, []);
 
   useEffect(() => {
     const fetchAvt = async () => {
       try {
+        setLoading(true);
         if (user && user.userId) {  // Kiểm tra nếu user và userId tồn tại
           const data = await getAvt(user.userId);
           console.log(data);
@@ -42,6 +39,8 @@ function AccountProfile() {
         }
       } catch (error) {
         console.error("Error fetching avatar", error);
+      } finally {
+        setLoading(false); // Đặt loading thành false sau khi gọi xong
       }
     };
 
@@ -62,8 +61,6 @@ function AccountProfile() {
   };
 
   const handleUpload = async () => {
-    
-
     console.log(timeLeft);
 
     const formData = new FormData();

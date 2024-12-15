@@ -10,7 +10,7 @@ const SeatSelection = () => {
     const location = useLocation();
     const { cinemaRoomId, showtimeId, movieTitle, movieAge, startTime, showtimeDate, moviePrice, subTitle } = location.state || {};
     console.log(cinemaRoomId);
-    console.log("Showtime",showtimeId);
+    console.log("Showtime", showtimeId);
     const [seats, setSeats] = useState([]);
     const [totalPriceAll, setTotalPriceAll] = useState(0);
     const [selectedSeats, setSelectedSeats] = useState([]);
@@ -142,7 +142,16 @@ const SeatSelection = () => {
     const isSelected = (seatSelect) => selectedSeats.includes(seatSelect);
 
     if (!seats || seats.length === 0) {
-        return <div>Seats not found!</div>;
+        return (
+            <div className="d-flex justify-content-center align-items-center">
+                <svg className="pl" width="240" height="240" viewBox="0 0 240 240">
+                    <circle className="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 660" strokeDashoffset="-330" strokeLinecap="round"></circle>
+                    <circle className="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 220" strokeDashoffset="-110" strokeLinecap="round"></circle>
+                    <circle className="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 440" strokeLinecap="round"></circle>
+                    <circle className="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 440" strokeLinecap="round"></circle>
+                </svg>
+            </div>
+        );
     }
 
     // Chia ghế thành các hàng (10 hàng, mỗi hàng 14 ghế)

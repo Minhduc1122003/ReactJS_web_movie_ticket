@@ -24,6 +24,12 @@ function HomePage() {
     setCurrentPage(page);
   };
 
+  //Đợi ảnh load
+  const handleImageLoad = () => {
+    setLoading(false); // Khi ảnh tải xong, tắt trạng thái loading
+  };
+
+
 
   // Hàm để chuyển đến trang tiếp theo
   const goToNextPage = () => {
@@ -35,19 +41,21 @@ function HomePage() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     // Gọi API từ api_provider
-    setLoading(true);
+    
     try {
+      setLoading(true);
       getAllMovieView()
-      .then(data => setMovies(data))
-      .catch(error => console.error('Lỗi xảy ra:', error));
+        .then(data => setMovies(data))
+        .catch(error => console.error('Lỗi xảy ra:', error));
     } catch (error) {
       console.error("Error", error);
-    }finally {
+    } finally {
       setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, []);
+
   if (loading) {
     return (
       <div class="d-flex justify-content-center align-items-center">
@@ -61,6 +69,7 @@ function HomePage() {
     );
   }
 
+
   return (
     <div>
 
@@ -73,13 +82,32 @@ function HomePage() {
               <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   <div className="carousel-item active">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS.jpg?alt=media&token=6b8c4daf-b5d4-49df-9613-e3ef8542336a" className="d-block w-100" alt="..." />
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS.jpg?alt=media&token=6b8c4daf-b5d4-49df-9613-e3ef8542336a"
+                      alt="Movie Poster"
+                      className="d-block mx-auto"
+                      onLoad={handleImageLoad}
+                      onError={handleImageLoad} // Xử lý khi ảnh lỗi
+                      
+                    />
                   </div>
                   <div className="carousel-item">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS2.jpg?alt=media&token=f5a8994d-fd20-497e-89bd-080557a7fd31" className="d-block w-100" alt="..." />
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS2.jpg?alt=media&token=f5a8994d-fd20-497e-89bd-080557a7fd31"
+                      alt="Movie Poster"
+                      className="d-block mx-auto"
+                      onLoad={handleImageLoad}
+                      onError={handleImageLoad} // Xử lý khi ảnh lỗi
+                    />
                   </div>
                   <div className="carousel-item">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS3.jpg?alt=media&token=15f18a81-f008-4805-b5a6-0709421ce9cf" className="d-block w-100" alt="..." />
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS3.jpg?alt=media&token=15f18a81-f008-4805-b5a6-0709421ce9cf"
+                      alt="Movie Poster"
+                      className="d-block mx-auto"
+                      onLoad={handleImageLoad}
+                      onError={handleImageLoad} // Xử lý khi ảnh lỗi
+                    />
                   </div>
                 </div>
               </div>
@@ -139,7 +167,7 @@ function HomePage() {
                     <div className="card-body text-center">
                       <h5 className="card-title">{movie.title}</h5>
                       <p className="card-text">
-                        <i style={{color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)"}} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
+                        <i style={{ color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)" }} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
                       </p>
                       <p className="card-text">
                         Genres: {movie.genres.join(", ")}
