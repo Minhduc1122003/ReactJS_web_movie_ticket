@@ -469,6 +469,21 @@ export const getTicketBuyUserId = async (id) => {
   }
 };
 
+export const getHistory = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/users/getHistory/${id}`);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    throw error;
+  }
+};
+
 export const addFavourite = async (favouriteRequest) => {
   console.log(`API_provider:`, favouriteRequest);
   try {
