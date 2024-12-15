@@ -488,23 +488,44 @@ export const getAllFavouriteMovieViewByUserId = async (id) => {
     throw error;
   }
 };
-
-export const paymentVNP = async(amount, id) => {
+const getClientIp = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/payments/vnpay?amount=${amount}&id=${id}`);
+    const response = await fetch('https://api.ipify.org?format=json');
+    if (!response.ok) {
+      throw new Error("Không thể lấy IP client");
+    }
+    const data = await response.json();
+    return data.ip;
+  } catch (error) {
+    console.error("Lỗi khi lấy IP:", error);
+    return null;
+  }
+};
 
-    if(!response) {
+export const paymentVNP = async (amount, id) => {
+  try {
+    const clientIp = await getClientIp();
+    
+    // Kiểm tra nếu không lấy được IP
+    if (!clientIp) {
+      throw new Error("Không thể lấy IP client");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/payments/vnpay?amount=${amount}&id=${id}&ip=${clientIp}`);
+
+    if (!response.ok) {
       throw new Error("Network response was not ok");
     }
 
     const data = await response.json();
     return data;
-    
+
   } catch (error) {
     console.error("Có lỗi: " + error);
     throw error;
   }
 };
+
 
 export const paymentVNPcallBack = async(params) => {
   try {
