@@ -7,7 +7,8 @@ import {
   addFavourite,
   deleteFavourite,
   getAllRateByMovieId,
-  submitReview
+  submitReview,
+  checkWatched
 } from "../../services/api_provider";
 import YouTube from "react-youtube";
 import { Button, Carousel, Row, Col } from "react-bootstrap";
@@ -28,6 +29,7 @@ function MovieDetail() {
   const [rating, setRating] = useState(0); // Mặc định là 0 sao
   const [comment, setComment] = useState("");
   const [review, setReview] = useState(0);
+  const [watched, setWatched] = useState(false);
   const location = useLocation();
 
   const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
@@ -62,12 +64,24 @@ function MovieDetail() {
       }
     };
 
-
-
     fetchRates(); // Lấy dữ liệu đánh giá
     fetchMovieDetail(); // Gọi hàm để lấy dữ liệu
     setReview(0);
   }, [movieId, review]); // Gọi lại khi movieId thay đổi
+
+  useEffect(() => {
+    const fetchWatchStatus = async () => {
+      try {
+        const data = await checkWatched(userId, movieId);
+        console.log(data);
+        setWatched(true);
+      } catch (err) {
+        setWatched(false);
+      }
+    };
+
+    fetchWatchStatus();
+  }, [userId, movieId]);
 
   const toggleShowtimes = async () => {
     setShowtimeLoading(true); // Bắt đầu trạng thái loading cho suất chiếu
@@ -121,12 +135,12 @@ function MovieDetail() {
 
   if (loading) {
     return (
-      <div class="d-flex justify-content-center align-items-center">
-        <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
-          <circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
-          <circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
-          <circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
-          <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+      <div className="d-flex justify-content-center align-items-center">
+        <svg className="pl" width="240" height="240" viewBox="0 0 240 240">
+          <circle className="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 660" strokeDashoffset="-330" strokeLinecap="round"></circle>
+          <circle className="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 220" strokeDashoffset="-110" strokeLinecap="round"></circle>
+          <circle className="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 440" strokeLinecap="round"></circle>
+          <circle className="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 440" strokeLinecap="round"></circle>
         </svg>
       </div>
     );
@@ -145,7 +159,6 @@ function MovieDetail() {
 
   const handleFavourite = async () => {
     localStorage.setItem('redirectAfterLogin', location.pathname); // Truyền link trước khi qua đăng nhập để nó quay về
-
     try {
       if (userId === 0) {
         const result = await Swal.fire({
@@ -197,7 +210,7 @@ function MovieDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(timeLeft);
-
+    console.log(watched);
     try {
       if (userId === 0) {
         localStorage.setItem('redirectAfterLogin', location.pathname);
@@ -286,17 +299,22 @@ function MovieDetail() {
             />
           </div>
 
-          <div>
-            <button className="btn btn-outline-dark" onClick={toggleShowtimes}>
-              Chọn suất
-            </button>
-          </div>
+          {movie.statusMovie === 'Đang chiếu' ? (
+            <div>
+              <button className="btn btn-outline-dark" onClick={toggleShowtimes}>
+                Chọn suất
+              </button>
+            </div>
+          ) : (
+            <div></div>
+          )}
+
+
         </div>
 
         <div className="col-md-9 movie-info text-start">
           <h1>
-            {movie.title}{" "}
-            <span className="badge bg-warning text-dark">T18</span>
+            {movie.title}
           </h1>
           <div className="my-3">
             <div className="text-center inblock movieDetail-boder-right">
@@ -482,42 +500,48 @@ function MovieDetail() {
         </div>
       )}
 
+      {/* Đánh giá */}
+      {watched ? (
+        <form onSubmit={handleSubmit} className="p-4 bg-light rounded shadow-sm">
+          <h4 className="mb-3">Đánh giá & Bình luận</h4>
+
+          <div className="mb-3">
+
+            <div className="star-rating">
+              {[...Array(10)].map((_, index) => (
+                <span
+                  key={index}
+                  className={`star ${index < rating ? 'filled' : ''}`}
+                  onClick={() => handleStarClick(index)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="comment" className="form-label">Bình luận</label>
+            <textarea
+              id="comment"
+              className="form-control"
+              rows="4"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Nhập bình luận của bạn..."
+            ></textarea>
+          </div>
+          <button type="submit" className="btn btn-primary" disabled={rating === 0 || isDisabled}>
+            {isDisabled ? `Đang gửi` : "Gửi đánh giá"}
+          </button>
+        </form>
+      ) : (
+        <div></div>
+      )}
       <div className="divider">
         <h2>Đánh giá</h2>
       </div>
-      <form onSubmit={handleSubmit} className="p-4 bg-light rounded shadow-sm">
-        <h4 className="mb-3">Đánh giá & Bình luận</h4>
 
-        <div className="mb-3">
-
-          <div className="star-rating">
-            {[...Array(10)].map((_, index) => (
-              <span
-                key={index}
-                className={`star ${index < rating ? 'filled' : ''}`}
-                onClick={() => handleStarClick(index)}
-              >
-                ★
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="comment" className="form-label">Bình luận</label>
-          <textarea
-            id="comment"
-            className="form-control"
-            rows="4"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Nhập bình luận của bạn..."
-          ></textarea>
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={rating === 0 || isDisabled}>
-          {isDisabled ? `Đang gửi` : "Gửi đánh giá"}
-        </button>
-      </form>
 
       <div className="gop-y">
         <div className="span-gop-y">

@@ -73,10 +73,10 @@ function HomePage() {
               <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   <div className="carousel-item active">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS.jpg?alt=media&token=424c44cc-7b7c-4f43-af6c-6e79e0cb5eb4" className="d-block w-100" alt="..." />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS.jpg?alt=media&token=6b8c4daf-b5d4-49df-9613-e3ef8542336a" className="d-block w-100" alt="..." />
                   </div>
                   <div className="carousel-item">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS2.png?alt=media&token=054273d2-691a-4234-bb1a-6ee4c1145321" className="d-block w-100" alt="..." />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS2.jpg?alt=media&token=f5a8994d-fd20-497e-89bd-080557a7fd31" className="d-block w-100" alt="..." />
                   </div>
                   <div className="carousel-item">
                     <img src="https://firebasestorage.googleapis.com/v0/b/movieticket-77cf5.appspot.com/o/CRS3.jpg?alt=media&token=15f18a81-f008-4805-b5a6-0709421ce9cf" className="d-block w-100" alt="..." />
@@ -152,7 +152,7 @@ function HomePage() {
           </div>
 
           {/* Nút phân trang */}
-          <div className="pagination">
+          <div className="pagination justify-content-center">
             <button className='btn btn-outline-dark' onClick={goToPreviousPage} disabled={currentPage === 1}>
               <i className="bi bi-chevron-compact-left"></i>
             </button>

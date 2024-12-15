@@ -81,7 +81,7 @@ function MovieGenre() {
           </div>
 
           {/* Nút phân trang */}
-          <div className="pagination">
+          <div className="pagination justify-content-center">
             <button className='btn btn-outline-dark' onClick={goToPreviousPage} disabled={currentPage === 1}>
               <i className="bi bi-chevron-compact-left"></i>
             </button>

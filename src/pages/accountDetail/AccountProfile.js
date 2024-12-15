@@ -197,13 +197,18 @@ function AccountProfile() {
                       className="avt-account img-fluid rounded-circle"
                     />
                   )}
-                  <button
+                  {file != null ? (
+                    <button
                     onClick={handleUpload}
                     className='button-avt position-absolute top-50 btn btn-outline-success'
                     disabled={file === null || isDisabled}
                   >
                     {isDisabled ? `Đang đổi` : "Đổi ảnh"}
                   </button>
+                  ) : (
+                    <div></div>
+                  )}
+                  
                 </div>
 
 
@@ -252,7 +257,7 @@ function AccountProfile() {
                   state: { userName: user.userName, fullName: user.fullName, email: user.email, phoneNumber: user.phoneNumber }
                 })
               }}>
-              Cập nhật
+              Cập nhật thông tin cá nhân
             </button>
           </form>
         </div>

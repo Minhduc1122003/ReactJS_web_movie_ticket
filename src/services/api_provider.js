@@ -7,7 +7,7 @@ const _apiProvider = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-}); 
+});
 
 _apiProvider.interceptors.request.use(
   config => {
@@ -105,7 +105,7 @@ export const sendMail = async (email) => {
       body: JSON.stringify(email)
     });
 
-    if(!response.ok){
+    if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error(errorMessage);
     }
@@ -124,17 +124,17 @@ export const verifyOTP = async (email, otp) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({email, otp})
+      body: JSON.stringify({ email, otp })
     });
 
-    if(!response.ok){
+    if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error(errorMessage);
     }
 
     return await response.text();
   } catch (error) {
-    
+
   }
 };
 
@@ -495,7 +495,7 @@ export const addFavourite = async (favouriteRequest) => {
       body: JSON.stringify(favouriteRequest)
     });
 
-    
+
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -518,7 +518,7 @@ export const deleteFavourite = async (favouriteRequest) => {
       body: JSON.stringify(favouriteRequest)
     });
 
-    
+
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -563,7 +563,7 @@ const getClientIp = async () => {
 export const paymentVNP = async (amount, id) => {
   try {
     const clientIp = await getClientIp();
-    
+
     // Kiểm tra nếu không lấy được IP
     if (!clientIp) {
       throw new Error("Không thể lấy IP client");
@@ -601,7 +601,7 @@ const syncServerTime = async () => {
 syncServerTime();
 
 
-export const paymentVNPcallBack = async(params) => {
+export const paymentVNPcallBack = async (params) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/payments/vnpay/callback`, {
       method: 'POST',
@@ -611,25 +611,25 @@ export const paymentVNPcallBack = async(params) => {
       body: JSON.stringify(params)
     });
 
-    if(!response.ok) {
+    if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
     }
 
     const data = await response.text();
     return data;
-    
+
   } catch (error) {
     console.error("Có lỗi: " + error);
     throw error;
   }
 };
 
-export const getAllRateByMovieId = async(id) => {
+export const getAllRateByMovieId = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/rates/getByMovieId/${id}`);
 
-    if(!response){
+    if (!response) {
       const errorText = await response.text();
       throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
     }
@@ -642,7 +642,7 @@ export const getAllRateByMovieId = async(id) => {
   }
 };
 
-export const submitReview = async(rate) =>{
+export const submitReview = async (rate) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/rates/create`, {
       method: 'POST',
@@ -652,7 +652,7 @@ export const submitReview = async(rate) =>{
       body: JSON.stringify(rate)
     });
 
-    if(!response){
+    if (!response) {
       const errorText = await response.text();
       throw new Error(`API Error: ${errorText} (HTTP ${response.status})`);
     }
@@ -661,6 +661,22 @@ export const submitReview = async(rate) =>{
     return data;
 
   } catch (error) {
+    throw error;
+  }
+};
+
+export const checkWatched = async (userId, movieId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/buyticket/allowReview?userId=${userId}&movieId=${movieId}`);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('Error checking watch status:', error);
     throw error;
   }
 };
