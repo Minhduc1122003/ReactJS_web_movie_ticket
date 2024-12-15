@@ -1,71 +1,54 @@
-import React, { useState } from 'react';
-import './TransactionHistories.css'; // Import CSS
+import React, { useState, useEffect } from 'react';
+import './TransactionHistories.css'; // Import CSS for styling
+import { getHistory } from '../../services/api_provider';
 
 function TransactionHistories() {
-  // State to manage the list of transactions
-  const [transactions] = useState([
-    {
-      id: 'TXN001',
-      date: '2024-10-10',
-      amount: 500000,
-      status: 'Thành công',
-    },
-    {
-      id: 'TXN002',
-      date: '2024-10-12',
-      amount: 300000,
-      status: 'Thất bại',
-    },
-    {
-      id: 'TXN003',
-      date: '2024-10-15',
-      amount: 1000000,
-      status: 'Đang chờ xử lý',
-    },
-  ]);
+  // State to manage the list of purchased tickets
+  const [user, setUser] = useState(null);
+  const [tickets, setTickets] = useState([]);
+
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      setUser(JSON.parse(userString));  // Chỉ setUser khi có userString
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && user.userId) {  // Kiểm tra xem user đã được set chưa
+      // Gọi API từ api_provider
+      getHistory(user.userId)
+        .then(data => setTickets(data))
+        .catch(error => console.error('Lỗi xảy ra:', error));
+    }
+  }, [user]);
 
   return (
-    <div className="container mt-5 transaction-history-container">
-      <h2 className="title">Lịch sử giao dịch</h2>
-
-      <table className="table table-bordered table-striped mt-4">
-        <thead className="thead-dark">
-          <tr>
-            <th>Mã giao dịch</th>
-            <th>Ngày giao dịch</th>
-            <th>Số tiền</th>
-            <th>Trạng thái</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.length > 0 ? (
-            transactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td>{transaction.id}</td>
-                <td>{transaction.date}</td>
-                <td>{transaction.amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                <td>
-                  <span
-                    className={`status-label ${
-                      transaction.status === 'Thành công'
-                        ? 'success'
-                        : transaction.status === 'Thất bại'
-                        ? 'failed'
-                        : 'pending'
-                    }`}
-                  >
-                    {transaction.status}
-                  </span>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4">Không có giao dịch nào.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+    <div className="purchased-tickets-container">
+      <div className="divider">
+        <h2>Lịch sử giao dịch</h2>
+      </div>
+      <div className="tickets-grid">
+        {tickets.map((ticket, index) => (
+          <div className="ticket-card bg-light" key={index}>
+            <img src={ticket.posterUrl} alt={ticket.title} className="ticket-image" />
+            <div className="ticket-details">
+              <h3 className='d-inline text-dark'>{ticket.title}</h3>
+              <p className={`check-in-ticket float-end ${ticket.isCheckIn ? 'text-success' : 'text-danger'}`}>
+                <strong>{ticket.isCheckIn ? 'Đã sử dụng' : 'Chưa sử dụng'}</strong>
+              </p>
+              <hr className='text-dark'/>
+              <p className='text-dark'><strong>Ngày:</strong> {ticket.showtimeDate}</p>
+              <p className='text-dark'><strong>Giờ:</strong> {ticket.startTime}</p>
+              <p className='text-dark'><strong>Ghế:</strong> {ticket.chairCodes}</p>
+              <p className='text-dark'><strong>Địa điểm:</strong> {ticket.cinemaName}</p>
+              <p className='text-dark'><strong>Tổng tiền:</strong> {ticket.totalPrice} VND</p>
+              <p hidden><strong>BuyTicketId:</strong> {ticket.buyTicketId}</p>
+              
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

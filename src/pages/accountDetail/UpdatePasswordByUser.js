@@ -83,7 +83,7 @@ const UpdatePassword = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="input-group">
-          <input style={{ borderRadius: '10px', width: '25vh' }}
+          <input style={{ borderRadius: '10px' }}
             type={showPasswordOld ? 'text' : 'password'}
             placeholder="Nhập mật khẩu cũ"
             value={passwordOld}
@@ -96,7 +96,7 @@ const UpdatePassword = () => {
         </div>
 
         <div className="input-group">
-          <input style={{ borderRadius: '10px', width: '25vh' }}
+          <input style={{ borderRadius: '10px' }}
             type={showPassword ? 'text' : 'password'}
             placeholder="Nhập mật khẩu mới"
             value={password}

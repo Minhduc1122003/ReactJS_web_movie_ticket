@@ -59,7 +59,7 @@ const UpdatePassword = () => {
       <h2>Đặt lại mật khẩu</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
-          <input style={{ borderRadius: '10px', width: '25vh' }}
+          <input style={{ borderRadius: '10px' }}
             type={showPassword ? 'text' : 'password'}
             placeholder="Nhập mật khẩu mới"
             value={password}

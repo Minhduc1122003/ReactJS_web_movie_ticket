@@ -162,6 +162,11 @@ function AccountProfile() {
             <Link to="/doi-mat-khau" className="list-group-item list-group-item-action">
               Đổi mật khẩu
             </Link>
+            
+
+            <Link to="/lich-su-giao-dich" className="list-group-item list-group-item-action">
+              Lịch sử giao dịch
+            </Link>
 
             <button onClick={handleLogout} className="list-group-item list-group-item-action list-group-item-danger">
               Đăng xuất

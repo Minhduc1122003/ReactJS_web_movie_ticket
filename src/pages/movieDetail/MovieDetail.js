@@ -30,6 +30,9 @@ function MovieDetail() {
   const [review, setReview] = useState(0);
   const location = useLocation();
 
+  const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
+  const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
+
   useEffect(() => {
     const userString = localStorage.getItem("user");
     if (userString != null) {
@@ -193,9 +196,11 @@ function MovieDetail() {
   //Gửi đánh giá
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(timeLeft);
 
     try {
       if (userId === 0) {
+        localStorage.setItem('redirectAfterLogin', location.pathname);
         const result = await Swal.fire({
           title: "Thông báo",
           text: "Vui lòng đăng nhập để thích phim !",
@@ -210,6 +215,21 @@ function MovieDetail() {
         }
         return;
       }
+
+      setIsDisabled(true); // Vô hiệu hóa nút
+      setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+      // Đếm ngược thời gian
+      const countdown = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(countdown); // Dừng đếm khi hết thời gian
+
+            return 0; // Reset thời gian
+          }
+          return prevTime - 1; // Giảm thời gian
+        });
+      }, 1000);
 
       const movieInt = Number(movieId);
 
@@ -231,6 +251,7 @@ function MovieDetail() {
         timerProgressBar: true,
         showConfirmButton: false
       });
+      setIsDisabled(false); // Kích hoạt lại nút
       setRating(0);
       setComment('');
       setReview(1);
@@ -493,7 +514,9 @@ function MovieDetail() {
             placeholder="Nhập bình luận của bạn..."
           ></textarea>
         </div>
-        <button type="submit" className="btn btn-primary" disabled={comment.trim() === '' && rating === 0}>Gửi đánh giá</button>
+        <button type="submit" className="btn btn-primary" disabled={rating === 0 || isDisabled}>
+          {isDisabled ? `Đang gửi` : "Gửi đánh giá"}
+        </button>
       </form>
 
       <div className="gop-y">
