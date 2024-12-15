@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API_BASE_URL = 'http://localhost:9011';
-const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
+const API_BASE_URL = 'http://localhost:9011';
+// const API_BASE_URL = 'https://javaserver-movie-ticket.onrender.com';
 
 const _apiProvider = axios.create({
   baseURL: API_BASE_URL,
@@ -568,6 +568,21 @@ export const paymentVNP = async (amount, id) => {
     throw error;
   }
 };
+const syncServerTime = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/payments/server-time`);
+    if (!response.ok) {
+      throw new Error("Không thể đồng bộ thời gian với server");
+    }
+    const serverTime = await response.text();
+    console.log("Thời gian server:", serverTime);
+    // Tùy chỉnh logic theo thời gian server
+  } catch (error) {
+    console.error("Lỗi khi đồng bộ thời gian:", error);
+  }
+};
+
+syncServerTime();
 
 
 export const paymentVNPcallBack = async(params) => {
