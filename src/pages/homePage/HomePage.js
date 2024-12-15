@@ -7,6 +7,8 @@ function HomePage() {
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+
 
   // Tính toán số trang dựa trên số lượng phim và itemsPerPage
   const totalPages = Math.ceil(movies.length / itemsPerPage);
@@ -33,12 +35,31 @@ function HomePage() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  useEffect(() => {
+  useEffect(() => { 
     // Gọi API từ api_provider
-    getAllMovieView()
+    setLoading(true);
+    try {
+      getAllMovieView()
       .then(data => setMovies(data))
       .catch(error => console.error('Lỗi xảy ra:', error));
+    } catch (error) {
+      console.error("Error", error);
+    }finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
+    }
   }, []);
+  if (loading) {
+    return (
+      <div class="d-flex justify-content-center align-items-center">
+        <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+          <circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div>

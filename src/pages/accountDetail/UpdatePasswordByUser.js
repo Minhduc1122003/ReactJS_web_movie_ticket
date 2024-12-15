@@ -39,9 +39,9 @@ const UpdatePassword = () => {
     e.preventDefault();
     const userString = localStorage.getItem('user');
     const user = JSON.parse(userString);
-    console.log("User",user);
+    console.log("User", user);
     const userId = user ? user.userId : null;
-    console.log("UserId",userId);
+    console.log("UserId", userId);
     if (password !== confirmPassword) {
       await Swal.fire({
         title: 'Thất bại',
@@ -66,24 +66,13 @@ const UpdatePassword = () => {
         });
         handleLogout();
       } catch (error) {
-        console.log(error.message);
-        if (error.message === 'API Error: Mật khẩu cũ không đúng! (HTTP 409)') {
-          await Swal.fire({
-            title: 'Thất bại',
-            text: 'Mật khẩu cũ không đúng!',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-        } else {
-          await Swal.fire({
-            title: 'Thất bại',
-            text: 'Đổi mật khẩu không thành công !',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-        }
-
-        
+        console.error(error);
+        await Swal.fire({
+          title: 'Thất bại',
+          text: 'Đổi mật khẩu không thành công !',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     }
   };
@@ -91,7 +80,7 @@ const UpdatePassword = () => {
   return (
     <div className="update-password-container">
       <h2>Đặt lại mật khẩu</h2>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <input style={{ borderRadius: '10px', width: '25vh' }}

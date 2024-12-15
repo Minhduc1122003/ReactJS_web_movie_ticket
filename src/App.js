@@ -12,6 +12,7 @@ import ForgotPassword from './pages/FormForgotPassword/ForgotPassword';
 import OTPVerification from './pages/FormForgotPassword/OTPVerification';
 import UpdatePassword from './pages/FormForgotPassword/UpdatePassword';
 import MovieStaus from './pages/phimPage/movieStatus';
+import MovieGenre from './pages/phimPage/movieGenre';
 import ThanhToan from './pages/payment_page/payment_page';
 import ThongTinVe from './pages/ticket_info/ticket_info';
 import LienHe from './pages/contact_page/contact_page';
@@ -49,7 +50,7 @@ function App() {
         <Route path="/OTPVerify" element={<OTPVerification />} />
         <Route path="/UpdatePassword" element={<UpdatePassword />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/phim-theo-trang-thai" element={<MovieStaus />} /> {/* Trang phim đang chiếu */}
+        <Route path="/phim-theo-trang-thai/:statusMovie" element={<MovieStaus />} /> {/* Trang phim đang chiếu */}
         <Route path="/thanh-toan" element={<ThanhToan />} /> {/* Trang thanh toán */}
         <Route path="/thong-tin-ve" element={<ThongTinVe />} /> {/* Trang thông tin vé */}
         <Route path="/lien-he" element={<LienHe />} /> {/* Trang liên hệ */}
@@ -60,6 +61,8 @@ function App() {
         <Route path="/chi-tiet-phim/:movieId" element={<ChiTietPhim />} /> {/* Trang chi tiết phim*/}
         <Route path="/dat-cho/:movieId" element={<DatCho/>} /> {/* Trang chi tiết đặt ghế*/}
         <Route path="/doi-mat-khau" element={<UpdatePasswordByUser/>} /> {/* Đổi mật khẩu*/}
+        <Route path="/phim-theo-the-loai/:genreMovie" element={<MovieGenre/>} /> {/* Phim theo thể loại*/}
+
       </Routes>
       <Footer />
     </Router>

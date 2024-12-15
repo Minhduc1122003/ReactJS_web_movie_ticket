@@ -8,28 +8,40 @@ function AccountProfile() {
   const [user, setUser] = useState('');
   const [avt, setAvt] = useState('');
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
 
-  const [isDisabled, setIsDisabled] = useState(false); // Quản lý trạng thái nút
+  const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
   const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
-    if (userString) {
-      const user = JSON.parse(userString);
-      console.log(user);
-      setUser(user);
+    setLoading(true);
+    try {
+      if (userString) {
+        const user = JSON.parse(userString);
+        console.log(user);
+        setUser(user);
+      }
+    } catch (error) {
+      console.error("Error fetching avatar:", error);
+    }finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
+    
   }, []);
 
   useEffect(() => {
     const fetchAvt = async () => {
-      if (user && user.userId) {  // Kiểm tra nếu user và userId tồn tại
-        const data = await getAvt(user.userId);
-        console.log(data);
-        setAvt(data);
+      try {
+        if (user && user.userId) {  // Kiểm tra nếu user và userId tồn tại
+          const data = await getAvt(user.userId);
+          console.log(data);
+          setAvt(data);
+        }
+      } catch (error) {
+        console.error("Error fetching avatar", error);
       }
     };
 
@@ -79,7 +91,7 @@ function AccountProfile() {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(countdown); // Dừng đếm khi hết thời gian
-          
+
           return 0; // Reset thời gian
         }
         return prevTime - 1; // Giảm thời gian
@@ -122,7 +134,18 @@ function AccountProfile() {
     window.location.href = "/login";
 
   };
-
+  if (loading) {
+    return (
+      <div class="d-flex justify-content-center align-items-center">
+        <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+          <circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+        </svg>
+      </div>
+    );
+  }
   return (
     <div className="container mt-5" style={{ minHeight: '400px' }}>
       <div className="row">
@@ -159,19 +182,25 @@ function AccountProfile() {
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                   />
-                  <img onClick={() => document.getElementById('fileInput').click()}
-                    src={avt}
-                    alt="User Avatar"
-                    className="avt-account img-fluid rounded-circle"
-                  />
+                  {loading ? (
+                    <div className="skeleton-loader"></div> // Skeleton loader hiển thị khi đang tải
+                  ) : (
+                    <img
+                      onClick={() => document.getElementById('fileInput').click()}
+                      src={avt}
+                      alt="User Avatar"
+                      className="avt-account img-fluid rounded-circle"
+                    />
+                  )}
                   <button
                     onClick={handleUpload}
                     className='button-avt position-absolute top-50 btn btn-outline-success'
                     disabled={file === null || isDisabled}
-                    >
+                  >
                     {isDisabled ? `Đang đổi` : "Đổi ảnh"}
                   </button>
                 </div>
+
 
               </div>
             </div>
@@ -213,9 +242,11 @@ function AccountProfile() {
             </div>
             <button className="btn btn-danger"
               style={{ marginTop: '2%' }}
-              onClick={() => {navigate('/quan-ly-thong-tin', {
-                state: { userName: user.userName, fullName: user.fullName, email: user.email, phoneNumber: user.phoneNumber }
-              })}}>
+              onClick={() => {
+                navigate('/quan-ly-thong-tin', {
+                  state: { userName: user.userName, fullName: user.fullName, email: user.email, phoneNumber: user.phoneNumber }
+                })
+              }}>
               Cập nhật
             </button>
           </form>

@@ -28,6 +28,9 @@ function UpdateAccountProfile() {
   const location = useLocation();
   const { userName, fullName, email, phoneNumber } = location.state || {};
 
+    const [isDisabled, setIsDisabled] = useState(false); // Quản lý trạng thái nút
+    const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
+
   //Khởi tạo react-hook-form với yup resolver
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
@@ -69,6 +72,7 @@ function UpdateAccountProfile() {
 
   // Function to handle form submission (mock for now)
   const handleUpdateAccount = async (data) => {
+    console.log(timeLeft);
 
     // Hiện thông báo xác nhận
     const { isConfirmed } = await Swal.fire({
@@ -83,6 +87,21 @@ function UpdateAccountProfile() {
     if (!isConfirmed) {
       return; // Kết thúc hàm nếu người dùng không đồng ý
     }
+
+    setIsDisabled(true); // Vô hiệu hóa nút
+    setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+    // Đếm ngược thời gian
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(countdown); // Dừng đếm khi hết thời gian
+          
+          return 0; // Reset thời gian
+        }
+        return prevTime - 1; // Giảm thời gian
+      });
+    }, 1000);
 
     // Lấy dữ liệu từ react-hook-form
     const { emailNew, phoneNew } = data;
@@ -103,6 +122,7 @@ function UpdateAccountProfile() {
         icon: "success",
         confirmButtonText: "OK",
       });
+      setIsDisabled(false); // Kích hoạt lại nút
       handleLogout();
     } catch (error) {
       console.log("Cập nhật thất bại !", error);
@@ -179,14 +199,16 @@ function UpdateAccountProfile() {
               <button
                 type="submit"
                 className="btn btn-success btn-block mt-3 float-end"
+                disabled={isDisabled}
               >
-                Cập nhật
+                {isDisabled ? `Đang cập nhật` : "Cập nhật"}
               </button>
             </form>
             <Link to="/accountProfile">
               <button
                 className="btn btn-danger btn-block mt-3 float-end"
                 style={{ marginRight: "15px" }}
+                disabled={isDisabled}
               >
                 Quay lại
               </button>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,9 +31,13 @@ function Header() {
       window.removeEventListener('storage', getUserFromLocalStorage);
     };
   }, []);
-  
-  const handleNavigation = (path, status) => {
-    navigate(path, {state: {status}})
+
+  const handleNavigationStatus = (path) => {
+    navigate(path)
+  };
+
+  const handleNavigationGenre = (path) => {
+    navigate(path)
   };
 
   return (
@@ -76,22 +80,22 @@ function Header() {
                       <i className="bi bi-camera-reels"></i> Phim
                     </button>
                     <ul className="dropdown-menu menu-danhmuc" aria-labelledby="navbarDropdown">
-                    <li>
-                      <button 
-                        className="dropdown-item" 
-                        onClick={() => handleNavigation('/phim-theo-trang-thai', 'Đang chiếu')}
-                      >
-                        Phim đang chiếu
-                      </button>
-                    </li>
-                    <li>
-                      <button 
-                        className="dropdown-item" 
-                        onClick={() => handleNavigation('/phim-theo-trang-thai', 'Sắp chiếu')}
-                      >
-                        Phim sắp chiếu
-                      </button>
-                    </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleNavigationStatus('/phim-theo-trang-thai/Đang chiếu')}
+                        >
+                          Phim đang chiếu
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleNavigationStatus('/phim-theo-trang-thai/Sắp chiếu')}
+                        >
+                          Phim sắp chiếu
+                        </button>
+                      </li>
                     </ul>
                   </li>
                   <li className="nav-item dropdown">
@@ -105,9 +109,30 @@ function Header() {
                       <i className="bi bi-ui-checks-grid"></i> Danh Mục
                     </button>
                     <ul className="dropdown-menu menu-danhmuc" aria-labelledby="navbarDropdown">
-                      <li><Link className="dropdown-item" to="/products?genre=Romantic">Lãng mạn</Link></li>
-                      <li><Link className="dropdown-item" to="/products?genre=Horror">Kinh dị</Link></li>
-                      <li><Link className="dropdown-item" to="/products?genre=Action">Hành động</Link></li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleNavigationGenre('/phim-theo-the-loai/Tình cảm')}
+                        >
+                          Tình cảm
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleNavigationGenre('/phim-theo-the-loai/Kinh dị')}
+                        >
+                          Kinh dị
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => handleNavigationGenre('/phim-theo-the-loai/Hành động')}
+                        >
+                          Hành động
+                        </button>
+                      </li>
                     </ul>
                   </li>
                   <li className="nav-item">

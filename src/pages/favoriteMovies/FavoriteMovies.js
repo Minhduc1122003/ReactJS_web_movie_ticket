@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import './FavoriteMovies.css';
 import { getAllFavouriteMovieViewByUserId } from '../../services/api_provider';
 
+
 function FavoriteMovies() {
   const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ function FavoriteMovies() {
   const [userId, setUserId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+
 
   // Tính toán số trang dựa trên số lượng phim và itemsPerPage
   const totalPages = Math.ceil(movies.length / itemsPerPage);
@@ -38,23 +41,50 @@ function FavoriteMovies() {
 
   // Kiểm tra và lấy userId từ localStorage chỉ một lần
   useEffect(() => {
-    if (userString === null) {
-      navigate('/login');
-    } else {
-      const user = JSON.parse(userString);
-      setUserId(user.userId);
+    setLoading(true);
+    try {
+      if (userString === null) {
+        navigate('/login');
+      } else {
+        const user = JSON.parse(userString);
+        setUserId(user.userId);
+      }
+    } catch (error) {
+      console.error("Error", error);
+
+    }finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, [navigate, userString]);
 
   // Gọi API để lấy danh sách phim yêu thích khi có userId
   useEffect(() => {
-    if (userId) {
-      getAllFavouriteMovieViewByUserId(userId)
-        .then(data => setMovies(data))
-        .catch(error => console.error('Lỗi xảy ra:', error));
+    setLoading(true);
+    try {
+      if (userId) {
+        getAllFavouriteMovieViewByUserId(userId)
+          .then(data => setMovies(data))
+          .catch(error => console.error('Lỗi xảy ra:', error));
+      }
+    } catch (error) {
+      console.error("Error movie", error);
+    } finally {
+      setLoading(false); // Đặt loading thành false sau khi gọi xong
     }
   }, [userId]);
 
+  if (loading) {
+    return (
+      <div class="d-flex justify-content-center align-items-center">
+        <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+          <circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+          <circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+        </svg>
+      </div>
+    );
+  }
 
   return (
 
@@ -76,9 +106,6 @@ function FavoriteMovies() {
                 </Link>
                 <div className="card-body text-center">
                   <h5 className="card-title">{movie.title}</h5>
-                  <p className="card-text">
-                    <i style={{ color: "yellow", textShadow: "0px 0px 2px rgba(0, 0, 0, 0.5)" }} className="bi bi-star-fill"></i> {movie.rating > 0 ? `${movie.rating}/10` : 'No rating'}
-                  </p>
                   <p className="card-text">
                     Genres: {movie.genres.join(', ')}
                   </p>
