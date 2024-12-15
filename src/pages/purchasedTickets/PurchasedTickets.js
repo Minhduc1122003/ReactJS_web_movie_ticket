@@ -153,7 +153,7 @@ function PurchasedTickets() {
                 type="button"
                 className="btn btn-primary btn-payment"
                 disabled={ticket.status.trim() === 'Đã thanh toán' || ticket.status.trim() === 'Ðã thanh toán'}
-                onClick={() => handlePayment(ticket.totalPrice, ticket.buyTicketInfoId)}
+                onClick={() => handlePayment(ticket.totalPrice, ticket.buyTicketId)}
               >
                 {ticket.status}
               </button>
