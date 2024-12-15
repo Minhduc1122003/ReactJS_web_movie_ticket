@@ -301,7 +301,8 @@ body > header > div > div > div.col-2 > img{
 }
 
 #carouselExampleSlidesOnly > div > div.carousel-item.active > img {
-    height: 720px;
+    height: auto;
+    width: 70%;
 }
 
 .pagination > button {
@@ -310,4 +311,13 @@ body > header > div > div > div.col-2 > img{
 
 #root > div {
     min-height: 52vh;
+}
+
+.back-ground-img {
+    background-image: url('https://homepage.momocdn.net/img/momo-upload-api-210701105436-637607336767432408.jpg');
+    background-size: cover;        /* Background sẽ bao phủ toàn bộ phần tử */
+    background-repeat: no-repeat;  /* Không lặp lại background */
+    background-position: center;   /* Căn background vào giữa */
+    height: 100%;                  /* Chiều cao 100% của phần tử cha (body/html) */
+    width: 100%;                   /* Chiều rộng 100% */
 }

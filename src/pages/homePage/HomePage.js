@@ -75,10 +75,13 @@ function HomePage() {
 
       {/* Main Content */}
       <main>
-        <div className="container">
-          {/* Carousel */}
-          <div className="row">
-            <div className="col-12 text-center my-4">
+        {/* Divider */}
+        <div className="divider">
+            <h2>TRANG CHỦ</h2>
+          </div>
+        {/* Carousel */}
+        <div className="row">
+            <div className="col-12 text-center mb-5 py-5 back-ground-img ">
               <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   <div className="carousel-item active">
@@ -113,7 +116,7 @@ function HomePage() {
               </div>
             </div>
           </div>
-
+        <div className="container">
           {/* Categories */}
           <div className="row">
             {/* Category 1 */}
@@ -150,7 +153,7 @@ function HomePage() {
 
           {/* Divider */}
           <div className="divider">
-            <h2>TRANG CHỦ</h2>
+            <h2>Danh sách phim</h2>
           </div>
 
           {/* Movies List */}
