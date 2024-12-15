@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TransactionHistories.css'; // Import CSS for styling
-import { getHistory } from '../../services/api_provider';
+//import { getHistory } from '../../services/api_provider';
 
 function TransactionHistories() {
   // State to manage the list of purchased tickets
@@ -14,14 +14,14 @@ function TransactionHistories() {
     }
   }, []);
 
-  useEffect(() => {
-    if (user && user.userId) {  // Kiểm tra xem user đã được set chưa
-      // Gọi API từ api_provider
-      getHistory(user.userId)
-        .then(data => setTickets(data))
-        .catch(error => console.error('Lỗi xảy ra:', error));
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user && user.userId) {  // Kiểm tra xem user đã được set chưa
+  //     // Gọi API từ api_provider
+  //     getHistory(user.userId)
+  //       .then(data => setTickets(data))
+  //       .catch(error => console.error('Lỗi xảy ra:', error));
+  //   }
+  // }, [user]);
 
   return (
     <div className="purchased-tickets-container">
