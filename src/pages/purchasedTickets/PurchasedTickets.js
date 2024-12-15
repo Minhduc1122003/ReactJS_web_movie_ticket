@@ -96,6 +96,8 @@ function PurchasedTickets() {
   const handleCallback = async (queryParams) => {
     try {
       const data = await paymentVNPcallBack(queryParams);
+      console.log('================================THANH TOAN THANH');
+
       console.log(data);
       await Swal.fire({
         title: 'Thành công',
@@ -120,6 +122,7 @@ function PurchasedTickets() {
     const ticketId = params.get('id');
     const vnp_TransactionStatus = params.get('vnp_TransactionStatus');
     const vnp_SecureHash = params.get('vnp_SecureHash');
+    console.log('================================useEffect');
 
     if (ticketId && vnp_TransactionStatus && vnp_SecureHash) {
       // Chuyển dữ liệu từ URL thành object để gọi API callback
