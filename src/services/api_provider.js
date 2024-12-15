@@ -568,6 +568,7 @@ export const paymentVNP = async (amount, id) => {
     throw error;
   }
 };
+
 const syncServerTime = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/payments/server-time`);
