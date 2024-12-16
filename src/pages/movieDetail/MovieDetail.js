@@ -95,7 +95,7 @@ function MovieDetail() {
 
     fetchRateStatus();
     fetchWatchStatus();
-  }, [userId, movieId]);
+  }, [userId, movieId, review]);
 
   const toggleShowtimes = async () => {
     setIsDisabled(true); // Vô hiệu hóa nút
