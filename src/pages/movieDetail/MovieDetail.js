@@ -8,7 +8,8 @@ import {
   deleteFavourite,
   getAllRateByMovieId,
   submitReview,
-  checkWatched
+  checkWatched,
+  checkRated
 } from "../../services/api_provider";
 import YouTube from "react-youtube";
 import { Button, Carousel, Row, Col } from "react-bootstrap";
@@ -30,6 +31,7 @@ function MovieDetail() {
   const [comment, setComment] = useState("");
   const [review, setReview] = useState(0);
   const [watched, setWatched] = useState(false);
+  const [rated, setRated] = useState(true);
   const location = useLocation();
 
   const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
@@ -81,6 +83,17 @@ function MovieDetail() {
       }
     };
 
+    const fetchRateStatus = async () => {
+      try {
+        const data = await checkRated(userId, movieId);
+        console.log(data);
+        setRated(true);
+      } catch (err) {
+        setRated(false);
+      }
+    };
+
+    fetchRateStatus();
     fetchWatchStatus();
   }, [userId, movieId]);
 
@@ -105,10 +118,11 @@ function MovieDetail() {
       const data = await getShowtimeByMovieId(movieId); // Gọi hàm lấy dữ liệu suất chiếu
       setShowtimes(data); // Cập nhật trạng thái với dữ liệu suất chiếu
       setShowShowtimes(true); // Hiển thị suất chiếu
-      setIsDisabled(false); // Kích hoạt lại nút
+      
     } catch (error) {
       console.error("Error fetching showtimes:", error);
     } finally {
+      setIsDisabled(false); // Kích hoạt lại nút
       setShowtimeLoading(false); // Đặt loading cho suất chiếu thành false sau khi gọi xong
     }
   };
@@ -212,18 +226,24 @@ function MovieDetail() {
         movieId: parseInt(movieId),
         userId,
       };
-
-      if (!movie.favourite) {
-        // Nếu chưa yêu thích, gọi hàm addFavourite
-        const data = await addFavourite(favouriteRequest);
-        console.log("Đã thêm vào danh sách yêu thích:", data);
-        setIsDisabled(false); // Kích hoạt lại nút
-      } else {
-        const data = await deleteFavourite(favouriteRequest);
-        console.log("Đã xóa khỏi danh sách yêu thích", data);
+      try {
+        if (!movie.favourite) {
+          // Nếu chưa yêu thích, gọi hàm addFavourite
+          const data = await addFavourite(favouriteRequest);
+          console.log("Đã thêm vào danh sách yêu thích:", data);
+          
+        } else {
+          const data = await deleteFavourite(favouriteRequest);
+          console.log("Đã xóa khỏi danh sách yêu thích", data);
+          setIsDisabled(false); // Kích hoạt lại nút
+        }
+      } catch (error) {
+        console.log("Lỗi thích phim", error);
+      } finally {
         setIsDisabled(false); // Kích hoạt lại nút
       }
 
+      
       setMovie((prevMovie) => ({
         ...prevMovie,
         favourite: !prevMovie.favourite,
@@ -260,6 +280,18 @@ function MovieDetail() {
           // Điều hướng đến trang đăng nhập khi nhấn "Đăng nhập"
           navigate("/login");
         }
+        return;
+      }
+
+      if(!rated){
+        await Swal.fire({
+          title: 'Thông báo',
+          text: 'Bạn đã đánh giá phim này rồi!',
+          icon: 'warning',
+          timer: 2000, // Thời gian hiển thị (2 giây)
+          timerProgressBar: true,
+          showConfirmButton: false
+        });
         return;
       }
 
@@ -304,7 +336,7 @@ function MovieDetail() {
       setReview(1);
     } catch (error) {
       await Swal.fire({
-        title: 'Thành công',
+        title: 'Thất bạibại',
         text: 'Đánh giá thất bại !',
         icon: 'success',
         timer: 1000, // Thời gian hiển thị (2 giây)
@@ -318,8 +350,6 @@ function MovieDetail() {
   const handleStarClick = (index) => {
     setRating(index + 1);
   };
-
-
 
   return (
     <div className="container mb-5 mt-5">

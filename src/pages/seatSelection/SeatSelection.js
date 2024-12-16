@@ -17,6 +17,9 @@ const SeatSelection = () => {
     const [seatId, setSeatId] = useState([]);
     const [comboId] = useState([]);
 
+    const [isDisabled, setIsDisabled] = useState(false); // Quản lý  
+    const [timeLeft, setTimeLeft] = useState(0); // Quản lý thời gian đếm ngược
+
     useEffect(() => {
         const fetchSeats = async () => {
             if (cinemaRoomId && showtimeId) {
@@ -48,7 +51,9 @@ const SeatSelection = () => {
         return `${userId}${movieId}${showtimeId}${formattedDate}`;
     };
 
+    // Đặt vé
     const handleSubmit = async () => {
+        console.log(timeLeft);
         const userString = localStorage.getItem('user');
         if (!userString) {
             localStorage.setItem('redirectAfterLogin', location.pathname);
@@ -74,6 +79,21 @@ const SeatSelection = () => {
         if (!isConfirmed) {
             return;
         }
+
+        setIsDisabled(true); // Vô hiệu hóa nút
+        setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
+
+        // Đếm ngược thời gian
+        const countdown = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                if (prevTime <= 1) {
+                    clearInterval(countdown); // Dừng đếm khi hết thời gian
+
+                    return 0; // Reset thời gian
+                }
+                return prevTime - 1; // Giảm thời gian
+            });
+        }, 1000);
 
         const user = JSON.parse(userString);
         const userId = user ? user.userId : null;
@@ -108,6 +128,8 @@ const SeatSelection = () => {
                 confirmButtonText: 'OK'
             });
             console.error("Error buying ticket:", error);
+        } finally {
+            setIsDisabled(false); // Kích hoạt lại nút
         }
     };
 
@@ -230,7 +252,7 @@ const SeatSelection = () => {
                     <button
                         id="dat-ve-ngay"
                         className="btn btn-outline-danger"
-                        disabled={selectedSeats.length === 0}
+                        disabled={selectedSeats.length === 0 || isDisabled}
                         onClick={handleSubmit}
                     >
                         <div className="btn-content">

@@ -1,8 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm } from "react-hook-form";
 import { login, registerUser } from '../../services/api_provider';
 import Swal from 'sweetalert2';
-// import { jwtDecode } from 'jwt-decode';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  emailNew: yup
+    .string()
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email phải có dịnh dạng hợp lệ (ví dụ: example@gmail.com)')
+    .required('Email là bắt buộc'),
+  phoneNew: yup
+    .string()
+    .matches(/^[0-9]{10}$/, 'Số điện thoại phải có 10 chữ số')
+    .required('Số điện thoại là bắt buộc'),
+  usernameNew: yup
+    .string()
+    .matches(/^[A-Za-z][A-Za-z0-9_]{3,}$/, 'Tài khoản phải có ít nhất 4 ký tự và ký tự đầu không được là số')
+    .required('Tài khoản là bắt buộc'),
+  fullnameNew: yup
+    .string()
+    .matches(/^[A-ZÀ-Ỹa-zà-ỹ]+(\s[A-ZÀ-Ỹa-zà-ỹ]+)+$/, 'Tên không hợp lệ (Ví dụ: Lê A)')
+    .required('Họ tên là bắt buộc'),
+  passwordNew: yup
+    .string()
+    .matches(/^[a-zA-Z][a-zA-Z0-9]{2,}$/, 'Mật khẩu phải có ít nhất 3 ký tự và không được chứa ký tự đặc biệt')
+    .required('Mật khẩu là bắt buộc')
+});
 
 function LoginPage() {
   const [isRegisterForm, setIsRegisterForm] = useState(false);
@@ -22,6 +47,12 @@ function LoginPage() {
   const [phoneNew, setPhoneNew] = useState('');
   const [passwordNew, setPasswordNew] = useState('');
   const [confirmpasswordNew, setConfirmpasswordNew] = useState('');
+
+  //Khởi tạo react-hook-form với yup resolver
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange', //Kiểm tra validation mỗi khi thay đổi giá trị
+  })
 
   useEffect(() => {
     const msg = null; // Replace with logic to show messages if necessary
@@ -69,9 +100,9 @@ function LoginPage() {
       });
       localStorage.setItem('token', data.jwt); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(data.userDTO)); // Lưu user vào localStorage
-      setIsDisabled(false); // Kích hoạt lại nút
+
       let redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
-      if(redirectUrl === '/login'){
+      if (redirectUrl === '/login') {
         redirectUrl = '/';
       }
       localStorage.removeItem('redirectAfterLogin');
@@ -86,6 +117,8 @@ function LoginPage() {
         timerProgressBar: true,
         showConfirmButton: false
       });
+    } finally {
+      setIsDisabled(false); // Kích hoạt lại nút
     }
   };
 
@@ -130,13 +163,12 @@ function LoginPage() {
 
         console.log('Đăng ký thành công !', data);
         setToastMessage('Đăng ký thành công !');
-        setIsDisabled(false); // Kích hoạt lại nút
         clearFormRegister();
         setIsRegisterForm(false);
         setTimeout(() => {
           setToastMessage(null);
         }, 5000);
-        
+
       } catch (error) {
         console.log('Đăng ký thất bại !', error.message);
         if (error.message === 'Email đã tồn tại!') {
@@ -149,8 +181,11 @@ function LoginPage() {
         setTimeout(() => {
           setToastMessage(null);
         }, 5000);
+      } finally {
+        setIsDisabled(false); // Kích hoạt lại nút
       }
     } else {
+      setIsDisabled(false);
       setToastMessage('Đăng ký thất bại! Xác nhận mật khẩu không đúng !');
       setTimeout(() => {
         setToastMessage(null);
@@ -222,41 +257,70 @@ function LoginPage() {
 
               {/* Register Form */}
               {isRegisterForm && (
-                <form onSubmit={handleRegister}>
+                <form onSubmit={handleSubmit(handleRegister)}>
                   <div className="mb-3">
                     <label htmlFor="regUsername" className="form-label">Tài Khoản</label>
                     <input type="text"
                       className="form-control"
                       id="regUsername"
                       placeholder="Nhập tên đăng nhập"
-                      value={usernameNew}
-                      onChange={(e) => setUsernameNew(e.target.value)}
+                      defaultValue={usernameNew}
+                      {...register('usernameNew')}
                       required />
+                    {errors.usernameNew && (
+                      <p style={{ color: 'red' }}>{errors.usernameNew.message}</p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regUsername" className="form-label">Họ tên</label>
-                    <input type="text" className="form-control" id="regFullname" placeholder="Nhập họ tên" required
-                      value={fullnameNew} onChange={(e) => setFullnameNew(e.target.value)} />
+                    <input type="text"
+                      className="form-control"
+                      id="regFullname"
+                      placeholder="Nhập họ tên"
+                      defaultValue={fullnameNew}
+                      {...register('fullnameNew')}
+                      required />
+                    {errors.fullnameNew && (
+                      <p style={{ color: 'red' }}>{errors.fullnameNew.message}</p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" placeholder="Nhập email" required
-                      value={emailNew} onChange={(e) => setEmailNew(e.target.value)} />
+                    <input type="email"
+                      className="form-control"
+                      id="email"
+                      placeholder="Nhập email"
+                      defaultValue={emailNew}
+                      {...register('emailNew')}
+                      required />
+                    {errors.emailNew && (
+                      <p style={{ color: 'red' }}>{errors.emailNew.message}</p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Số điện thoại</label>
-                    <input type="text" className="form-control" id="phoneNumber" placeholder="Nhập số điện thoại" required
-                      value={phoneNew} onChange={(e) => setPhoneNew(e.target.value)} />
+                    <input type="text"
+                      className="form-control"
+                      id="phoneNumber"
+                      placeholder="Nhập số điện thoại"
+                      defaultValue={phoneNew}
+                      {...register('phoneNew')} 
+                      required/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regPassword" className="form-label">Mật khẩu</label>
-                    <input type="password" className="form-control" id="regPassword" placeholder="Nhập mật khẩu" required
-                      value={passwordNew} onChange={(e) => setPasswordNew(e.target.value)} />
+                    <input type="password"
+                      className="form-control"
+                      id="regPassword"
+                      placeholder="Nhập mật khẩu"
+                      defaultValue={passwordNew}
+                      {...register('passwordNew')}  
+                      required/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">Xác nhận mật khẩu</label>
                     <input type="password" className="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required
-                      value={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)} />
+                      defaultValue={confirmpasswordNew} onChange={(e) => setConfirmpasswordNew(e.target.value)} />
                   </div>
                   <button type="submit" className="btn btn-primary btn-block mt-3 w-100 text-light" disabled={isDisabled}>Đăng Ký</button>
                 </form>

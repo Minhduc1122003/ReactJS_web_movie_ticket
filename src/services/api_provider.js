@@ -134,7 +134,8 @@ export const verifyOTP = async (email, otp) => {
 
     return await response.text();
   } catch (error) {
-
+    console.error(error);
+    throw error;
   }
 };
 
@@ -546,6 +547,8 @@ export const getAllFavouriteMovieViewByUserId = async (id) => {
     throw error;
   }
 };
+
+// Lấy IP người dùng
 const getClientIp = async () => {
   try {
     const response = await fetch('https://api.ipify.org?format=json');
@@ -677,6 +680,22 @@ export const checkWatched = async (userId, movieId) => {
     return data;
   } catch (error) {
     console.log('Error checking watch status:', error);
+    throw error;
+  }
+};
+
+export const checkRated = async (userId, movieId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/rates/allowRate?userId=${userId}&movieId=${movieId}`);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('Error checking rate status:', error);
     throw error;
   }
 };

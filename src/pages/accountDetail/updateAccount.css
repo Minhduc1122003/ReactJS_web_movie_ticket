@@ -28,3 +28,11 @@
     font-weight: 500;
     font-size: 17px;
   }
+
+  .avt-account.img-fluid.rounded-circle{
+    cursor: pointer;
+  }
+
+  .avt-account.img-fluid.rounded-circle:hover{
+    opacity: 0.8;
+  }

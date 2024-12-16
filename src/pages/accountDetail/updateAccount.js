@@ -17,6 +17,10 @@ const schema = yup.object().shape({
     .string()
     .matches(/^[0-9]{10}$/, 'Số điện thoại phải có 10 chữ số')
     .required('Số điện thoại là bắt buộc'),
+  fullnameNew: yup
+      .string()
+      .matches(/^[A-ZÀ-Ỹa-zà-ỹ]+(\s[A-ZÀ-Ỹa-zà-ỹ]+)+$/, 'Tên không hợp lệ (Ví dụ: Lê A)')
+      .required('Họ tên là bắt buộc'),
 });
 
 function UpdateAccountProfile() {
@@ -156,10 +160,13 @@ function UpdateAccountProfile() {
                   className="form-control"
                   id="regFullname"
                   placeholder="Nhập họ tên"
-                  required
                   defaultValue={fullnameNew}
-                  onChange={(e) => setFullnameNew(e.target.value)}
+                  {...register('fullnameNew')}
+                  required
                 />
+                {errors.fullnameNew && (
+                  <p style={{ color: 'red' }}>{errors.fullnameNew.message}</p>
+                )}
               </div>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label form-label-info">
@@ -172,6 +179,7 @@ function UpdateAccountProfile() {
                   {...register('emailNew')}
                   placeholder="Nhập email"
                   defaultValue={emailNew}
+                  required
                 />
                 {errors.emailNew && (
                   <p style={{ color: 'red' }}>{errors.emailNew.message}</p>
@@ -191,6 +199,7 @@ function UpdateAccountProfile() {
                   {...register('phoneNew')}
                   placeholder="Nhập số điện thoại"
                   defaultValue={phoneNew}
+                  required
                 />
                 {errors.phoneNew && (
                   <p style={{ color: 'red' }}>{errors.phoneNew.message}</p>
