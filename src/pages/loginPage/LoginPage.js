@@ -131,25 +131,13 @@ function LoginPage() {
     setConfirmpasswordNew('');
   };
 
-  const handleRegister = async (evt) => {
-    evt.preventDefault();
-
+  const handleRegister = async (data) => {
     setIsDisabled(true); // Vô hiệu hóa nút
     setTimeLeft(10); // Đặt thời gian đếm ngược là 10 giây
-
-    // Đếm ngược thời gian
-    const countdown = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(countdown); // Dừng đếm khi hết thời gian
-
-          return 0; // Reset thời gian
-        }
-        return prevTime - 1; // Giảm thời gian
-      });
-    }, 1000);
-
-    if (passwordNew === confirmpasswordNew) {
+  
+    const { usernameNew, fullnameNew, emailNew, phoneNew, passwordNew } = data;
+  
+    if (passwordNew === confirmpasswordNew) {  // Kiểm tra confirm password
       const newUser = {
         userName: usernameNew,
         fullName: fullnameNew,
@@ -157,42 +145,30 @@ function LoginPage() {
         phoneNumber: phoneNew,
         password: passwordNew
       };
-
+  
       try {
-        const data = await registerUser(newUser);
-
-        console.log('Đăng ký thành công !', data);
-        setToastMessage('Đăng ký thành công !');
+        const response = await registerUser(newUser);
+        Swal.fire({
+          title: 'Thành công',
+          text: 'Đăng ký thành công!',
+          icon: 'success',
+          timer: 1000,
+          showConfirmButton: false
+        });
         clearFormRegister();
         setIsRegisterForm(false);
-        setTimeout(() => {
-          setToastMessage(null);
-        }, 5000);
-
       } catch (error) {
-        console.log('Đăng ký thất bại !', error.message);
-        if (error.message === 'Email đã tồn tại!') {
-          setToastMessage('Email đã tồn tại!');
-        } else if (error.message === 'Tài khoản đã tồn tại!') {
-          setToastMessage('Tài khoản đã tồn tại!');
-        } else {
-          setToastMessage('Đăng nhập thất bại!');
-        }
-        setTimeout(() => {
-          setToastMessage(null);
-        }, 5000);
+        console.log('Lỗi đăng ký:', error.message);
+        setToastMessage(error.message || 'Đăng ký thất bại!');
       } finally {
-        setIsDisabled(false); // Kích hoạt lại nút
+        setIsDisabled(false);
       }
     } else {
+      setToastMessage('Xác nhận mật khẩu không khớp!');
       setIsDisabled(false);
-      setToastMessage('Đăng ký thất bại! Xác nhận mật khẩu không đúng !');
-      setTimeout(() => {
-        setToastMessage(null);
-      }, 5000);
     }
   };
-
+  
   return (
     <div>
       <div className="modal-content-login">
