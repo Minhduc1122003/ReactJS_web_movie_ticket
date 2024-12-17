@@ -321,3 +321,7 @@ body > header > div > div > div.col-2 > img{
     height: 100%;                  /* Chiều cao 100% của phần tử cha (body/html) */
     width: 100%;                   /* Chiều rộng 100% */
 }
+
+.input-group.input-group-form{
+    width: 473px;
+}

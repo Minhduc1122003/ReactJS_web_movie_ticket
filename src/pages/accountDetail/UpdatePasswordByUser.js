@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import '../FormForgotPassword/ForgotPassword.css'; // Chứa CSS cho form
 import { updatePasswordByUser } from '../../services/api_provider';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
+import { useForm } from "react-hook-form";
+
+const schema = yup.object().shape({
+  password: yup
+    .string()
+    .matches(/^[a-zA-Z][a-zA-Z0-9]{2,}$/, 'Mật khẩu phải có ít nhất 3 ký tự và không được chứa ký tự đặc biệt')
+    .required('Mật khẩu là bắt buộc')
+});
 
 const UpdatePassword = () => {
   const [passwordOld, setPasswordOld] = useState('');
@@ -11,6 +21,12 @@ const UpdatePassword = () => {
   const [showPasswordOld, setShowPasswordOld] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  //Khởi tạo react-hook-form với yup resolver
+    const { register, handleSubmit, formState: { errors } } = useForm({
+      resolver: yupResolver(schema),
+      mode: 'onChange', //Kiểm tra validation mỗi khi thay đổi giá trịtrị
+    })
 
   // console.log(userId);
   const togglePasswordOldVisibility = () => {
@@ -35,7 +51,7 @@ const UpdatePassword = () => {
 
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitUpdate = async (e) => {
     e.preventDefault();
     const userString = localStorage.getItem('user');
     const user = JSON.parse(userString);
@@ -81,8 +97,8 @@ const UpdatePassword = () => {
     <div className="update-password-container">
       <h2>Đặt lại mật khẩu</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
+      <form onSubmit={handleSubmitUpdate}>
+        <div className="input-group input-group-form">
           <input style={{ borderRadius: '10px' }}
             type={showPasswordOld ? 'text' : 'password'}
             placeholder="Nhập mật khẩu cũ"
@@ -95,20 +111,23 @@ const UpdatePassword = () => {
           </span>
         </div>
 
-        <div className="input-group">
+        <div className="input-group input-group-form">
           <input style={{ borderRadius: '10px' }}
             type={showPassword ? 'text' : 'password'}
             placeholder="Nhập mật khẩu mới"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            defaultValue={password}
+            {...register('password')}
             required
           />
           <span onClick={togglePasswordVisibility} className="toggle-password">
             <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
           </span>
         </div>
+        {errors.password && (
+            <p style={{ color: 'red' }}>{errors.password.message}</p>
+          )}
 
-        <div className="input-group">
+        <div className="input-group input-group-form">
           <input style={{ borderRadius: '10px' }}
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Nhập lại mật khẩu mới"

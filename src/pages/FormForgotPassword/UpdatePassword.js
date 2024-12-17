@@ -3,6 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './ForgotPassword.css'; // Chứa CSS cho form
 import { uploadPasswordUser } from '../../services/api_provider';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
+import { useForm } from "react-hook-form";
+
+const schema = yup.object().shape({
+  password: yup
+    .string()
+    .matches(/^[a-zA-Z][a-zA-Z0-9]{2,}$/, 'Mật khẩu phải có ít nhất 3 ký tự và không được chứa ký tự đặc biệt')
+    .required('Mật khẩu là bắt buộc')
+});
 
 const UpdatePassword = () => {
   const [password, setPassword] = useState('');
@@ -13,6 +23,12 @@ const UpdatePassword = () => {
   const { userId } = location.state;
   const navigate = useNavigate();
 
+  //Khởi tạo react-hook-form với yup resolver
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange', //Kiểm tra validation mỗi khi thay đổi giá trịtrị
+  })
+
   console.log(userId);
 
   const togglePasswordVisibility = () => {
@@ -22,7 +38,7 @@ const UpdatePassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitUpdate = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       await Swal.fire({
@@ -57,20 +73,23 @@ const UpdatePassword = () => {
   return (
     <div className="update-password-container">
       <h2>Đặt lại mật khẩu</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
+      <form onSubmit={handleSubmit(handleSubmitUpdate)}>
+        <div className="input-group input-group-form">
           <input style={{ borderRadius: '10px' }}
             type={showPassword ? 'text' : 'password'}
             placeholder="Nhập mật khẩu mới"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            defaultValue={password}
+            {...register('password')}
             required
           />
           <span onClick={togglePasswordVisibility} className="toggle-password">
             <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
           </span>
         </div>
-        <div className="input-group">
+        {errors.password && (
+            <p style={{ color: 'red' }}>{errors.password.message}</p>
+          )}
+        <div className="input-group input-group-form">
           <input style={{ borderRadius: '10px' }}
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Nhập lại mật khẩu mới"

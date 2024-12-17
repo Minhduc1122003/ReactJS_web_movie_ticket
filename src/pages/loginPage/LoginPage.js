@@ -304,8 +304,11 @@ function LoginPage() {
                       id="phoneNumber"
                       placeholder="Nhập số điện thoại"
                       defaultValue={phoneNew}
-                      {...register('phoneNew')} 
-                      required/>
+                      {...register('phoneNew')}
+                      required />
+                    {errors.phoneNew && (
+                      <p style={{ color: 'red' }}>{errors.phoneNew.message}</p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="regPassword" className="form-label">Mật khẩu</label>
@@ -314,8 +317,11 @@ function LoginPage() {
                       id="regPassword"
                       placeholder="Nhập mật khẩu"
                       defaultValue={passwordNew}
-                      {...register('passwordNew')}  
-                      required/>
+                      {...register('passwordNew')}
+                      required />
+                    {errors.passwordNew && (
+                      <p style={{ color: 'red' }}>{errors.passwordNew.message}</p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">Xác nhận mật khẩu</label>
